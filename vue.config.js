@@ -26,9 +26,9 @@ module.exports = {
     },
     DailyQualityControl: {
       // page 的入口
-      entry: 'src/pages/DailyQualityControl/DailyQualityControl.js',
+      entry: './src/pages/DailyQualityControl/DailyQualityControl.js',
       // 模板来源
-      template: 'src/pages/DailyQualityControl/DailyQualityControl.html',
+      template: './src/pages/DailyQualityControl/DailyQualityControl.html',
       // 在 dist/index.html 的输出
       filename: 'DailyQualityControl.html',
       // 当使用 title 选项时，
@@ -37,8 +37,17 @@ module.exports = {
       // 在这个页面中包含的块，默认情况下会包含
       // 提取出来的通用 chunk 和 vendor chunk。
       chunks: ['chunk-vendors', 'chunk-common', 'DailyQualityControl'],  
-    }
+    },
+    ZeroPointData: { // 零点数据
+      entry: './src/pages/ZeroPointData/ZeroPointData.js',
+      template: './src/pages/ZeroPointData/ZeroPointData.html',
+      filename: 'ZeroPointData.html',
+      title: '零点数据',
+      chunks: ['chunk-vendors', 'chunk-common', 'ZeroPointData']
+    },
   },
+  // 接口代理
+  
   productionSourceMap: false,
   configureWebpack: config => {
     // 生产环境下生效
