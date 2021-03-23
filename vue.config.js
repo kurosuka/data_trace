@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-03-22 14:32:52
+ * @LastEditTime: 2021-03-23 11:34:19
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -12,17 +12,24 @@ module.exports = {
   pages: {
     dataAudit: { // 日志
       entry: './src/pages/auditIndex/dataAudit.js',
-      templete: './public/index.html',
+      template: './public/index.html',
       filename: 'dataAudit.html',
       title: '因子审核日志',
       chunks: ['chunk-vendors', 'chunk-common', 'dataAudit']
     },
     zeroSkip: { // 零点跨度
       entry: './src/pages/zeroSkip/zeroSkip.js',
-      templete: './public/index.html',
+      template: './public/index.html',
       filename: 'zeroSkip.html',
       title: '零点跨度数据',
       chunks: ['chunk-vendors', 'chunk-common', 'zeroSkip']
+    },
+    stantardValueConfig: {
+      entry: './src/pages/StantardValueConfig/stantardValueConfig.js',
+      template: './public/index.html',
+      filename: 'stantardValueConfig.html',
+      title: '零点跨度数据',
+      chunks: ['chunk-vendors', 'chunk-common', 'stantardValueConfig']
     },
     DailyQualityControl: {
       // page 的入口

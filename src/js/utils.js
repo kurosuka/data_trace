@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-22 15:57:56
+ * @LastEditTime: 2021-03-23 17:12:41
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \data_trace\src\js\utils.js
+ */
 
 /**
  * 
@@ -15,4 +23,9 @@
     })
   }
   return params
+}
+export function getLocalstorage(key) {
+  if(window.localStorage) {
+    return window.localStorage.getItem(key)
+  }
 }
