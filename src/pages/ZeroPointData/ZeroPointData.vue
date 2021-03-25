@@ -228,7 +228,7 @@ export default {
       tableList: [],
       loading: false,
       factor: ["w01019", "w21003", "w21011", "w21001"],
-      baseUrl: "http://192.168.90.8:8081"
+      baseUrl: "http://192.168.90.8:8081",
     };
   },
   mounted: function() {
