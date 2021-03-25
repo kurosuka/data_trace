@@ -240,13 +240,17 @@ export default {
     },
     // 获取表格数据
     getTableList() {
-      let url = this.baseUrl + "/api/quality/zeroDrift";
+      let url = this.baseUrl + "/api/quality/spanDrift";
       let param = {
-        dtFrom: "2019-10-13 02",
-        dtTo: "2019-10-26 02",
-        pointId: "26"
+        // dtFrom: "2019-10-13 02",
+        // dtTo: "2019-10-26 02",
+        // pointId: "26"
+        dtFrom: "2019-11-23 02",
+        dtTo: "2019-11-26 02",
+        pointId: "78"
       };
       this.$axios.post(url, param).then(res => {
+        console.log(res)
         if (res.status == 200) {
           let obj = res.data.data;
           console.log(obj);

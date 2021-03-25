@@ -69,6 +69,27 @@ module.exports = {
       title: '零点数据',
       chunks: ['chunk-vendors', 'chunk-common', 'ZeroPointData']
     },
+    ZeroPointDataChart: { // 零点数据图表
+      entry: './src/pages/ZeroPointDataChart/ZeroPointDataChart.js',
+      template: './src/pages/ZeroPointDataChart/ZeroPointDataChart.html',
+      filename: 'ZeroPointDataChart.html',
+      title: '零点数据图表',
+      chunks: ['chunk-vendors', 'chunk-common', 'ZeroPointDataChart']
+    },
+    SpanData: { // 跨度数据
+      entry: './src/pages/SpanData/SpanData.js',
+      template: './src/pages/SpanData/SpanData.html',
+      filename: 'SpanData.html',
+      title: '跨度数据',
+      chunks: ['chunk-vendors', 'chunk-common', 'SpanData']
+    },
+    SpanDataChart: { // 跨度数据图表
+      entry: './src/pages/SpanDataChart/SpanDataChart.js',
+      template: './src/pages/SpanDataChart/SpanDataChart.html',
+      filename: 'SpanDataChart.html',
+      title: '跨度数据图表',
+      chunks: ['chunk-vendors', 'chunk-common', 'SpanDataChart']
+    },
   },
   // 接口代理
   
