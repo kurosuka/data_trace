@@ -11,29 +11,39 @@
             style="width:600px;"
           >
             <el-option value :disabled="true">
-              <el-checkbox-group v-model="areaPoint">
-                <el-checkbox
+              <el-radio-group v-model="areaPoint">
+                <el-radio
                   v-for="item in group.children"
                   :key="item.id"
                   :label="item.id"
                   @change="handleCheckedChange(index)"
-                >{{item.title}}</el-checkbox>
-              </el-checkbox-group>
+                >{{item.title}}</el-radio>
+              </el-radio-group>
             </el-option>
           </el-option-group>
         </el-select>
       </div>
       <div class="select">
         <span>开始时间：</span>
-        <el-date-picker v-model="strTime" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="strTime"
+          type="datetime"
+          placeholder="选择日期"
+          value-format="yyyy-MM-dd HH"
+        ></el-date-picker>
       </div>
       <div class="select">
         <span>结束时间：</span>
-        <el-date-picker v-model="endTime" type="date" placeholder="选择日期" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker
+          v-model="endTime"
+          type="datetime"
+          placeholder="选择日期"
+          value-format="yyyy-MM-dd HH"
+        ></el-date-picker>
       </div>
       <div class="select">
         <span>监测项目：</span>
-        <el-select v-model="factorValue" placeholder="请选择">
+        <el-select v-model="factorValue" multiple collapse-tags placeholder="请选择">
           <el-option
             v-for="item in factorList"
             :key="item.value"
@@ -45,20 +55,10 @@
       <el-button class="btn" type="primary" @click="search">查找</el-button>
     </div>
     <div class="body">
-      <el-tabs type="border-card" @tab-click="changeClick">
-        <el-tab-pane label="零点数据">
-          <iframe src frameborder="0"></iframe>
-        </el-tab-pane>
-        <el-tab-pane label="零点数据图表">
-          <iframe src frameborder="0"></iframe>
-        </el-tab-pane>
-        <el-tab-pane label="跨度数据">
-          <iframe src frameborder="0"></iframe>
-        </el-tab-pane>
-        <el-tab-pane label="跨度数据图表">
-          <iframe src frameborder="0"></iframe>
-        </el-tab-pane>
+      <el-tabs v-model="tabActive" type="card" @tab-click="changeClick">
+        <el-tab-pane v-for="item in pageList" :key="item.title" :label="item.title"></el-tab-pane>
       </el-tabs>
+      <iframe ref="iframe" class="tebs" :src="pageUrl" frameborder="0" @load="iframeLoad('iframe')"></iframe>
     </div>
   </div>
 </template>
@@ -70,13 +70,34 @@ export default {
       pointValue: [],
       strTime: "",
       endTime: "",
-      factorList: [],
-      factorValue: [],
-      areaPoint: [],
-      baseUrl: "http://183.166.140.243:8088"
+      factorList: [
+        {
+          title: "高锰酸盐指数",
+          value: "w01019"
+        },
+        {
+          title: "氨氮",
+          value: "w21003"
+        },
+        {
+          title: "总磷",
+          value: "w21011"
+        },
+        {
+          title: "总氮",
+          value: "w21001"
+        }
+      ],
+      factorValue: ["w01019", "w21003", "w21011", "w21001"],
+      areaPoint: '',
+      baseUrl: "http://183.166.140.243:8088",
+      tabActive: '0',
+      pageList: window.pageList,
+      pageUrl: window.pageList[0].url
     };
   },
   mounted: function() {
+    this.getTime();
     this.getPointList();
   },
   methods: {
@@ -90,22 +111,88 @@ export default {
           }
         })
         .then(res => {
-          console.log(res);
           if (res.status == 200) {
             if (res.data.code == 200) {
-              this.pointList = res.data.data;
+              let obj = res.data;
+              this.pointList = obj.data;
+              this.pointValue.push(obj.data[0].children[0].title);
+              this.areaPoint = obj.data[0].children[0].id;
             }
           }
         });
     },
-    handleCheckedChange(index) {
-      console.log(index);
+    handleCheckedChange() {
+      this.pointValue = [];
+      this.pointList.map(item => {
+        item.children.map(list => {
+          if (this.areaPoint == list.id) {
+            this.pointValue.push(list.title);
+          }
+        });
+      });
     },
     // 查询
-    search() {},
+    search() {
+      if(this.areaPoint === ''){
+        alert('请选择站点！');
+        return false;
+      }
+      if(this.strTime === ''){
+        alert('请选择开始时间！');
+        return false;
+      }
+      if(this.endTime === ''){
+        alert('请选择结束时间！');
+        return false;
+      }
+      console.log(this.factorValue)
+      this.iframeParam();
+    },
     // 点击tab切换
-    changeClick(targetName) {
-      console.log(targetName);
+    changeClick() {
+      let url = this.pageList[this.tabActive].url;
+      this.pageUrl = url;
+      this.iframeParam();
+    },
+    iframeLoad(){
+      this.iframeParam()
+    },
+    // iframe广播参数
+    iframeParam(){
+      let iframeWin = this.$refs.iframe.contentWindow;
+      if(this.strTime === null){
+        this.strTime = '';
+      }
+      if(this.endTime === null){
+        this.endTime = '';
+      }
+      let obj = {
+        factorList: this.factorValue,
+        pointId: this.areaPoint,
+        strTime: this.strTime,
+        endTime: this.endTime
+      };
+      console.log(obj)
+      iframeWin.postMessage({  //参数是对象
+        params: obj
+      }, '*');
+    },
+    // 获取当前时间
+    getTime(){
+      let date = new Date();
+      let year = date.getFullYear();
+      let mounth = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let str
+      if(mounth == '1'){
+        str = (year - 1)+'-12-'+day+' '+hours;
+      } else {
+        str = year+'-'+(mounth - 1)+'-'+day+' '+hours;
+      }
+      let end = year+'-'+mounth+'-'+day+' '+hours;
+      this.strTime = str;
+      this.endTime = end;
     }
   }
 };
@@ -120,7 +207,7 @@ body {
   height: 100%;
 }
 #dayAuto {
-  display:flex;
+  display: flex;
   flex-flow: column;
   width: 100%;
   height: 100%;
@@ -132,7 +219,7 @@ body {
 }
 .select {
   display: flex;
-  margin: 20px 10px 20px 10px;
+  margin: 10px;
   width: 260px;
   font-size: 14px;
 }
@@ -144,9 +231,14 @@ body {
 }
 .header > .el-button {
   height: 30px;
-  margin-top: 20px;
-  margin-left: 20px;
+  margin: 10px;
   line-height: 0;
+}
+.el-radio {
+  margin-bottom: 5px !important;
+}
+.el-radio__inner {
+  border-radius: 0 !important;
 }
 .el-select-dropdown__item {
   white-space: normal !important;
@@ -157,15 +249,25 @@ body {
 .el-select-group > .el-checkbox {
   margin-left: 10px !important;
 }
-.el-select-group__title{
+.el-select-group__title {
   font-size: 14px !important;
   font-weight: bold !important;
 }
 .el-select-group__wrap {
-  padding-bottom: 18px !important;
+  padding-bottom: 16px !important;
 }
 .el-checkbox-group > .el-checkbox {
   margin-right: 12px !important;
+}
+.el-tag__close {
+  display: none !important;
+}
+.el-scrollbar:nth-of-type(1) {
+  width: 95% !important;
+}
+.el-scrollbar:nth-of-type(2),
+.el-scrollbar:nth-of-type(3) {
+  display: none !important;
 }
 /* 底部tabs */
 .body {
@@ -173,5 +275,9 @@ body {
   margin: 0 10px;
   /* width: 100%;
   height: 100%; */
+}
+.tebs {
+  width: 100%;
+  height: calc(100% - 100px);
 }
 </style>

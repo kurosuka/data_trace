@@ -9,16 +9,33 @@ import { Line } from "../../js/line.js";
 export default {
   data: function() {
     return {
-      factor: ["w01019", "w21003", "w21011", "w21001"],
-      style:'',
+      factor: [],
+      paramValue: {},
+      style: "",
       baseUrl: "http://192.168.90.8:8081"
     };
   },
   mounted: function() {
-    this.style = 'width:'+this.$refs.spanChart.offsetHeight+';height:400px;';
-    this.getChartList();
+    this.style =
+      "width:" + this.$refs.spanChart.offsetHeight + ";height:400px;";
+    this.getValue();
   },
   methods: {
+    // 获取外部数据
+    getValue() {
+      window.addEventListener("message", eve => {
+        let data = eve.data;
+        if (data.params !== undefined) {
+          this.factor = data.params.factorList;
+          this.paramValue["dtFrom"] = data.params.strTime;
+          this.paramValue["dtTo"] = data.params.endTime;
+          this.paramValue["pointId"] = data.params.pointId;
+          setTimeout(() => {
+            this.getChartList();
+          }, 100);
+        }
+      });
+    },
     // 获取图表数据
     getChartList() {
       let url = this.baseUrl + "/api/quality/spanDrift";
@@ -29,21 +46,23 @@ export default {
       };
       this.$axios.post(url, param).then(res => {
         if (res.status == 200) {
-          let obj = res.data.data;
-          console.log(obj);
-          let time = [];
-          obj.map(item => {
-            time.push(item.dataTime);
-          });
-          let _time = Array.from(new Set(time));
-          this.factor.map(item => {
-            console.log(item)
-            let value = obj.filter(list => {
-              return list.codeId == item;
+          if (res.data.code == 200) {
+            let obj = res.data.data;
+            console.log(obj);
+            let time = [];
+            obj.map(item => {
+              time.push(item.dataTime);
             });
-            let chart = this.echarts.init(document.getElementById(item));
-            chart.setOption(Line(value, _time,'24小时跨度漂移历史数据'));
-          });
+            let _time = Array.from(new Set(time));
+            let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
+            this.factor.map(item => {
+              let value = obj.filter(list => {
+                return list.codeId == item;
+              });
+              let chart = this.echarts.init(document.getElementById(item));
+              chart.setOption(Line(value, cTime, "24小时跨度漂移历史数据"));
+            });
+          }
         }
       });
     }

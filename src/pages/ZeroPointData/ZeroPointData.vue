@@ -24,7 +24,7 @@
                 <span>{{tableText(scope.row,'高锰酸盐指数','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'高锰酸盐指数','wcRate')}}</span>
               </template>
@@ -77,7 +77,7 @@
                 <span>{{tableText(scope.row,'氨氮','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'氨氮','wcRate')}}</span>
               </template>
@@ -130,7 +130,7 @@
                 <span>{{tableText(scope.row,'总磷','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'总磷','wcRate')}}</span>
               </template>
@@ -183,7 +183,7 @@
                 <span>{{tableText(scope.row,'总氮','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'总氮','wcRate')}}</span>
               </template>
@@ -227,61 +227,88 @@ export default {
     return {
       tableList: [],
       loading: false,
-      factor: ["w01019", "w21003", "w21011", "w21001"],
+      factor: [],
+      paramValue: {},
       baseUrl: "http://192.168.90.8:8081"
     };
   },
   mounted: function() {
-    this.getTableList();
+    this.getValue();
   },
   methods: {
     indexMethod(index) {
       return index + 1;
     },
+    // 获取外部数据
+    getValue() {
+      window.addEventListener("message", eve => {
+        console.log(eve);
+        let data = eve.data;
+        if (data.params !== undefined) {
+          this.factor = data.params.factorList;
+          this.paramValue["dtFrom"] = data.params.strTime;
+          this.paramValue["dtTo"] = data.params.endTime;
+          this.paramValue["pointId"] = data.params.pointId;
+          setTimeout(() => {
+            this.getTableList();
+          }, 100);
+        }
+      });
+    },
     // 获取表格数据
     getTableList() {
+      console.log(this.paramValue);
       let url = this.baseUrl + "/api/quality/zeroDrift";
       let param = {
         dtFrom: "2019-10-13 02",
         dtTo: "2019-10-26 02",
         pointId: "26"
       };
+      // let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
+        console.log(res);
         if (res.status == 200) {
-          let obj = res.data.data;
-          console.log(obj);
-          let time = [];
-          let vList = [];
-          obj.map(item => {
-            time.push(item.dataTime);
-          });
-          let _time = Array.from(new Set(time));
-          _time.map(item => {
-            let valueList = {};
-            let factorList = [];
-            valueList["time"] = item;
-            this.factor.map(list => {
-              factorList.push(
-                obj.filter(group => {
-                  return group.dataTime == item && group.codeId == list;
-                })
-              );
+          if (res.data.code == 200) {
+            let obj = res.data.data;
+            let time = [];
+            let vList = [];
+            obj.map(item => {
+              time.push(item.dataTime);
             });
-            valueList["value"] = factorList.flat();
-            vList.push(valueList);
-          });
-          console.log(vList);
-          this.tableList = vList;
+            let _time = Array.from(new Set(time));
+            let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
+            cTime.map(item => {
+              let valueList = {};
+              let factorList = [];
+              valueList["time"] = item;
+              this.factor.map(list => {
+                factorList.push(
+                  obj.filter(group => {
+                    return group.dataTime == item && group.codeId == list;
+                  })
+                );
+              });
+              valueList["value"] = factorList.flat();
+              vList.push(valueList);
+            });
+            console.log(vList)
+            this.tableList = vList;
+          }
         }
       });
     },
     // 动态生成内容
     tableText(val, name, key) {
       let text = val.value.filter(item => item.paramName == name);
+      // console.log(text)
       if (text.length === 0) {
         return "--";
       } else {
-        return text[0][key];
+        if(text[0][key] === null){
+          return "--"
+        } else {
+          return text[0][key];
+        }
       }
     }
   }
@@ -303,7 +330,7 @@ body {
   height: 100%;
 }
 .table {
-  margin: 10px 20px 0 20px;
+  /* margin: 10px 20px 0 20px; */
   flex: 1;
 }
 </style>

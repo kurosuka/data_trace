@@ -8,6 +8,22 @@
  */
 
 // API接口地址
-window.API = 'http://183.166.140.243:8088/api'
-
+window.API = 'http://183.166.140.243:8088/api';
+window.pageList = [{
+    title: '零点数据',
+    url: 'http://192.168.90.35:8080/ZeroPointData.html'
+  },
+  {
+    title: '零点数据图表',
+    url: 'http://192.168.90.35:8080/ZeroPointDataChart.html'
+  },
+  {
+    title: '跨度数据',
+    url: 'http://192.168.90.35:8080/SpanData.html'
+  },
+  {
+    title: '跨度数据图表',
+    url: 'http://192.168.90.35:8080/SpanDataChart.html'
+  }
+]
 // 数据详情

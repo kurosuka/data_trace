@@ -1,28 +1,28 @@
 export function Line(arr, time, chartTitle) {
   console.log(arr)
   let title = [];
-  
   let series;
   if (arr.length === 0) {
     title = null;
     series = [];
   } else {
     let val = [];
-    // time.map(list => {
-    //   console.log(list)
-    //   arr.map((item) => {
-        
-    //     let cloumn = item.wcRate;
-    //     val.push(cloumn.split('%')[0])
-    //   });
-    // })
-    
     title.push(arr[0].paramName);
-    arr.map((item) => {
-      console.log(item)
-      let cloumn = item.wcRate;
-      val.push(cloumn.split('%')[0])
-    });
+    time.map(list => {
+      let valueList = arr.filter((item) => {
+        if (item.dataTime == list) {
+          return item
+        } else {
+          return null
+        }
+      });
+      if (valueList.length === 0) {
+        val.push(null);
+      } else if (valueList.length > 0) {
+        let cloumn = valueList[0].zdRate;
+        val.push(cloumn.split('%')[0]);
+      }
+    })
     series = [{
       name: arr[0].paramName,
       type: 'line',
@@ -32,7 +32,8 @@ export function Line(arr, time, chartTitle) {
   }
   let option = {
     title: {
-      text: chartTitle
+      text: chartTitle,
+      padding: [5, 0, 0, 20]
     },
     tooltip: {
       trigger: 'axis'
@@ -50,16 +51,13 @@ export function Line(arr, time, chartTitle) {
     toolbox: {
       show: true,
       feature: {
-          saveAsImage: {}
+        saveAsImage: {}
       }
     },
     xAxis: {
       type: 'category',
       boundaryGap: true,
       data: time,
-      // axisLabel: {
-      //   rotate: 60
-      // },
     },
     yAxis: {
       type: 'value',
@@ -67,6 +65,5 @@ export function Line(arr, time, chartTitle) {
     },
     series: series
   };
-  console.log(option)
-  return option
+  return option;
 }
