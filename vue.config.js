@@ -2,11 +2,14 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-03-23 11:34:19
+ * @LastEditTime: 2021-03-24 17:14:37
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
  */
+
+const path = require("path");
+const resolve = dir => path.join(__dirname, dir);
 module.exports = {
   publicPath: './',
   pages: {
@@ -24,12 +27,26 @@ module.exports = {
       title: '零点跨度数据',
       chunks: ['chunk-vendors', 'chunk-common', 'zeroSkip']
     },
-    stantardValueConfig: {
+    stantardValueConfig: { // 跨度值标准值配置
       entry: './src/pages/StantardValueConfig/stantardValueConfig.js',
       template: './public/index.html',
       filename: 'stantardValueConfig.html',
-      title: '零点跨度数据',
+      title: '跨度值标准值配置',
       chunks: ['chunk-vendors', 'chunk-common', 'stantardValueConfig']
+    },
+    stantardAudit: {  // 跨度值标准值审核
+      entry: './src/pages/StantardAudit/stantardAudit.js',
+      template: './public/index.html',
+      filename: 'stantardAudit.html',
+      title: '跨度值标准值审核',
+      chunks: ['chunk-vendors', 'chunk-common', 'stantardAudit']
+    },
+    StantardAuditPeople: { // 点位跨度值标准值审核人员分配
+      entry: './src/pages/StantardAuditPeople/stantardAuditPeople.js',
+      template: './public/index.html',
+      filename: 'stantardAuditPeople.html',
+      title: '点位跨度值标准值审核人员分配',
+      chunks: ['chunk-vendors', 'chunk-common', 'StantardAuditPeople']
     },
     DailyQualityControl: {
       // page 的入口
@@ -84,4 +101,18 @@ module.exports = {
       config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
     }
 },
+// 修改路径
+chainWebpack: config => {
+  // 添加别名
+  config.resolve.alias
+    .set("vue$", "vue/dist/vue.esm.js")
+    .set("@", resolve("src"))
+    .set("@assets", resolve("src/assets"))
+    .set("@scss", resolve("src/assets/scss"))
+    .set("@components", resolve("src/components"))
+    .set("@plugins", resolve("src/plugins"))
+    .set("@views", resolve("src/views"))
+    .set("@router", resolve("src/router"))
+    .set("@store", resolve("src/store"))
+}
 }

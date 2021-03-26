@@ -39,14 +39,20 @@ export default {
     // 获取图表数据
     getChartList() {
       let url = this.baseUrl + "/api/quality/spanDrift";
-      let param = {
-        dtFrom: "2019-11-23 02",
-        dtTo: "2019-11-26 02",
-        pointId: "78"
-      };
+      // let param = {
+      //   dtFrom: "2019-11-23 02",
+      //   dtTo: "2019-11-26 02",
+      //   pointId: "78"
+      // };
+      let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
         if (res.status == 200) {
           if (res.data.code == 200) {
+            if(res.data.data === null){
+              alert('暂无数据！');
+              this.loading = false
+              return false;
+            }
             let obj = res.data.data;
             console.log(obj);
             let time = [];

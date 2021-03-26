@@ -43,7 +43,13 @@
       </div>
       <div class="select">
         <span>监测项目：</span>
-        <el-select v-model="factorValue" multiple collapse-tags placeholder="请选择">
+        <el-select
+          v-model="factorValue"
+          multiple
+          collapse-tags
+          placeholder="请选择"
+          @change="factorChange"
+        >
           <el-option
             v-for="item in factorList"
             :key="item.value"
@@ -89,9 +95,9 @@ export default {
         }
       ],
       factorValue: ["w01019", "w21003", "w21011", "w21001"],
-      areaPoint: '',
+      areaPoint: "",
       baseUrl: "http://183.166.140.243:8088",
-      tabActive: '0',
+      tabActive: "0",
       pageList: window.pageList,
       pageUrl: window.pageList[0].url
     };
@@ -133,19 +139,23 @@ export default {
     },
     // 查询
     search() {
-      if(this.areaPoint === ''){
-        alert('请选择站点！');
+      if (this.areaPoint === "") {
+        alert("请选择站点！");
         return false;
       }
-      if(this.strTime === ''){
-        alert('请选择开始时间！');
+      if (this.strTime === "") {
+        alert("请选择开始时间！");
         return false;
       }
-      if(this.endTime === ''){
-        alert('请选择结束时间！');
+      if (this.endTime === "") {
+        alert("请选择结束时间！");
         return false;
       }
-      console.log(this.factorValue)
+      console.log(this.factorValue);
+      this.iframeParam();
+    },
+    // 切换因子触发
+    factorChange() {
       this.iframeParam();
     },
     // 点击tab切换
@@ -154,17 +164,17 @@ export default {
       this.pageUrl = url;
       this.iframeParam();
     },
-    iframeLoad(){
-      this.iframeParam()
+    iframeLoad() {
+      this.iframeParam();
     },
     // iframe广播参数
-    iframeParam(){
+    iframeParam() {
       let iframeWin = this.$refs.iframe.contentWindow;
-      if(this.strTime === null){
-        this.strTime = '';
+      if (this.strTime === null) {
+        this.strTime = "";
       }
-      if(this.endTime === null){
-        this.endTime = '';
+      if (this.endTime === null) {
+        this.endTime = "";
       }
       let obj = {
         factorList: this.factorValue,
@@ -172,25 +182,32 @@ export default {
         strTime: this.strTime,
         endTime: this.endTime
       };
-      console.log(obj)
-      iframeWin.postMessage({  //参数是对象
-        params: obj
-      }, '*');
+      console.log(obj);
+      iframeWin.postMessage(
+        {
+          //参数是对象
+          params: obj
+        },
+        "*"
+      );
     },
     // 获取当前时间
-    getTime(){
+    getTime() {
       let date = new Date();
       let year = date.getFullYear();
       let mounth = date.getMonth() + 1;
       let day = date.getDate();
       let hours = date.getHours();
-      let str
-      if(mounth == '1'){
-        str = (year - 1)+'-12-'+day+' '+hours;
-      } else {
-        str = year+'-'+(mounth - 1)+'-'+day+' '+hours;
+      let str;
+      if (mounth < 10) {
+        mounth = '0' + mounth;
       }
-      let end = year+'-'+mounth+'-'+day+' '+hours;
+      if (mounth == "01") {
+        str = (year - 1) + "-12-" + day + " " + hours;
+      } else {
+        str = year + "-" + (mounth - 1) + "-" + day + " " + hours;
+      }
+      let end = year + "-" + mounth + "-" + day + " " + hours;
       this.strTime = str;
       this.endTime = end;
     }

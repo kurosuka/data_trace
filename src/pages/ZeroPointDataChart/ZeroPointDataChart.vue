@@ -39,15 +39,20 @@ export default {
     // 获取图表数据
     getChartList() {
       let url = this.baseUrl + "/api/quality/zeroDrift";
-      let param = {
-        dtFrom: "2019-10-13 02",
-        dtTo: "2019-10-26 02",
-        pointId: "26"
-      };
-      // let param = this.paramValue;
+      // let param = {
+      //   dtFrom: "2019-10-13 02",
+      //   dtTo: "2019-10-26 02",
+      //   pointId: "26"
+      // };
+      let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
         if (res.status == 200) {
           if (res.data.code == 200) {
+            if(res.data.data === null){
+              alert('暂无数据！');
+              this.loading = false
+              return false;
+            }
             let obj = res.data.data;
             console.log(obj);
             let time = [];
