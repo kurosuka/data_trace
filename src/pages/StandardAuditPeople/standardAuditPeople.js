@@ -1,14 +1,14 @@
 /*
  * @Author: your name
- * @Date: 2021-03-22 17:28:15
- * @LastEditTime: 2021-03-23 08:49:55
+ * @Date: 2021-03-24 17:10:51
+ * @LastEditTime: 2021-03-26 13:48:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \data_trace\src\pages\DailyQuality\dailyQuality.js
+ * @FilePath: \data_trace\src\pages\StantardAuditPeople\standardAuditPeople.js
  */
 import Vue from 'vue'
 import ElementUI from 'element-ui'
-import StantardValueConfig from '../../views/StantardValueConfig.vue'
+import StandardAuditPeople from '@views/StandardAuditPeople.vue'
 import 'element-ui/lib/theme-chalk/index.css';
 import 'reset.css'
 import axios from 'axios'
@@ -17,5 +17,5 @@ Vue.prototype.$axios = axios
 
 Vue.use(ElementUI, {size: 'mini'})
 new Vue({
-  render: h => h(StantardValueConfig)
+  render: h => h(StandardAuditPeople)
 }).$mount('#app')

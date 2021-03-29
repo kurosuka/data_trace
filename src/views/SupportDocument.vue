@@ -1,14 +1,14 @@
 <!--
  * @Author: your name
- * @Date: 2021-03-11 09:33:31
- * @LastEditTime: 2021-03-29 14:28:40
+ * @Date: 2021-03-29 15:48:46
+ * @LastEditTime: 2021-03-29 16:10:35
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
- * @FilePath: \data_trace\src\views\Auditlog.vue
+ * @FilePath: \data_trace\src\views\Support.vue
 -->
 <template>
-  <div class="auditlog" v-loading="loading">
-    <el-table :data="logData" height="calc(100% - 80px)">
+  <div class="support-document" v-loading="loading">
+    <el-table :data="logData" height="calc(100%)">
       <el-table-column label="序号" type="index"></el-table-column>
       <el-table-column label="数据日期" prop="dataTime"></el-table-column>
       <el-table-column label="审核人" prop="userName"></el-table-column>
@@ -20,17 +20,17 @@
       <el-table-column label="审核理由" prop="reason"></el-table-column>
       <el-table-column label="审核日期" prop="opTime"></el-table-column>
       <!-- <el-table-column label="描述" prop="description"></el-table-column> -->
-      <!-- <el-table-column label="附件" prop="attachment" align="center" header-align="center">
-              <template slot-scope="scope">
-                <el-link
-                  target="_blank"
-                  type="primary"
-                  v-for="(item, index) in scope.row.attachment"
-                  :key="index"
-                  :href="item"
-                >文件{{index+1}}</el-link>
-              </template>
-      </el-table-column> -->
+      <el-table-column label="附件" prop="attachment" align="center" header-align="center">
+        <template slot-scope="scope">
+          <el-link
+            target="_blank"
+            type="primary"
+            v-for="(item, index) in scope.row.attachment"
+            :key="index"
+            :href="item"
+          >文件{{index+1}}</el-link>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -38,7 +38,7 @@
 <script>
 import { getUrlParams } from '../js/utils.js'
 export default {
-  name: "AuditLog",
+  name: "SupportDocument",
   data() {
     return {
       logData: [],
@@ -72,7 +72,9 @@ export default {
       url: `${this.api}/act/auditFlagLog`
     }).then(res=> {
       console.log(res);
-      this.logData = res.data.data.tableContent;
+      this.logData = res.data.data.tableContent.filter(item=>{
+        return Object.prototype.hasOwnProperty.call(item, 'attachment')
+      });
       setTimeout(() => {
         this.loading = false;
       }, 500);
@@ -88,7 +90,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.auditlog {
+.support-document {
   height: 100%;
 }
 .el-table {

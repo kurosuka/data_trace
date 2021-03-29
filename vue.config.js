@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-03-24 17:14:37
+ * @LastEditTime: 2021-03-29 16:07:56
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -27,26 +27,33 @@ module.exports = {
       title: '零点跨度数据',
       chunks: ['chunk-vendors', 'chunk-common', 'zeroSkip']
     },
-    stantardValueConfig: { // 跨度值标准值配置
-      entry: './src/pages/StantardValueConfig/stantardValueConfig.js',
+    standardValueConfig: { // 跨度值标准值配置
+      entry: './src/pages/StandardValueConfig/standardValueConfig.js',
       template: './public/index.html',
-      filename: 'stantardValueConfig.html',
+      filename: 'standardValueConfig.html',
       title: '跨度值标准值配置',
-      chunks: ['chunk-vendors', 'chunk-common', 'stantardValueConfig']
+      chunks: ['chunk-vendors', 'chunk-common', 'standardValueConfig']
     },
-    stantardAudit: {  // 跨度值标准值审核
-      entry: './src/pages/StantardAudit/stantardAudit.js',
+    standardAudit: {  // 跨度值标准值审核
+      entry: './src/pages/StandardAudit/standardAudit.js',
       template: './public/index.html',
-      filename: 'stantardAudit.html',
+      filename: 'standardAudit.html',
       title: '跨度值标准值审核',
-      chunks: ['chunk-vendors', 'chunk-common', 'stantardAudit']
+      chunks: ['chunk-vendors', 'chunk-common', 'standardAudit']
     },
-    StantardAuditPeople: { // 点位跨度值标准值审核人员分配
-      entry: './src/pages/StantardAuditPeople/stantardAuditPeople.js',
+    StandardAuditPeople: { // 点位跨度值标准值审核人员分配
+      entry: './src/pages/StandardAuditPeople/standardAuditPeople.js',
       template: './public/index.html',
-      filename: 'stantardAuditPeople.html',
+      filename: 'standardAuditPeople.html',
       title: '点位跨度值标准值审核人员分配',
-      chunks: ['chunk-vendors', 'chunk-common', 'StantardAuditPeople']
+      chunks: ['chunk-vendors', 'chunk-common', 'StandardAuditPeople']
+    },
+    SupportDocument: { // 佐证材料
+      entry: './src/pages/SupportDocument/SupportDocument.js',
+      template: './public/index.html',
+      filename: 'supportDocument.html',
+      title: '佐证材料',
+      chunks: ['chunk-vendors', 'chunk-common', 'SupportDocument']
     },
     DailyQualityControl: {
       // page 的入口
