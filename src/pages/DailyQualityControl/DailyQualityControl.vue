@@ -151,7 +151,6 @@ export default {
         alert("请选择结束时间！");
         return false;
       }
-      console.log(this.factorValue);
       this.iframeParam();
     },
     // 切换因子触发
@@ -199,15 +198,17 @@ export default {
       let day = date.getDate();
       let hours = date.getHours();
       let str;
-      if (mounth < 10) {
-        mounth = '0' + mounth;
-      }
-      if (mounth == "01") {
+      let time1,time2;
+      mounth < 10 ? time1 = '0' + (mounth - 1) : time1 = mounth;
+      mounth < 10 ? time2 = '0' + mounth : time2 = mounth;
+      if (mounth == "1") {
         str = (year - 1) + "-12-" + day + " " + hours;
+      } else if(mounth == "3"){
+        str = year + "-03-01" + " " + hours;
       } else {
-        str = year + "-" + (mounth - 1) + "-" + day + " " + hours;
+        str = year + "-" + time1 + "-" + day + " " + hours;
       }
-      let end = year + "-" + mounth + "-" + day + " " + hours;
+      let end = year + "-" + time2 + "-" + day + " " + hours;
       this.strTime = str;
       this.endTime = end;
     }

@@ -49,24 +49,17 @@ export default {
         if (res.status == 200) {
           if (res.data.code == 200) {
             if(res.data.data === null){
-              alert('暂无数据！');
               this.loading = false
               return false;
             }
             let obj = res.data.data;
             console.log(obj);
-            let time = [];
-            obj.map(item => {
-              time.push(item.dataTime);
-            });
-            let _time = Array.from(new Set(time));
-            let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
             this.factor.map(item => {
               let value = obj.filter(list => {
                 return list.codeId == item;
               });
               let chart = this.echarts.init(document.getElementById(item));
-              chart.setOption(Line(value, cTime, "24小时跨度漂移历史数据"));
+              chart.setOption(Line(value, "24小时跨度漂移历史数据"));
             });
           }
         }

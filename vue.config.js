@@ -90,6 +90,13 @@ module.exports = {
       title: '跨度数据图表',
       chunks: ['chunk-vendors', 'chunk-common', 'SpanDataChart']
     },
+    StateParametersConfig: { // 状态参数配置
+      entry: './src/pages/StateParametersConfig/StateParametersConfig.js',
+      template: './src/pages/StateParametersConfig/StateParametersConfig.html',
+      filename: 'StateParametersConfig.html',
+      title: '状态参数配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'StateParametersConfig']
+    },
   },
   // 接口代理
   

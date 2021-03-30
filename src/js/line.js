@@ -1,6 +1,8 @@
-export function Line(arr, time, chartTitle) {
+export function Line(arr, chartTitle) {
   console.log(arr)
   let title = [];
+  let time = [];
+  let _time;
   let series;
   if (arr.length === 0) {
     title = null;
@@ -8,7 +10,13 @@ export function Line(arr, time, chartTitle) {
   } else {
     let val = [];
     title.push(arr[0].paramName);
-    time.map(list => {
+    arr.map((item) => {
+      time.push(item.dataTime);
+      val
+    });
+    _time = Array.from(new Set(time));
+    _time = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
+    _time.map(list => {
       let valueList = arr.filter((item) => {
         if (item.dataTime == list) {
           return item
@@ -20,7 +28,7 @@ export function Line(arr, time, chartTitle) {
         val.push(null);
       } else if (valueList.length > 0) {
         let cloumn = valueList[0].zdRate;
-        val.push(cloumn.split('%')[0]);
+        cloumn === null ? val.push(null) : val.push(cloumn.split('%')[0]);
       }
     })
     series = [{
@@ -57,7 +65,7 @@ export function Line(arr, time, chartTitle) {
     xAxis: {
       type: 'category',
       boundaryGap: true,
-      data: time,
+      data: _time,
     },
     yAxis: {
       type: 'value',

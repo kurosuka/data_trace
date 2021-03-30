@@ -327,7 +327,6 @@ export default {
         if (res.status == 200) {
           if (res.data.code == 200) {
             if(res.data.data === null){
-              alert('暂无数据！');
               this.loading = false
               return false;
             }

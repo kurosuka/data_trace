@@ -13,7 +13,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="零点核查" align="center" min-width="80px" height="30">
+          <el-table-column label="跨度核查" align="center" min-width="80px" height="30">
             <el-table-column
               label="标准样浓度"
               prop="value"
@@ -25,7 +25,7 @@
                 <span>{{tableText(scope.row,'高锰酸盐指数','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'高锰酸盐指数','wcRate')}}</span>
               </template>
@@ -38,7 +38,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
+          <el-table-column label="24小时跨度漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
                 <el-tooltip class="item" effect="light" :content="tip(scope.row,'高锰酸盐指数','lastSrcDataValue','原始数据')" placement="right">
@@ -74,7 +74,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="零点核查" align="center" min-width="80px" height="30">
+          <el-table-column label="跨度核查" align="center" min-width="80px" height="30">
             <el-table-column
               label="标准样浓度"
               prop="value"
@@ -86,7 +86,7 @@
                 <span>{{tableText(scope.row,'氨氮','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'氨氮','wcRate')}}</span>
               </template>
@@ -99,7 +99,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
+          <el-table-column label="24小时跨度漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
                 <el-tooltip class="item" effect="light" :content="tip(scope.row,'氨氮','lastSrcDataValue','原始数据')" placement="right">
@@ -135,7 +135,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="零点核查" align="center" min-width="80px" height="30">
+          <el-table-column label="跨度核查" align="center" min-width="80px" height="30">
             <el-table-column
               label="标准样浓度"
               prop="value"
@@ -147,7 +147,7 @@
                 <span>{{tableText(scope.row,'总磷','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'总磷','wcRate')}}</span>
               </template>
@@ -160,7 +160,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
+          <el-table-column label="24小时跨度漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
                 <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','lastSrcDataValue','原始数据')" placement="right">
@@ -196,7 +196,7 @@
               </el-tooltip>
             </template>
           </el-table-column>
-          <el-table-column label="零点核查" align="center" min-width="80px" height="30">
+          <el-table-column label="跨度核查" align="center" min-width="80px" height="30">
             <el-table-column
               label="标准样浓度"
               prop="value"
@@ -208,7 +208,7 @@
                 <span>{{tableText(scope.row,'总氮','standardValue')}}</span>
               </template>
             </el-table-column>
-            <el-table-column label="绝对误差" prop="value" align="center" min-width="80px" height="30">
+            <el-table-column label="相对误差" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
                 <span>{{tableText(scope.row,'总氮','wcRate')}}</span>
               </template>
@@ -221,7 +221,7 @@
               </template>
             </el-table-column>
           </el-table-column>
-          <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
+          <el-table-column label="24小时跨度漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
                 <el-tooltip class="item" effect="light" :content="tip(scope.row,'总氮','lastSrcDataValue','原始数据')" placement="right">
@@ -328,7 +328,6 @@ export default {
         if (res.status == 200) {
           if (res.data.code == 200) {
             if(res.data.data === null){
-              alert('暂无数据！');
               this.loading = false
               return false;
             }
