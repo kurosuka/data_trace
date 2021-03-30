@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-24 17:06:43
- * @LastEditTime: 2021-03-25 16:24:50
+ * @LastEditTime: 2021-03-26 16:48:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\views\StantardAuditPeople.vue
@@ -10,10 +10,16 @@
   <div class="stantard-people">
     <el-container>
       <el-aside width="200px">
-        <el-tree ref="tree" :data="treeData" node-key="id" :default-expand-all="true" show-checkbox highlight-current @check="checkChange" current-node-key="李四"></el-tree>
+        <el-input
+          placeholder="输入用户名进行过滤"
+          v-model="filterText">
+        </el-input>
+        <el-tree ref="tree" :data="treeData" node-key="id" :default-expand-all="true" :expand-on-click-node="false" highlight-current @node-click="checkChange" current-node-key="李四"
+        :filter-node-method="filterNode"
+        ></el-tree>
       </el-aside>
-      <el-main>
-          <div v-if="userName.length != 0">
+      <el-main v-if="userName.length != 0">
+          <div>
             <el-form :model="tagForm">
               <el-form-item label="用户">
                 <el-tag size="small" type="" v-for="item in userName" :key="item.value" :disable-transitions="true">{{item.label}}</el-tag>
@@ -39,15 +45,17 @@
 
 <script>
 export default {
-  name: 'StantardAuditPeople',
+  name: 'StandardAuditPeople',
   data() {
     return {
       treeData: [
         {
           label: '全部',
+          disabled: true,
           id:1,
           children: [{
             label: '部门',
+            disabled: true,
             id:2,
             children: [{
               label: '张三',
@@ -59,9 +67,12 @@ export default {
           }]
         },{
           label: '全部',
+          disabled: true,
+
           id:5,
           children: [{
             label: '部门',
+            disabled: true,
             id:6,
             children: [{
               label: '张三',
@@ -95,6 +106,7 @@ export default {
             {
               id:2,
               label: '通仙桥',
+              checked: true,
               children: null
             },
             {
@@ -123,6 +135,7 @@ export default {
       ],
       isIndeterminate: [],
       checked: [],
+      filterText: ''
     }
   },
   created() {
@@ -139,9 +152,9 @@ export default {
     save() {
       console.log(this.$refs.tree.getCheckedNodes(true, true));
     },
-    checkChange() {
-      console.log(this.$refs.tree.getCheckedNodes(true, true));
-      this.userName = this.$refs.tree.getCheckedNodes(true, true)
+    checkChange(data) {
+      console.log(data);
+      this.userName = data.children ? [] : [data]
     },
     handleCheckAllChange(data,index,item) {
         this.isIndeterminate[index] = false;
@@ -167,8 +180,26 @@ export default {
     }
       forFn(node)
       return temp;
-    }
+    },
+    filterNode(value, data) {
+        if (!value) return true;
+        return data.label.indexOf(value) !== -1;
+      }
   },
+  watch: {
+    userName(newVal) {
+      if(newVal.length == 0) {
+        this.$notify({
+          title: '提示',
+          message: '请选择用户',
+          type: 'warning'
+        })
+      }
+    },
+    filterText(val) {
+      this.$refs.tree.filter(val);
+    }
+  }
 }
 </script>
 
@@ -179,6 +210,10 @@ export default {
     height: 100%;
     .el-aside {
       border-right: 1px solid #eee;
+      .el-input {
+        margin: 10px;
+        display: block;
+      }
     }
   }
   .user {

@@ -69,7 +69,7 @@
 <script>
 import { MultiSelect } from "sinoyd-ui";
 export default {
-  name: "DailyQuality",
+  name: "StandardAudit",
   data() {
     return {
       form: {
