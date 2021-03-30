@@ -1,6 +1,7 @@
 <template>
   <div id="state">
     <span>Welcome!</span>
+    <span>Welcome!</span>
   </div>
 </template>
 
