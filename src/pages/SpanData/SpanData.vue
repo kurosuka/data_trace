@@ -32,9 +32,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'高锰酸盐指数','wcRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'高锰酸盐指数','wcQualified')}" type="text">{{tableText(scope.row,'高锰酸盐指数','wcQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'高锰酸盐指数','wcQualified')}">{{tableText(scope.row,'高锰酸盐指数','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -58,9 +56,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'高锰酸盐指数','zdRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'高锰酸盐指数','zdQualified')}" type="text">{{tableText(scope.row,'高锰酸盐指数','zdQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'高锰酸盐指数','zdQualified')}">{{tableText(scope.row,'高锰酸盐指数','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -93,9 +89,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'氨氮','wcRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'氨氮','wcQualified')}" type="text">{{tableText(scope.row,'氨氮','wcQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'氨氮','wcQualified')}">{{tableText(scope.row,'氨氮','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -119,9 +113,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'氨氮','zdRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'氨氮','zdQualified')}" type="text">{{tableText(scope.row,'氨氮','zdQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'氨氮','zdQualified')}">{{tableText(scope.row,'氨氮','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -154,9 +146,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','wcRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'总磷','wcQualified')}" type="text">{{tableText(scope.row,'总磷','wcQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'总磷','wcQualified')}">{{tableText(scope.row,'总磷','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -180,9 +170,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','zdRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'总磷','zdQualified')}" type="text">{{tableText(scope.row,'总磷','zdQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'总磷','zdQualified')}">{{tableText(scope.row,'总磷','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -215,9 +203,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','wcRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'总氮','wcQualified')}" type="text">{{tableText(scope.row,'总氮','wcQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'总氮','wcQualified')}">{{tableText(scope.row,'总氮','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -241,9 +227,7 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','zdRegion','合格范围')" placement="right">
-                  <el-button :class="{no:color(scope.row,'总氮','zdQualified')}" type="text">{{tableText(scope.row,'总氮','zdQualified')}}</el-button>
-                </el-tooltip>
+                <span :class="{no:color(scope.row,'总氮','zdQualified')}">{{tableText(scope.row,'总氮','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -265,7 +249,7 @@ export default {
       factor3: true,
       factor4: true,
       btnColor: false,
-      baseUrl: "http://192.168.90.8:8081"
+      baseUrl: window.baseUrl,
     };
   },
   mounted: function() {
@@ -315,14 +299,6 @@ export default {
     getTableList() {
       console.log(this.paramValue);
       let url = this.baseUrl + "/api/quality/spanDrift";
-      // let param = {
-      //   // dtFrom: "2019-10-13 02",
-      //   // dtTo: "2019-10-26 02",
-      //   // pointId: "26"
-      //   dtFrom: "2019-11-23 02",
-      //   dtTo: "2019-11-26 02",
-      //   pointId: "78"
-      // };
       let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
         if (res.status == 200) {

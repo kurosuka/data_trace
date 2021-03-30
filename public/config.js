@@ -9,6 +9,8 @@
 
 // API接口地址
 window.API = 'http://183.166.140.243:8088/api';
+window.baseUrl = 'http://183.166.140.243:8088';
+
 window.pageList = [{
     title: '零点数据',
     url: 'http://192.168.90.35:8080/ZeroPointData.html'

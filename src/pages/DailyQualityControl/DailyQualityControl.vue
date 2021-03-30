@@ -96,7 +96,7 @@ export default {
       ],
       factorValue: ["w01019", "w21003", "w21011", "w21001"],
       areaPoint: "",
-      baseUrl: "http://183.166.140.243:8088",
+      baseUrl: window.baseUrl,
       tabActive: "0",
       pageList: window.pageList,
       pageUrl: window.pageList[0].url

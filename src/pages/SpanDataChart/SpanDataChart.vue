@@ -12,7 +12,7 @@ export default {
       factor: [],
       paramValue: {},
       style: "",
-      baseUrl: "http://192.168.90.8:8081"
+      baseUrl: window.baseUrl,
     };
   },
   mounted: function() {
