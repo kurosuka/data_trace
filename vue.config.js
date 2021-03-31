@@ -55,11 +55,11 @@ module.exports = {
       title: '佐证材料',
       chunks: ['chunk-vendors', 'chunk-common', 'SupportDocument']
     },
-    DailyQualityControl: {
+    DailyQualityControl: {// 日质控
       // page 的入口
       entry: './src/pages/DailyQualityControl/DailyQualityControl.js',
       // 模板来源
-      template: './src/pages/DailyQualityControl/DailyQualityControl.html',
+      template: './public/index.html',
       // 在 dist/index.html 的输出
       filename: 'DailyQualityControl.html',
       // 当使用 title 选项时，
@@ -71,38 +71,45 @@ module.exports = {
     },
     ZeroPointData: { // 零点数据
       entry: './src/pages/ZeroPointData/ZeroPointData.js',
-      template: './src/pages/ZeroPointData/ZeroPointData.html',
+      template: './public/index.html',
       filename: 'ZeroPointData.html',
       title: '零点数据',
       chunks: ['chunk-vendors', 'chunk-common', 'ZeroPointData']
     },
     ZeroPointDataChart: { // 零点数据图表
       entry: './src/pages/ZeroPointDataChart/ZeroPointDataChart.js',
-      template: './src/pages/ZeroPointDataChart/ZeroPointDataChart.html',
+      template: './public/index.html',
       filename: 'ZeroPointDataChart.html',
       title: '零点数据图表',
       chunks: ['chunk-vendors', 'chunk-common', 'ZeroPointDataChart']
     },
     SpanData: { // 跨度数据
       entry: './src/pages/SpanData/SpanData.js',
-      template: './src/pages/SpanData/SpanData.html',
+      template: './public/index.html',
       filename: 'SpanData.html',
       title: '跨度数据',
       chunks: ['chunk-vendors', 'chunk-common', 'SpanData']
     },
     SpanDataChart: { // 跨度数据图表
       entry: './src/pages/SpanDataChart/SpanDataChart.js',
-      template: './src/pages/SpanDataChart/SpanDataChart.html',
+      template: './public/index.html',
       filename: 'SpanDataChart.html',
       title: '跨度数据图表',
       chunks: ['chunk-vendors', 'chunk-common', 'SpanDataChart']
     },
     StateParametersConfig: { // 状态参数配置
       entry: './src/pages/StateParametersConfig/StateParametersConfig.js',
-      template: './src/pages/StateParametersConfig/StateParametersConfig.html',
+      template: './public/index.html',
       filename: 'StateParametersConfig.html',
       title: '状态参数配置',
       chunks: ['chunk-vendors', 'chunk-common', 'StateParametersConfig']
+    },
+    FactorStateConfig: { // 因子状态配置
+      entry: './src/pages/FactorStateConfig/FactorStateConfig.js',
+      template: './public/index.html',
+      filename: 'FactorStateConfig.html',
+      title: '因子状态配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'FactorStateConfig']
     },
   },
   // 接口代理

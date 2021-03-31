@@ -1,5 +1,5 @@
 <template>
-  <div id="dayAuto">
+  <div id="app">
     <div class="header">
       <div class="select">
         <span>站点：</span>
@@ -224,7 +224,7 @@ html,
 body {
   height: 100%;
 }
-#dayAuto {
+#app {
   display: flex;
   flex-flow: column;
   width: 100%;
