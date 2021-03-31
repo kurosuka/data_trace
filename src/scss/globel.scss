@@ -1,0 +1,11 @@
+html {
+  .el-dialog__header{
+    border-bottom: 1px solid #eee;
+    .el-dialog__title {
+      font-size: 16px;
+    }
+  }
+  .el-dialog__body {
+    padding: 20px;
+  }
+}

@@ -3,6 +3,7 @@
   <div class="daily-quality">
     <el-container>
       <el-main>
+        <!--搜索条件-->
         <div class="nav">
           <el-form :model="form" :inline="true">
             <el-form-item label="点位"
@@ -38,6 +39,7 @@
             </el-form-item>
           </el-form>
         </div>
+        <!--tab页切换-->
         <el-tabs type="card" v-model="tabsActive" v-loading="loading" @tab-click="tabClick">
           <el-tab-pane label="已审核">
             <el-table :data="tableData" size="middle">
@@ -111,13 +113,16 @@
         </el-tabs>
       </el-main>
     </el-container>
+    <!--设置标准值弹窗-->
     <el-dialog
       title="项目设置详情"
       :visible.sync="dialogVisble"
       :close-on-click-modal="false"
       :destroy-on-close="true"
+      v-if="dialogVisble"
+      v-draggable
     >
-      <el-table :data="dialogTableData" :border="true" size="middle">
+      <el-table :data="dialogTableData" :border="true" size="small">
         <el-table-column
           label="监测项目"
           prop="title"
@@ -128,7 +133,7 @@
             <el-input
               required
               v-model="dialogForm[scope.$index].cod"
-              placeholder=""
+              placeholder="请输入"
               v-if="scope.row.cod == 'input'"
             >
               <template slot="append">mg/L</template>
@@ -148,7 +153,7 @@
           <template slot-scope="scope">
             <el-input
               v-model="dialogForm[scope.$index].an"
-              placeholder=""
+              placeholder="请输入"
               v-if="scope.row.an == 'input'"
             >
               <template slot="append">mg/L</template>
@@ -168,7 +173,7 @@
           <template slot-scope="scope">
             <el-input
               v-model="dialogForm[scope.$index].ph"
-              placeholder=""
+              placeholder="请输入"
               v-if="scope.row.ph == 'input'"
             >
               <template slot="append">mg/L</template>
@@ -188,7 +193,7 @@
           <template slot-scope="scope">
             <el-input
               v-model="dialogForm[scope.$index].nt"
-              placeholder=""
+              placeholder="请输入"
               v-if="scope.row.nt == 'input'"
             >
               <template slot="append">mg/L</template>
@@ -211,8 +216,9 @@
       title="操作记录"
       :visible.sync="historyVisible"
       :close-on-click-modal="false"
-      :destroy-on-close="true"
+      v-if="historyVisible"
       height="600px"
+      v-draggable
     >
       <el-table :data="historyData" height="calc(500px - 80px)">
         <el-table-column label="序号" type="index">
@@ -226,7 +232,7 @@
         <el-table-column label="零点标准浓液浓度" prop="zeroStandard"></el-table-column>
         <el-table-column
           label="跨度标准浓液浓度"
-          prop="spanStantard"
+          prop="spanStandard"
         ></el-table-column>
         <el-table-column label="提交人" prop="submitterName"></el-table-column>
         <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
@@ -239,22 +245,21 @@
 
 <script>
 import { getLocalstorage } from '../js/utils';
+import '../scss/globel.scss'
 export default {
   name: "StandardValueConfig",
   data() {
     return {
       loading: false,
-      form: {
+      form: {                     // 表单数据
         selectValue: [],
         pointOption: ''
       },
-      pointData: [],
-      factorList: [
-      ],
-      tableData: [
-      ],
-      sourceData: [],
-      auditNottableData: [],
+      pointData: [],              // 点位数据
+      factorList: [],             // 因子下拉数据
+      tableData: [],              // 已审核数据
+      sourceData: [],             // 原始数据
+      auditNottableData: [],    // 未审核数据
       dialogTableData: [
         {
           title: "上一周水质平均值",
@@ -343,9 +348,7 @@ export default {
     },
     // 提交信息
     submitValue(name,facotrCode) {
-      console.log(this.dialogForm);
       const options = this.dialogForm.map((item) => item).slice(1);
-      console.log(options);
       const obj = {
         pointId: this.form.pointOption,
         reviewStatus: 0,
@@ -397,7 +400,6 @@ export default {
     },
     // 历史记录点击操作
     historyClick(scope) {
-      console.log(scope);
       this.historyVisible = true;
       this.getHistoryData(scope.row.factorCode);
     },
@@ -561,5 +563,8 @@ export default {
 }
 .daily-quality /deep/ .el-dialog__body {
   overflow: hidden;
+}
+.daily-quality /deep/ .el-dialog__header {
+  cursor: move;
 }
 </style>

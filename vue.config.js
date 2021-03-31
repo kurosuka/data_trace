@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-03-29 16:07:56
+ * @LastEditTime: 2021-03-30 17:15:08
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -12,6 +12,8 @@ const path = require("path");
 const resolve = dir => path.join(__dirname, dir);
 module.exports = {
   publicPath: './',
+  // 生产打包的文件夹
+  outputDir: 'quality-control-project',
   pages: {
     dataAudit: { // 日志
       entry: './src/pages/auditIndex/dataAudit.js',

@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-22 09:35:07
- * @LastEditTime: 2021-03-29 16:56:53
+ * @LastEditTime: 2021-03-31 17:25:06
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\pages\zeroSkip\zeroSkip.vue
@@ -9,44 +9,61 @@
 <template>
   <div class="zero-skip">
     <!--测试结果详情-->
-      <div class="navlist" v-if="false">
+      <div class="navlist">
         <div>测试值：<span>{{testValue}}</span></div>
         <div>测试时间：<span>{{testTime}}</span></div>
-        <div>分析方法：<span>{{testFn}}</span></div>
+        <!-- <div>分析方法：<span>{{testFn}}</span></div> -->
       </div>
     <div class="table">
       <!--零点数据-->
-    <el-table :data="zeroData" :border="true">
+    <el-table :data="zeroData" :border="true" :row-class-name="tableRowClassName">
       <el-table-column label="序号" type="index" align="center"></el-table-column>
       <el-table-column label="日期"  width="150px" prop="dataTime" align="center" :show-overflow-tooltip="true" :resizable="true"></el-table-column>
-      <el-table-column label="测试结果" prop="dataValue" align="center"></el-table-column>
+      <el-table-column label="测试结果" prop="dataValue" align="center">
+      </el-table-column>
       <el-table-column label="零点核查" align="center" prop="">
         <el-table-column label="标准样浓度" align="center" prop="standardValue"></el-table-column>
         <el-table-column label="绝对误差" align="center" prop="wcRate"></el-table-column>
-        <el-table-column label="合格情况" align="center" prop="wcQualified"></el-table-column>
+        <el-table-column label="合格情况" align="center" prop="wcQualified">
+          <template slot-scope="scope">
+            <span :class="{red : _isRed(scope.row.wcQualified)}">{{scope.row.wcQualified}}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
       <el-table-column label="24小时零点漂移" align="center" prop="drift">
         <el-table-column label="前一次测试结果" align="center" prop="lastDataValue"></el-table-column>
         <el-table-column label="跨度值" align="center" prop="spanValue"></el-table-column>
         <el-table-column label="相对误差" align="center" prop="zdRate"></el-table-column>
-        <el-table-column label="合格情况" align="center" prop="zdQualified"></el-table-column>
+        <el-table-column label="合格情况" align="center" prop="zdQualified">
+          <template slot-scope="scope">
+            <span :class="{red : _isRed(scope.row.zdQualified)}">{{scope.row.zdQualified}}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
     </el-table>
     <!--跨度数据-->
-    <el-table :data="spanData" class="skip" :border="true">
+    <el-table :data="spanData" class="skip" :border="true" :row-class-name="tableRowClassName">
       <el-table-column label="序号" type="index" align="center"></el-table-column>
       <el-table-column label="日期" prop="dataTime" width="150px" align="center" :show-overflow-tooltip="true" :resizable="true"></el-table-column>
       <el-table-column label="测试结果" prop="dataValue" align="center"></el-table-column>
       <el-table-column label="跨度核查" align="center" prop="zeroCheck">
         <el-table-column label="标准样浓度" align="center" prop="standardValue"></el-table-column>
-        <el-table-column label="绝对误差" align="center" prop="wcRate"></el-table-column>
-        <el-table-column label="合格情况" align="center" prop="wcQualified"></el-table-column>
+        <el-table-column label="相对误差" align="center" prop="wcRate"></el-table-column>
+        <el-table-column label="合格情况" align="center" prop="wcQualified">
+          <template slot-scope="scope">
+            <span :class="{red : _isRed(scope.row.wcQualified)}">{{scope.row.wcQualified}}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
       <el-table-column label="24小时跨度漂移" align="center" prop="drift">
         <el-table-column label="前一次测试结果" align="center" prop="lastDataValue"></el-table-column>
         <el-table-column label="跨度值" align="center" prop="spanValue"></el-table-column>
         <el-table-column label="相对误差" align="center" prop="zdRate"></el-table-column>
-        <el-table-column label="合格情况" align="center" prop="zdQualified"></el-table-column>
+        <el-table-column label="合格情况" align="center" prop="zdQualified">
+          <template slot-scope="scope">
+            <span :class="{red : _isRed(scope.row.zdQualified)}">{{scope.row.zdQualified}}</span>
+          </template>
+        </el-table-column>
       </el-table-column>
     </el-table>
     </div>
@@ -54,7 +71,8 @@
 </template>
 
 <script>
-import { getUrlParams } from '../js/utils'
+import { getUrlParams } from '../js/utils';
+import '../scss/globel.scss'
 var moment = require('moment');
 export default {
   name: 'ZeroSkip',
@@ -64,38 +82,8 @@ export default {
       testTime: '2020-03-01 00:00:00',
       testFn: '高锰酸盐氧化-ORP电位滴定法',
       zeroData: [  // 零点数据
-        {
-          time: '2020-03-01 11:00:00',
-          currentResult: '0.35',
-          zeroCheck: { // 零点核查
-            standard: '0',
-            absError: '0.35',
-            qualification: '合格'
-          },
-          drift: { // 24小时漂移
-            prevResult: '0.66',
-            skipValue: '0.33',
-            relativeValue: '-2.0%',
-            qualification: '合格'
-          }
-        }
       ], 
       spanData: [ // 跨度数据
-        {
-          time: '2020-03-01 11:00:00',
-          currentResult: '0.35',
-          zeroCheck: { // 零点核查
-            standard: '0',
-            absError: '0.35',
-            qualification: '合格'
-          },
-          drift: { // 24小时漂移
-            prevResult: '0.66',
-            skipValue: '0.33',
-            relativeValue: '-2.0%',
-            qualification: '合格'
-          }
-        }
       ],
       options: {},
     }
@@ -111,7 +99,7 @@ export default {
     getZeroData() {
       this.$axios({
         method: 'post',
-        url: 'http://192.168.90.8:8081/api/quality/zeroDrift',
+        url: `${window.API}/quality/zeroDrift`,
         headers: {'content-type': 'application/json;charset=UTF-8'},
         data: {
           codeIds: [this._decodeURIComponent(this.options.pollutantCode)],
@@ -122,13 +110,27 @@ export default {
       }).then(res=> {
         console.log(res);
         this.zeroData = res.data.data;
+        const topData = this.zeroData ? this.zeroData.filter(item=> {
+          return item.dataTime.includes(this.options.time.slice(0,10))
+        }) : [];
+        console.log(topData);
+        this.testTime = topData.length ? topData[0].dataTime : '--';
+        this.testValue = topData.length ? topData[0].dataValue : '--'
       })
+    },
+    tableRowClassName({row, rowIndex}) {
+      console.log(rowIndex);
+      if(row.dataTime.includes(this.options.time.slice(0,10))) {
+        return 'fixed'
+      } else {
+        return ''
+      }
     },
     // 获取跨度数据
     getSpanData() {
       this.$axios({
         method: 'post',
-        url: 'http://192.168.90.8:8081/api/quality/spanDrift',
+        url: `${window.API}/quality/spanDrift`,
         headers: {'content-type': 'application/json;charset=UTF-8'},
         data: {
           codeIds: [this._decodeURIComponent(this.options.pollutantCode)],
@@ -139,11 +141,16 @@ export default {
       }).then(res=> {
         console.log(res);
         this.spanData = res.data.data;
+        console.log(this.spanData);
       })
     },
     // 处理中文乱码问题
     _decodeURIComponent(str) {
       return decodeURIComponent(str)
+    },
+    // 判断是否合格
+    _isRed(data) {
+      return data === '不合格' ? true : false
     }
   }
 }
@@ -173,6 +180,12 @@ export default {
     span {
       margin-left: 18px;
       display: inline-block;
-    };
+    }
   }
+  .red {
+      color: #ff0000;
+  }
+ .zero-skip /deep/.el-table tr.fixed {
+    background-color: #f0f9eb;
+  } 
 </style>
