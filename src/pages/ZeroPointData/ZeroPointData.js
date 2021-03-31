@@ -9,4 +9,4 @@ Vue.prototype.$axios = axios
 Vue.use(ElementUI, {size: 'mini'})
 new Vue({
   render: h => h(ZeroPointData)
-}).$mount('#zeroData')
+}).$mount('#app')

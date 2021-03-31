@@ -10,6 +10,6 @@ Vue.prototype.$axios=axios;
 Vue.use(elementui, {size: 'mini'})
 
 new Vue({
-  el:'#dayAuto',
+  el:'#app',
   render: h => h(DailyQualityControl),
-}).$mount('#dayAuto')
+}).$mount('#app')

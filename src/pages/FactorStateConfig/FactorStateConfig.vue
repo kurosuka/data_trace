@@ -17,11 +17,11 @@
       </div>
       <div class="query">
         <div class="select">
-          <span>指标类型：</span>
-          <el-select v-model="indexValue" placeholder="请选择" filterable clearable>
+          <span>监测污染物：</span>
+          <el-select v-model="contaminantsValue" placeholder="请选择" filterable clearable>
             <!-- <el-option label="所有选项" value=""></el-option> -->
             <el-option
-              v-for="item in indexList"
+              v-for="item in contaminantsList"
               :key="item.indexId"
               :label="item.indexName"
               :value="item.indexId">
@@ -72,40 +72,25 @@
       width="800px"
     >
       <el-form ref="form" label-width="80px" size="mini" :model="indexMsg" :rules="rules" class="editForm">
-        <el-form-item label="因子编码" style="width:49%" prop="name">
-          <el-input v-model="indexMsg.factor" placeholder="请输入因子编码" maxlength="50"></el-input>
-        </el-form-item>
-        <el-form-item label="因子名称" style="width:49%" prop="factory">
-          <el-input v-model="indexMsg.factorName" placeholder="请输入因子名称" maxlength="100"></el-input>
-        </el-form-item>
-        <el-form-item label="指标类别" style="width:49%" prop="pointId">
-          <el-select v-model="indexMsg.indexType" placeholder="请选择" filterable>
+        <el-form-item label="监测污染物" style="width:49%" prop="pointId">
+          <el-select v-model="indexMsg.contaminants" placeholder="请选择" filterable>
             <el-option
-              v-for="item in typePointList"
+              v-for="item in contaminantsList"
               :key="item.pointId"
               :label="item.pointName"
               :value="item.pointId">
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="计量单位" style="width:49%" prop="type">
-          <el-select v-model="indexMsg.measurement" placeholder="请选择">
+        <el-form-item label="状态参数" style="width:49%" prop="type">
+          <el-select v-model="indexMsg.state" placeholder="请选择">
             <el-option
-              v-for="item in measurementList"
+              v-for="item in stateList"
               :key="item.typeCode"
               :label="item.typeName"
               :value="item.typeCode">
             </el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="默认小数位" style="width:49%" prop="sortNumber">
-          <el-input type="number" v-model="indexMsg.decimal"></el-input>
-        </el-form-item>
-        <el-form-item label="排序" style="width:49%" prop="sortNumber">
-          <el-input type="number" v-model="indexMsg.sortNumber"></el-input>
-        </el-form-item>
-        <el-form-item label="备注" style="width:100%">
-          <el-input type="textarea" :rows="2" v-model="indexMsg.note" placeholder="请输入备注" maxlength="500"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -133,21 +118,15 @@
 export default {
   data: function(){
     return {
-      indexList: [],
-      indexValue: [],
-      factorValue: [],
-      typePointList: [],
-      measurementList: [],
+      contaminantsList: [],
+      contaminantsValue: [],
+      factorValue: '',
+      stateList: [],
       label: [],
       tableList: [],
       indexMsg: {
-        factor: '',
-        factorName: '',
-        indexType: '',
-        measurement: '',
-        decimal: '',
-        sortNumber: '',
-        note: ''
+        contaminants: '',
+        state: '',
       },
       total: 0,
       page: 0,
@@ -183,7 +162,9 @@ export default {
       // this.getTabList();
     },
     // 查询
-    search(){},
+    search(){
+      this.page = 1;
+    },
     // 新增
     add(){},
     // 删除

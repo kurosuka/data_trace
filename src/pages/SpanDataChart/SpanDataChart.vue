@@ -1,5 +1,5 @@
 <template>
-  <div id="spanDataChart" ref="spanChart">
+  <div id="app" ref="spanChart">
     <div v-for="(item) in factor" :key="item" :id="item" :style="style"></div>
   </div>
 </template>
@@ -78,7 +78,7 @@ html,
 body {
   height: 100%;
 }
-#spanDataChart {
+#app {
   width: 100%;
   height: 100%;
 }

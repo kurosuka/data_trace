@@ -1,14 +1,25 @@
 <template>
-  <div id="zeroData">
+  <div id="app">
     <div class="table">
       <el-table :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
         <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
         <el-table-column label="日期" prop="time" align="center" min-width="150px"></el-table-column>
         <!-- 高锰酸盐指数 -->
-        <el-table-column v-if="factor1" label="高锰酸盐指数(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column
+          v-if="_factorShow('w01019')"
+          label="高锰酸盐指数(mg/L)"
+          align="center"
+          min-width="80px"
+          height="30"
+        >
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="tip(scope.row,'高锰酸盐指数','srcDataValue','原始数据')" placement="right">
+              <el-tooltip
+                class="item"
+                effect="light"
+                :content="tip(scope.row,'高锰酸盐指数','srcDataValue','原始数据')"
+                placement="right"
+              >
                 <el-button type="text">{{tableText(scope.row,'高锰酸盐指数','dataValue')}}</el-button>
               </el-tooltip>
             </template>
@@ -32,14 +43,21 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'高锰酸盐指数','wcQualified')}">{{tableText(scope.row,'高锰酸盐指数','wcQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'高锰酸盐指数','wcQualified')}"
+                >{{tableText(scope.row,'高锰酸盐指数','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
           <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'高锰酸盐指数','lastSrcDataValue','原始数据')" placement="right">
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  :content="tip(scope.row,'高锰酸盐指数','lastSrcDataValue','原始数据')"
+                  placement="right"
+                >
                   <el-button type="text">{{tableText(scope.row,'高锰酸盐指数','lastDataValue')}}</el-button>
                 </el-tooltip>
               </template>
@@ -56,16 +74,29 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'高锰酸盐指数','zdQualified')}">{{tableText(scope.row,'高锰酸盐指数','zdQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'高锰酸盐指数','zdQualified')}"
+                >{{tableText(scope.row,'高锰酸盐指数','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
         </el-table-column>
         <!-- 氨氮 -->
-        <el-table-column v-if="factor2" label="氨氮(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column
+          v-if="_factorShow('w21003')"
+          label="氨氮(mg/L)"
+          align="center"
+          min-width="80px"
+          height="30"
+        >
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="tip(scope.row,'氨氮','srcDataValue','原始数据')" placement="right">
+              <el-tooltip
+                class="item"
+                effect="light"
+                :content="tip(scope.row,'氨氮','srcDataValue','原始数据')"
+                placement="right"
+              >
                 <el-button type="text">{{tableText(scope.row,'氨氮','dataValue')}}</el-button>
               </el-tooltip>
             </template>
@@ -89,14 +120,21 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'氨氮','wcQualified')}">{{tableText(scope.row,'氨氮','wcQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'氨氮','wcQualified')}"
+                >{{tableText(scope.row,'氨氮','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
           <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'氨氮','lastSrcDataValue','原始数据')" placement="right">
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  :content="tip(scope.row,'氨氮','lastSrcDataValue','原始数据')"
+                  placement="right"
+                >
                   <el-button type="text">{{tableText(scope.row,'氨氮','lastDataValue')}}</el-button>
                 </el-tooltip>
               </template>
@@ -113,16 +151,29 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'氨氮','zdQualified')}">{{tableText(scope.row,'氨氮','zdQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'氨氮','zdQualified')}"
+                >{{tableText(scope.row,'氨氮','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
         </el-table-column>
         <!-- 总磷 -->
-        <el-table-column v-if="factor3" label="总磷(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column
+          v-if="_factorShow('w21011')"
+          label="总磷(mg/L)"
+          align="center"
+          min-width="80px"
+          height="30"
+        >
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','srcDataValue','原始数据')" placement="right">
+              <el-tooltip
+                class="item"
+                effect="light"
+                :content="tip(scope.row,'总磷','srcDataValue','原始数据')"
+                placement="right"
+              >
                 <el-button type="text">{{tableText(scope.row,'总磷','dataValue')}}</el-button>
               </el-tooltip>
             </template>
@@ -146,14 +197,21 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'总磷','wcQualified')}">{{tableText(scope.row,'总磷','wcQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'总磷','wcQualified')}"
+                >{{tableText(scope.row,'总磷','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
           <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','lastSrcDataValue','原始数据')" placement="right">
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  :content="tip(scope.row,'总磷','lastSrcDataValue','原始数据')"
+                  placement="right"
+                >
                   <el-button type="text">{{tableText(scope.row,'总磷','lastDataValue')}}</el-button>
                 </el-tooltip>
               </template>
@@ -170,16 +228,29 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'总磷','zdQualified')}">{{tableText(scope.row,'总磷','zdQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'总磷','zdQualified')}"
+                >{{tableText(scope.row,'总磷','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
         </el-table-column>
         <!-- 总氮 -->
-        <el-table-column v-if="factor4" label="总氮(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column
+          v-if="_factorShow('w21001')"
+          label="总氮(mg/L)"
+          align="center"
+          min-width="80px"
+          height="30"
+        >
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
-              <el-tooltip class="item" effect="light" :content="tip(scope.row,'总氮','srcDataValue','原始数据')" placement="right">
+              <el-tooltip
+                class="item"
+                effect="light"
+                :content="tip(scope.row,'总氮','srcDataValue','原始数据')"
+                placement="right"
+              >
                 <el-button type="text">{{tableText(scope.row,'总氮','dataValue')}}</el-button>
               </el-tooltip>
             </template>
@@ -203,14 +274,21 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'总氮','wcQualified')}">{{tableText(scope.row,'总氮','wcQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'总氮','wcQualified')}"
+                >{{tableText(scope.row,'总氮','wcQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
           <el-table-column label="24小时零点漂移" align="center" min-width="80px" height="30">
             <el-table-column label="前一次测试结果" prop="value" align="center" width="120px" height="30">
               <template slot-scope="scope">
-                <el-tooltip class="item" effect="light" :content="tip(scope.row,'总氮','lastSrcDataValue','原始数据')" placement="right">
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  :content="tip(scope.row,'总氮','lastSrcDataValue','原始数据')"
+                  placement="right"
+                >
                   <el-button type="text">{{tableText(scope.row,'总氮','lastDataValue')}}</el-button>
                 </el-tooltip>
               </template>
@@ -227,7 +305,9 @@
             </el-table-column>
             <el-table-column label="合格情况" prop="value" align="center" min-width="80px" height="30">
               <template slot-scope="scope">
-                <span :class="{no:color(scope.row,'总氮','zdQualified')}">{{tableText(scope.row,'总氮','zdQualified')}}</span>
+                <span
+                  :class="{no:color(scope.row,'总氮','zdQualified')}"
+                >{{tableText(scope.row,'总氮','zdQualified')}}</span>
               </template>
             </el-table-column>
           </el-table-column>
@@ -242,14 +322,10 @@ export default {
     return {
       tableList: [],
       loading: true,
-      factor: [],
+      factor: ["w01019", "w21003", "w21011", "w21001"],
       paramValue: {},
-      factor1: true,
-      factor2: true,
-      factor3: true,
-      factor4: true,
       btnColor: false,
-      baseUrl: window.baseUrl,
+      baseUrl: window.baseUrl
     };
   },
   mounted: function() {
@@ -267,26 +343,6 @@ export default {
         let data = eve.data;
         if (data.params !== undefined) {
           this.factor = data.params.factorList;
-          if(this.factor.indexOf('w01019') == '-1'){
-            this.factor1 = false;
-          } else {
-            this.factor1 = true;
-          }
-          if(this.factor.indexOf('w21003') == '-1'){
-            this.factor2 = false;
-          } else {
-            this.factor2 = true;
-          }
-          if(this.factor.indexOf('w21011') == '-1'){
-            this.factor3 = false;
-          } else {
-            this.factor3 = true;
-          }
-          if(this.factor.indexOf('w21001') == '-1'){
-            this.factor4 = false;
-          } else {
-            this.factor4 = true;
-          }
           this.paramValue["dtFrom"] = data.params.strTime;
           this.paramValue["dtTo"] = data.params.endTime;
           this.paramValue["pointId"] = data.params.pointId;
@@ -298,50 +354,58 @@ export default {
     },
     // 获取表格数据
     getTableList() {
-      console.log(this.paramValue);
+      console.log(this.factor);
       let url = this.baseUrl + "/api/quality/zeroDrift";
-      // let param = {
-      //   dtFrom: "2021-02-26 11",
-      //   dtTo: "2021-03-26 11",
-      //   pointId: "348"
-      // };
       let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
         console.log(res);
         if (res.status == 200) {
           if (res.data.code == 200) {
-            if(res.data.data === null){
-              this.loading = false
+            if (res.data.data === null) {
+              this.loading = false;
               return false;
             }
-            let obj = res.data.data;
-            let time = [];
-            let vList = [];
-            obj.map(item => {
-              time.push(item.dataTime);
+            let obj = res.data.data.filter(item => {
+              return this.factor.includes(item.codeId);
             });
-            let _time = Array.from(new Set(time));
-            let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
-            cTime.map(item => {
-              let valueList = {};
-              let factorList = [];
-              valueList["time"] = item;
-              this.factor.map(list => {
-                factorList.push(
-                  obj.filter(group => {
-                    return group.dataTime == item && group.codeId == list;
-                  })
-                );
-              });
-              valueList["value"] = factorList.flat();
-              vList.push(valueList);
-            });
-            console.log(vList)
-            this.tableList = vList;
-            setTimeout(() => {this.loading = false},500)
+            this.tableList = this._dataHandle(obj);
+            setTimeout(() => {
+              this.loading = false;
+            }, 500);
           }
         }
       });
+    },
+    // 数据处理
+    _dataHandle(obj) {
+      let time = [];
+      let vList = [];
+      obj.map(item => {
+        time.push(item.dataTime);
+      });
+      let _time = Array.from(new Set(time));
+      let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
+      cTime.map(item => {
+        let valueList = {};
+        let factorList = [];
+        valueList["time"] = item;
+        this.factor.map(list => {
+          factorList.push(
+            obj.filter(group => {
+              return group.dataTime == item && group.codeId == list;
+            })
+          );
+        });
+        valueList["value"] = factorList.flat();
+        vList.push(valueList);
+      });
+      console.log(vList);
+      return vList
+    },
+    // 动态展示因子数据
+    _factorShow(val) {
+      let isOn = this.factor.includes(val);
+      return isOn;
     },
     // 动态生成内容
     tableText(val, name, key) {
@@ -349,39 +413,39 @@ export default {
       if (text.length === 0) {
         return "--";
       } else {
-        if(text[0][key] === null){
-          return "--"
+        if (text[0][key] === null) {
+          return "--";
         } else {
           return text[0][key];
         }
       }
     },
     // 更改不合格颜色
-    color(val, name, key){
+    color(val, name, key) {
       let text = val.value.filter(item => item.paramName == name);
       if (text.length === 0) {
         return "";
       } else {
-        if(text[0][key] === null){
-          return ""
+        if (text[0][key] === null) {
+          return "";
         } else {
-          return text[0][key] == "不合格" ?  true : false;
+          return text[0][key] == "不合格" ? true : false;
         }
       }
     },
     // 合格提示
-    tip(val, name, key, tips){
+    tip(val, name, key, tips) {
       let text = val.value.filter(item => item.paramName == name);
       if (text.length === 0) {
         return "--";
       } else {
-        if(text[0][key] === null){
-          return "--"
+        if (text[0][key] === null) {
+          return "--";
         } else {
-          return tips+":"+text[0][key];
+          return tips + ":" + text[0][key];
         }
       }
-    },
+    }
   }
 };
 </script>
@@ -394,7 +458,7 @@ html,
 body {
   height: 100%;
 }
-#zeroData {
+#app {
   display: flex;
   flex-flow: column;
   width: 100%;

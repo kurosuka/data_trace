@@ -12,4 +12,4 @@ Vue.prototype.echarts=echarts;
 Vue.use(ElementUI, {size: 'mini'})
 new Vue({
   render: h => h(SpanDataChart)
-}).$mount('#spanDataChart')
+}).$mount('#app')

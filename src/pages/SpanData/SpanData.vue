@@ -1,11 +1,11 @@
 <template>
-  <div id="spanData">
+  <div id="app">
     <div class="table">
       <el-table :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
         <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
         <el-table-column label="日期" prop="time" align="center" min-width="150px"></el-table-column>
         <!-- 高锰酸盐指数 -->
-        <el-table-column v-if="factor1" label="高锰酸盐指数(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column v-if="_factorShow('w01019')" label="高锰酸盐指数(mg/L)" align="center" min-width="80px" height="30">
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="tip(scope.row,'高锰酸盐指数','srcDataValue','原始数据')" placement="right">
@@ -62,7 +62,7 @@
           </el-table-column>
         </el-table-column>
         <!-- 氨氮 -->
-        <el-table-column v-if="factor2" label="氨氮(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column v-if="_factorShow('w21003')" label="氨氮(mg/L)" align="center" min-width="80px" height="30">
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="tip(scope.row,'氨氮','srcDataValue','原始数据')" placement="right">
@@ -119,7 +119,7 @@
           </el-table-column>
         </el-table-column>
         <!-- 总磷 -->
-        <el-table-column v-if="factor3" label="总磷(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column v-if="_factorShow('w21011')" label="总磷(mg/L)" align="center" min-width="80px" height="30">
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="tip(scope.row,'总磷','srcDataValue','原始数据')" placement="right">
@@ -176,7 +176,7 @@
           </el-table-column>
         </el-table-column>
         <!-- 总氮 -->
-        <el-table-column v-if="factor4" label="总氮(mg/L)" align="center" min-width="80px" height="30">
+        <el-table-column v-if="_factorShow('w21001')" label="总氮(mg/L)" align="center" min-width="80px" height="30">
           <el-table-column label="测试结果" prop="value" align="center" width="80px">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="light" :content="tip(scope.row,'总氮','srcDataValue','原始数据')" placement="right">
@@ -242,12 +242,8 @@ export default {
     return {
       tableList: [],
       loading: true,
-      factor: [],
+      factor: ["w01019", "w21003", "w21011", "w21001"],
       paramValue: {},
-      factor1: true,
-      factor2: true,
-      factor3: true,
-      factor4: true,
       btnColor: false,
       baseUrl: window.baseUrl,
     };
@@ -266,26 +262,6 @@ export default {
         let data = eve.data;
         if (data.params !== undefined) {
           this.factor = data.params.factorList;
-          if(this.factor.indexOf('w01019') == '-1'){
-            this.factor1 = false;
-          } else {
-            this.factor1 = true;
-          }
-          if(this.factor.indexOf('w21003') == '-1'){
-            this.factor2 = false;
-          } else {
-            this.factor2 = true;
-          }
-          if(this.factor.indexOf('w21011') == '-1'){
-            this.factor3 = false;
-          } else {
-            this.factor3 = true;
-          }
-          if(this.factor.indexOf('w21001') == '-1'){
-            this.factor4 = false;
-          } else {
-            this.factor4 = true;
-          }
           this.paramValue["dtFrom"] = data.params.strTime;
           this.paramValue["dtTo"] = data.params.endTime;
           this.paramValue["pointId"] = data.params.pointId;
@@ -307,33 +283,45 @@ export default {
               this.loading = false
               return false;
             }
-            let obj = res.data.data;
-            let time = [];
-            let vList = [];
-            obj.map(item => {
-              time.push(item.dataTime);
+            let obj = res.data.data.filter(item => {
+              return this.factor.includes(item.codeId);
             });
-            let _time = Array.from(new Set(time));
-            let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
-            cTime.map(item => {
-              let valueList = {};
-              let factorList = [];
-              valueList["time"] = item;
-              this.factor.map(list => {
-                factorList.push(
-                  obj.filter(group => {
-                    return group.dataTime == item && group.codeId == list;
-                  })
-                );
-              });
-              valueList["value"] = factorList.flat();
-              vList.push(valueList);
-            });
-            this.tableList = vList;
+            this.tableList = this._dataHandle(obj);
             setTimeout(() => {this.loading = false},500)
           }
         }
       });
+    },
+    // 数据处理
+    _dataHandle(obj) {
+      let time = [];
+      let vList = [];
+      obj.map(item => {
+        time.push(item.dataTime);
+      });
+      let _time = Array.from(new Set(time));
+      let cTime = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
+      cTime.map(item => {
+        let valueList = {};
+        let factorList = [];
+        valueList["time"] = item;
+        this.factor.map(list => {
+          factorList.push(
+            obj.filter(group => {
+              return group.dataTime == item && group.codeId == list;
+            })
+          );
+        });
+        valueList["value"] = factorList.flat();
+        vList.push(valueList);
+      });
+      console.log(vList);
+      return vList
+    },
+    // 动态展示因子数据
+    _factorShow(val) {
+      let isOn = this.factor.includes(val);
+      return isOn;
     },
     // 动态生成内容
     tableText(val, name, key) {
@@ -386,7 +374,7 @@ html,
 body {
   height: 100%;
 }
-#spanData {
+#app {
   display: flex;
   flex-flow: column;
   width: 100%;
