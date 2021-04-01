@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-24 17:06:43
- * @LastEditTime: 2021-03-26 16:48:38
+ * @LastEditTime: 2021-04-01 17:01:44
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\views\StantardAuditPeople.vue
@@ -18,33 +18,39 @@
         :filter-node-method="filterNode"
         ></el-tree>
       </el-aside>
-      <el-main v-if="userName.length != 0">
-          <div>
-            <el-form :model="tagForm">
-              <el-form-item label="用户">
-                <el-tag size="small" type="" v-for="item in userName" :key="item.value" :disable-transitions="true">{{item.label}}</el-tag>
-              </el-form-item>
-            </el-form>
-            <div class="line"></div>
+      <el-main>
+          <no-data v-if="userName.length == 0" size="medium"></no-data>
+          <div v-if="userName.length != 0">
+            <div>
+              <el-form :model="tagForm">
+                <el-form-item label="已选择的用户">
+                  <el-tag size="small" type="success" effect="dark" v-for="item in userName" :key="item.id" :disable-transitions="true">{{item.label}}</el-tag>
+                </el-form-item>
+              </el-form>
+              <div class="line"></div>
+            </div>
+            <div class="">
+              <div class="checkbox-contant" v-for="(item,index) in pointData" :key="item.id">
+                <div class="point"><el-checkbox :indeterminate="isIndeterminate[index]" v-model="checked[index]" @change="handleCheckAllChange(checked,index,item)">{{item.label}}</el-checkbox></div>
+                <el-checkbox-group v-model="checkBoxForm[index]">
+                  <el-checkbox :label="ite.id" v-for="(ite) in item.children" :key="ite.id" @change="change(checked,index,item)">{{ite.label}}</el-checkbox>
+                </el-checkbox-group>
+              </div>
+            </div>
+            <div class="save">
+              <el-button type="warning" @click="save">保存</el-button>
+            </div>
           </div>
-        <div class="">
-          <div class="checkbox-contant" v-for="(item,index) in pointData" :key="item.id">
-            <div class="point"><el-checkbox :indeterminate="isIndeterminate[index]" v-model="checked[index]" @change="handleCheckAllChange(checked,index,item)">{{item.label}}</el-checkbox></div>
-            <el-checkbox-group v-model="checkBoxForm[index]">
-              <el-checkbox :label="ite.id" v-for="(ite) in item.children" :key="ite.id" @change="change(checked,index,item)">{{ite.label}}</el-checkbox>
-            </el-checkbox-group>
-          </div>
-        </div>
-        <div class="save">
-          <el-button type="warning" @click="save">保存</el-button>
-        </div>
       </el-main>
     </el-container>
   </div>
 </template>
 
 <script>
+import NoData from '../components/NoData.vue';
+import { getLocalstorage } from '../js/utils.js'
 export default {
+  components: { NoData },
   name: 'StandardAuditPeople',
   data() {
     return {
@@ -106,7 +112,7 @@ export default {
             {
               id:2,
               label: '通仙桥',
-              checked: true,
+              checked: false,
               children: null
             },
             {
@@ -135,7 +141,8 @@ export default {
       ],
       isIndeterminate: [],
       checked: [],
-      filterText: ''
+      filterText: '',
+      base: 'http://192.168.90.41:8024/api',
     }
   },
   created() {
@@ -147,8 +154,26 @@ export default {
   },
   mounted() {
     console.log(window.API);
+    this.getPoints().then(res=> {
+      console.log(res);
+      //this.pointData = res.data.data
+    })
   },
   methods: {
+    /**
+     * 获取点位数据
+     */
+    getPoints() {
+      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      return  this.$axios({
+          method: "get",
+          url: `${this.base}/spanValuesSetting/findPointList`,
+          params: {userId: userId},
+      })
+    },
+    /**
+     * 保存数据
+     */
     save() {
       console.log(this.$refs.tree.getCheckedNodes(true, true));
     },
@@ -182,9 +207,9 @@ export default {
       return temp;
     },
     filterNode(value, data) {
-        if (!value) return true;
-        return data.label.indexOf(value) !== -1;
-      }
+      if (!value) return true;
+      return data.label.indexOf(value) !== -1;
+    }
   },
   watch: {
     userName(newVal) {
@@ -213,6 +238,7 @@ export default {
       .el-input {
         margin: 10px;
         display: block;
+        width: auto;
       }
     }
   }

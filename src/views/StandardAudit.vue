@@ -6,10 +6,13 @@
         <div class="nav">
           <el-form :model="form" :inline="true">
             <el-form-item label="点位"
-              ><MultiSelect></MultiSelect
-            ></el-form-item>
+              >
+              <el-select v-model="form.pointOption" placeholder="请选择">
+                <el-option v-for="item in pointData" :key="item.pointId" :label="item.pointName" :value="item.pointId"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="监测项目">
-              <el-tooltip :content="selectTooltip" placement="top">
+              <el-tooltip :content="selectTooltip" placement="top" :disabled="form.selectValue.length == 0">
                 <el-select
                   v-model="form.selectValue"
                   placeholder="请选择"
@@ -18,15 +21,15 @@
                 >
                   <el-option
                     v-for="item in factorList"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
+                    :key="item.factorCode"
+                    :label="item.factorName"
+                    :value="item.factorCode"
                   ></el-option>
                 </el-select>
               </el-tooltip>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="primary">查询</el-button>
+              <el-button type="primary" @click="getNotAuditList(null)">查询</el-button>
             </el-form-item>
             <el-form-item label="">
               <el-button type="warning" @click="audit"
@@ -35,8 +38,8 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-table :data="tableData" size="middle" @selection-change="handleSelectionChange">
-              <el-table-column label="操作" type="selection"></el-table-column>
+        <el-table :data="auditNottableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
+          <el-table-column type="selection"></el-table-column>
               <el-table-column label="序号" type="index"></el-table-column>
               <el-table-column
                 label="点位名称"
@@ -44,22 +47,22 @@
               ></el-table-column>
               <el-table-column
                 label="监测项目"
-                prop="monitor"
+                prop="factorName"
               ></el-table-column>
               <el-table-column
                 label="跨度值"
-                prop="spanValue"
+                prop="spanValues"
               ></el-table-column>
               <el-table-column
                 label="零点标准浓液浓度"
-                prop="zero"
+                prop="zeroStandard"
               ></el-table-column>
               <el-table-column
                 label="跨度标准浓液浓度"
-                prop="spanStantard"
+                prop="spanStandard"
               ></el-table-column>
-              <el-table-column label="提交人" prop="submiter"></el-table-column>
-              <el-table-column label="提交时间" prop="time"></el-table-column>
+              <el-table-column label="提交人" prop="submitterName"></el-table-column>
+              <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
             </el-table>
       </el-main>
     </el-container>
@@ -67,90 +70,46 @@
 </template>
 
 <script>
-import { MultiSelect } from "sinoyd-ui";
+import { getLocalstorage } from '../js/utils';
 export default {
   name: "StandardAudit",
   data() {
     return {
-      form: {
-        selectValue: ['w', 'l', 'a', 'd'],
+      form: {                     // 表单数据
+        selectValue: [],
+        pointOption: ''
       },
-      factorList: [
-        {
-          label: "高猛酸盐指数",
-          value: "w",
-        },
-        {
-          label: "氨氮",
-          value: "a",
-        },
-        {
-          label: "总磷",
-          value: "l",
-        },
-        {
-          label: "总氮",
-          value: "d",
-        },
-      ],
-      tableData: [
-        {
-          pointName: "通仙桥",
-          monitor: "高锰酸盐指数",
-          spanValue: "10",
-          zero: "0",
-          spanStantard: "7.941",
-          time: "2020-11-25 09:20:11",
-          submiter: "张三",
-        },
-        {
-          pointName: "通仙桥",
-          monitor: "氨氮",
-          spanValue: "10",
-          zero: "0",
-          spanStantard: "7.941",
-          time: "2020-11-25 09:20:11",
-          submiter: "张三",
-        },
-        {
-          pointName: "通仙桥",
-          monitor: "总磷",
-          spanValue: "10",
-          zero: "0",
-          spanStantard: "7.941",
-          time: "2020-11-25 09:20:11",
-          submiter: "张三",
-        },
-        {
-          pointName: "通仙桥",
-          monitor: "总氮",
-          spanValue: "10",
-          zero: "0",
-          spanStantard: "7.941",
-          time: "2020-11-25 09:20:11",
-          submiter: "张三",
-        },
-      ],
+      factorList: [],
+      auditNottableData: [],
+      loading: false, // 表格loading
+      pointData: [], // 点位数据
       multiSelection: [], // 表格选中的行数据
+      base: 'http://192.168.90.41:8024/api' //window.Api // 接口api地址
     };
-  },
-  components: {
-    MultiSelect,
   },
   computed: {
     selectTooltip() {
       return this.factorList
         .filter((item) => {
-          return this.form.selectValue.includes(item.value);
+          return this.form.selectValue.includes(item.factorCode);
         })
         .map((item) => {
-          return item.label;
+          return item.factorName;
         })
         .join(",");
     },
   },
   mounted() {
-    this.getOpints();
+    this.$axios.all([this.getPoints(),this.getFactors()])
+      .then(this.$axios.spread((res1, res2)=> {
+         this.pointData = res1.data.data;
+          // 给点位初始值
+          this.form.pointOption = this.pointData[0].pointId;
+          this.factorList = res2.data.data;
+          //初始值
+          this.form.selectValue = this.factorList.map(item=>item.factorCode);
+          this.getNotAuditList(null); // 获取已审核数据
+      }))
   },
   methods: {
     // 审核
@@ -180,45 +139,47 @@ export default {
     // 获取 选择的值
     _selectData() {},
     // 获取点位数据
-    getOpints() {
-      this.$axios({
-        method: "",
-        url: "",
-        data: "",
+    getPoints() {
+      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+     return  this.$axios({
+        method: "get",
+        url: `${this.base}/spanValuesSetting/findPointList`,
+        params: {userId: userId},
       })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          this.$notify({
-            title: "提示",
-            message: err,
-            type: "warning",
-          });
-        });
     },
     // 获取因子下拉数据
     getFactors() {
-      this.$axios({
-        method: "",
-        url: "",
-        data: "",
+     return this.$axios({
+        method: "get",
+        url: `${this.base}/spanValuesSetting/findFactorList`,
       })
-        .then((res) => {
-          console.log(res);
-        })
-        .catch((err) => {
-          this.$notify({
-            title: "提示",
-            message: err,
-            type: "warning",
-          });
-        });
     },
-    // 获取表格行数据
+    // 获取未审核数据
+    getNotAuditList(factorCode) {
+      this.loading = true;
+      this.$axios({
+        method: 'get',
+        url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
+        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 0}
+      }).then(res=> {
+        this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
+      }).catch((err)=> {
+        this.$notify({
+          title: '提示',
+          message: err,
+          type: 'error'
+        });
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
+      })
+    },
     handleSelectionChange(val) {
       console.log(val);
-      this.multiSelection = val
+      this.multiSelection = val;
     }
   },
 };

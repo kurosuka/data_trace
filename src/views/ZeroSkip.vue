@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-22 09:35:07
- * @LastEditTime: 2021-03-31 17:25:06
+ * @LastEditTime: 2021-04-01 17:21:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\pages\zeroSkip\zeroSkip.vue
@@ -16,7 +16,7 @@
       </div>
     <div class="table">
       <!--零点数据-->
-    <el-table :data="zeroData" :border="true" :row-class-name="tableRowClassName">
+    <el-table :data="zeroData" :border="true" :row-class-name="_tableRowClassName">
       <el-table-column label="序号" type="index" align="center"></el-table-column>
       <el-table-column label="日期"  width="150px" prop="dataTime" align="center" :show-overflow-tooltip="true" :resizable="true"></el-table-column>
       <el-table-column label="测试结果" prop="dataValue" align="center">
@@ -42,7 +42,7 @@
       </el-table-column>
     </el-table>
     <!--跨度数据-->
-    <el-table :data="spanData" class="skip" :border="true" :row-class-name="tableRowClassName">
+    <el-table :data="spanData" class="skip" :border="true" :row-class-name="_tableRowClassName">
       <el-table-column label="序号" type="index" align="center"></el-table-column>
       <el-table-column label="日期" prop="dataTime" width="150px" align="center" :show-overflow-tooltip="true" :resizable="true"></el-table-column>
       <el-table-column label="测试结果" prop="dataValue" align="center"></el-table-column>
@@ -72,7 +72,7 @@
 
 <script>
 import { getUrlParams } from '../js/utils';
-import '../scss/globel.scss'
+import '../scss/globel.scss';
 var moment = require('moment');
 export default {
   name: 'ZeroSkip',
@@ -118,7 +118,8 @@ export default {
         this.testValue = topData.length ? topData[0].dataValue : '--'
       })
     },
-    tableRowClassName({row, rowIndex}) {
+    // 给定行颜色
+    _tableRowClassName({row, rowIndex}) {
       console.log(rowIndex);
       if(row.dataTime.includes(this.options.time.slice(0,10))) {
         return 'fixed'
@@ -178,7 +179,7 @@ export default {
       margin-right: 18px;
     }
     span {
-      margin-left: 18px;
+      margin-left: 10px;
       display: inline-block;
     }
   }

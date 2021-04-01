@@ -13,7 +13,7 @@
               </el-select>
             </el-form-item>
             <el-form-item label="监测项目">
-              <el-tooltip :content="selectTooltip" placement="top">
+              <el-tooltip :content="selectTooltip" placement="top" :disabled="form.selectValue.length == 0">
                 <el-select
                   v-model="form.selectValue"
                   placeholder="请选择"
@@ -307,7 +307,7 @@ export default {
         pageSize: 20,
         total: 80
       },
-      base: 'http://192.168.90.41:8024/api' // 接口api地址
+      base: window.API//'http://192.168.90.41:8024/api' // 接口api地址
     };
   },
   components: {
@@ -563,6 +563,12 @@ export default {
 }
 .daily-quality /deep/ .el-dialog__body {
   overflow: hidden;
+}
+.daily-quality /deep/ .el-table__header{
+  width: 100% !important;
+}
+.daily-quality /deep/ .el-table__body{
+  width: 100% !important;
 }
 .daily-quality /deep/ .el-dialog__header {
   cursor: move;

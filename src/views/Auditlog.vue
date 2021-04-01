@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-11 09:33:31
- * @LastEditTime: 2021-03-31 15:32:39
+ * @LastEditTime: 2021-04-01 09:41:57
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\views\Auditlog.vue
@@ -14,9 +14,16 @@
       <el-table-column label="操作人员" prop="userName"></el-table-column>
       <el-table-column label="测点" prop="pointName"></el-table-column>
       <el-table-column label="类型" prop="opTypeEnum"></el-table-column>
-<!--       <el-table-column label="因子" prop="pollutantName"></el-table-column>
- -->      <el-table-column label="原始值" prop="srcValue"></el-table-column>
-      <el-table-column label="修改值" prop="auditValue"></el-table-column>      
+      <el-table-column label="原始值" prop="srcValue">
+        <template slot-scope="scope">
+          {{scope.row.srcValue === null ? '--' : scope.row.srcValue }}
+        </template>
+      </el-table-column>
+      <el-table-column label="修改值" prop="auditValue">
+        <template slot-scope="scope">
+          {{scope.row.auditValue === null ? '--' : scope.row.auditValue }}
+        </template>
+      </el-table-column>      
       <el-table-column label="描述" prop="reason"></el-table-column>
       <!-- <el-table-column label="附件" prop="attachment" align="center" header-align="center">
               <template slot-scope="scope">

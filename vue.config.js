@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-03-30 17:15:08
+ * @LastEditTime: 2021-04-01 14:32:51
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -117,6 +117,10 @@ module.exports = {
   // 接口代理
   
   productionSourceMap: false,
+  // 忽略编译
+  transpileDependencies: [
+    'vue-element-dialog-draggable'
+  ],
   configureWebpack: config => {
     // 生产环境下生效
     if (process.env.NODE_ENV === 'production') {
