@@ -2,8 +2,8 @@
   <div id="app">
     <div class="table">
       <el-table :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
-        <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
-        <el-table-column label="日期" prop="time" align="center" min-width="150px"></el-table-column>
+        <el-table-column fixed label="序号" type="index" :index="indexMethod"></el-table-column>
+        <el-table-column fixed label="日期" prop="time" align="center" min-width="150px"></el-table-column>
         <!-- 高锰酸盐指数 -->
         <el-table-column
           v-if="_factorShow('w01019')"
@@ -346,9 +346,10 @@ export default {
           this.paramValue["dtFrom"] = data.params.strTime;
           this.paramValue["dtTo"] = data.params.endTime;
           this.paramValue["pointId"] = data.params.pointId;
-          setTimeout(() => {
-            this.getTableList();
-          }, 300);
+          this.getTableList();
+          // setTimeout(() => {
+            
+          // }, 300);
         }
       });
     },
