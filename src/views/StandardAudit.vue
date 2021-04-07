@@ -4,6 +4,7 @@
     <el-container>
       <el-main>
         <div class="nav">
+          <!--搜索条件-->
           <el-form :model="form" :inline="true">
             <el-form-item label="点位"
               >
@@ -29,7 +30,7 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="primary" @click="getNotAuditList(null)">查询</el-button>
+              <el-button type="primary" @click="getNotAuditList(null)" v-preventReClick>查询</el-button>
             </el-form-item>
             <el-form-item label="">
               <el-button type="warning" @click="audit"
@@ -38,9 +39,15 @@
             </el-form-item>
           </el-form>
         </div>
-        <el-table :data="auditNottableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
+        <!--数据表格-->
+        <el-table ref="eltree" :data="auditNottableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
           <el-table-column type="selection"></el-table-column>
               <el-table-column label="序号" type="index"></el-table-column>
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button type="primary" icon="el-icon-edit" size="mini" @click="rowClick(scope)"></el-button>
+                </template>
+              </el-table-column>
               <el-table-column
                 label="点位名称"
                 prop="pointName"
@@ -66,11 +73,27 @@
             </el-table>
       </el-main>
     </el-container>
+    <!--审核弹窗-->
+    <el-dialog title="审核" :visible.sync="auditDialogVisble" width="30%" :close-on-click-modal="false">
+      <el-form :model="auditForm">
+        <el-form-item label="是否通过审核">
+          <el-radio-group v-model="auditForm.radio">
+            <el-radio label="1">是</el-radio>
+            <el-radio label="2">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="close">取 消</el-button>
+        <el-button type="primary" @click="auditClick" v-preventReClick>确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getLocalstorage } from '../js/utils';
+import '../scss/globel.scss'
 export default {
   name: "StandardAudit",
   data() {
@@ -79,11 +102,15 @@ export default {
         selectValue: [],
         pointOption: ''
       },
-      factorList: [],
-      auditNottableData: [],
+      factorList: [], // 因子列表
+      auditNottableData: [], // 未审核数据
+      auditDialogVisble: false, // 审核弹窗显示控制
       loading: false, // 表格loading
       pointData: [], // 点位数据
       multiSelection: [], // 表格选中的行数据
+      auditForm: { //  是否审核参数
+        radio: '1',
+      },
       base: 'http://192.168.90.41:8024/api' //window.Api // 接口api地址
     };
   },
@@ -100,6 +127,7 @@ export default {
     },
   },
   mounted() {
+    // 初始化数据
     this.$axios.all([this.getPoints(),this.getFactors()])
       .then(this.$axios.spread((res1, res2)=> {
          this.pointData = res1.data.data;
@@ -123,13 +151,7 @@ export default {
         return
       }
       // 审核接口调用
-      this.$confirm('对勾选的数据进行审核，是否审核？', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-      }).then(()=> {
-
-      }).catch(()=>{})
+      this.auditDialogVisble = true
     },
     // 历史记录点击操作
     historyClick(scope) {
@@ -177,9 +199,57 @@ export default {
         }, 500);
       })
     },
+    // 表格行数据选择
     handleSelectionChange(val) {
       console.log(val);
       this.multiSelection = val;
+    },
+    // 单行审核
+    rowClick(data) {
+      console.log(data.row,this.$refs.eltree.multiSelection);
+      this.$refs.eltree.clearSelection();
+      this.$refs.eltree.toggleRowSelection(data.row);
+      this.auditDialogVisble = true;
+    },
+    // 审核按钮点击
+    auditClick() {
+      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      const data = this.multiSelection.map(item=> {
+        return {
+          id: item.id,
+          reviewStatus: this.auditForm.radio,
+          reviewer: userId
+        }
+      })
+      this.saveAudit(data)
+    },
+    // 审核ajax交互
+    saveAudit(data = {}) {
+      console.log(data);
+      this.$axios({
+        method: 'put',
+        url: `${this.base}/spanValuesSetting/review`,
+        headers: { 'content-type': 'application/json;charset=UTF-8' },
+        data
+      }).then(res=> {
+        console.log(res);
+        this.$notify({
+          title: '提示',
+          message: res.data.msg,
+          type: 'success'
+        });
+        this.auditDialogVisble = false;
+        this.getNotAuditList(null);
+      }).catch(err=>{
+        this.$notify({
+          title: '提示',
+          message: err,
+          type: "danger"
+        })
+      })
+    },
+    close() {
+      this.auditDialogVisble = false;
     }
   },
 };

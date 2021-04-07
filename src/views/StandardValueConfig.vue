@@ -30,7 +30,7 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="primary" @click="getAuditTableData">查询</el-button>
+              <el-button type="primary" @click="getAuditTableData" v-preventReClick>查询</el-button>
             </el-form-item>
             <el-form-item label="">
               <el-button type="warning" @click="dialogToggle"
@@ -110,6 +110,39 @@
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
             </el-table>
           </el-tab-pane>
+          <el-tab-pane label="未通过">
+            <el-table :data="rejectTableData" size="middle">
+              <el-table-column label="序号" type="index">
+                <template slot-scope="scope">
+                  <span>{{_index(scope.$index)}}</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                label="点位名称"
+                prop="pointName"
+              ></el-table-column>
+              <el-table-column
+                label="监测项目"
+                prop="factorName"
+              ></el-table-column>
+              <el-table-column
+                label="跨度值"
+                prop="spanValues"
+              ></el-table-column>
+              <el-table-column
+                label="零点标准浓液浓度"
+                prop="zeroStandard"
+              ></el-table-column>
+              <el-table-column
+                label="跨度标准浓液浓度"
+                prop="spanStandard"
+              ></el-table-column>
+              <el-table-column label="提交人" prop="submitterName"></el-table-column>
+              <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
+              <el-table-column label="审核人" prop="reviewerName"></el-table-column>
+              <el-table-column label="审核时间" prop="reviewTime" :show-overflow-tooltip="true"></el-table-column>
+            </el-table>
+          </el-tab-pane>
         </el-tabs>
       </el-main>
     </el-container>
@@ -141,6 +174,7 @@
             <el-button
               type="primary"
               v-if="scope.row.cod == 'btn'"
+               v-preventReClick
               @click="submitValue('cod','w01019')"
               >提交</el-button
             >
@@ -161,6 +195,7 @@
             <el-button
               type="primary"
               v-if="scope.row.an == 'btn'"
+               v-preventReClick
               @click="submitValue('an', 'w21003')"
               >提交</el-button
             >
@@ -181,6 +216,7 @@
             <el-button
               type="primary"
               v-if="scope.row.ph == 'btn'"
+               v-preventReClick
               @click="submitValue('ph', 'w21011')"
               >提交</el-button
             >
@@ -201,6 +237,7 @@
             <el-button
               type="primary"
               v-if="scope.row.nt == 'btn'"
+               v-preventReClick
               @click="submitValue('nt', 'w21001')"
               >提交</el-button
             >
@@ -260,6 +297,7 @@ export default {
       tableData: [],              // 已审核数据
       sourceData: [],             // 原始数据
       auditNottableData: [],    // 未审核数据
+      rejectTableData: [],        // 未通过的审核数据
       dialogTableData: [
         {
           title: "上一周水质平均值",
@@ -297,7 +335,7 @@ export default {
           nt: "btn", // 总氮
         },
       ],
-      dialogVisble: false,
+      dialogVisble: false, // 弹框是否显示
       dialogForm: [], // 新增绑定的值
       historyData: [], // 当前点位因子历史记录
       historyVisible: false, // 控制历史记录弹窗是否显示
@@ -307,7 +345,7 @@ export default {
         pageSize: 20,
         total: 80
       },
-      base: window.API//'http://192.168.90.41:8024/api' // 接口api地址
+      base: /* window.API */'http://192.168.90.41:8024/api' // 接口api地址
     };
   },
   components: {
@@ -325,6 +363,7 @@ export default {
     },
   },
   mounted() {
+    // 数据初始化
     this.$axios.all([this.getPoints(),this.getFactors()])
       .then(this.$axios.spread((res1, res2)=> {
          this.pointData = res1.data.data;
@@ -334,6 +373,7 @@ export default {
           //初始值
           this.form.selectValue = this.factorList.map(item=>item.factorCode);
           this.getAuditTableData(); // 获取已审核数据
+          this.getRejectTableData(null); // 获取未通过数据
       }))
     this.historyPage.total = this.tableData.length;
     // 内容赋值
@@ -369,6 +409,7 @@ export default {
         })
       }
     },
+    // 保存
     save(data) {
       this.$axios({
         method: 'post',
@@ -429,8 +470,11 @@ export default {
         url: `${this.base}/spanValuesSetting/findSettingByPoint`,
         params: {pointId: this.form.pointOption}
       }).then(res=> {
-        this.loading = false;
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
         this.getNotAuditTableData(null); // 获取未审核数据
+        this.getRejectTableData(null); // 获取未通过数据
         this.tableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
         this.sourceData = JSON.parse(JSON.stringify(res.data.data));
         this.factorList.forEach((item, index) => {
@@ -471,6 +515,7 @@ export default {
         })
       })
     },
+    // 获取未审核数据
     getNotAuditTableData(factorCode) {
       this.$axios({
         method: 'get',
@@ -478,6 +523,22 @@ export default {
         params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 0}
       }).then(res=> {
         this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+      }).catch((err)=> {
+        this.$notify({
+          title: '提示',
+          message: err,
+          type: 'error'
+        })
+      })
+    },
+    // 获取未通过的数据
+    getRejectTableData(factorCode) {
+      this.$axios({
+        method: 'get',
+        url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
+        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 2}
+      }).then(res=> {
+        this.rejectTableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
       }).catch((err)=> {
         this.$notify({
           title: '提示',
@@ -513,6 +574,7 @@ export default {
     tabClick() {
       
     },
+    // 表格索引
     _index(idx) {
       return (this.historyPage.currentPage-1)*this.historyPage.pageSize + (idx+1)
     },

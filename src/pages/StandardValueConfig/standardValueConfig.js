@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-22 17:28:15
- * @LastEditTime: 2021-03-30 10:34:37
+ * @LastEditTime: 2021-04-06 10:03:45
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\pages\DailyQuality\dailyQuality.js
@@ -13,6 +13,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 import 'reset.css'
 import axios from 'axios'
 import DlgDraggable from "vue-element-dialog-draggable"
+import preventReClick from '../../js/dbClick.js'
+Vue.use(preventReClick)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 Vue.use(DlgDraggable, {
