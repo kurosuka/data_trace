@@ -17,10 +17,13 @@
               <el-tooltip
                 class="item"
                 effect="light"
-                :content="tip(scope.row,'高锰酸盐指数','srcDataValue','原始数据')"
+                :content="tip(scope.row,'高锰酸盐指数','srcDataValue','原始数据',true)"
                 placement="right"
               >
-                <el-button type="text">{{tableText(scope.row,'高锰酸盐指数','dataValue')}}</el-button>
+                <div class="dataText">
+                  <span>{{tableText(scope.row,'高锰酸盐指数','dataValue')}}&nbsp;</span>
+                  <span style="font-weight: bolder">{{testData(scope.row,'高锰酸盐指数')}}</span>
+                </div>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -55,7 +58,7 @@
                 <el-tooltip
                   class="item"
                   effect="light"
-                  :content="tip(scope.row,'高锰酸盐指数','lastSrcDataValue','原始数据')"
+                  :content="tip(scope.row,'高锰酸盐指数','lastSrcDataValue','原始数据',false)"
                   placement="right"
                 >
                   <el-button type="text">{{tableText(scope.row,'高锰酸盐指数','lastDataValue')}}</el-button>
@@ -94,10 +97,13 @@
               <el-tooltip
                 class="item"
                 effect="light"
-                :content="tip(scope.row,'氨氮','srcDataValue','原始数据')"
+                :content="tip(scope.row,'氨氮','srcDataValue','原始数据',true)"
                 placement="right"
               >
-                <el-button type="text">{{tableText(scope.row,'氨氮','dataValue')}}</el-button>
+                <div class="dataText">
+                  <span>{{tableText(scope.row,'氨氮','dataValue')}}&nbsp;</span>
+                  <span style="font-weight: bolder">{{testData(scope.row,'氨氮')}}</span>
+                </div>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -132,7 +138,7 @@
                 <el-tooltip
                   class="item"
                   effect="light"
-                  :content="tip(scope.row,'氨氮','lastSrcDataValue','原始数据')"
+                  :content="tip(scope.row,'氨氮','lastSrcDataValue','原始数据',false)"
                   placement="right"
                 >
                   <el-button type="text">{{tableText(scope.row,'氨氮','lastDataValue')}}</el-button>
@@ -171,10 +177,13 @@
               <el-tooltip
                 class="item"
                 effect="light"
-                :content="tip(scope.row,'总磷','srcDataValue','原始数据')"
+                :content="tip(scope.row,'总磷','srcDataValue','原始数据',true)"
                 placement="right"
               >
-                <el-button type="text">{{tableText(scope.row,'总磷','dataValue')}}</el-button>
+                <div class="dataText">
+                  <span>{{tableText(scope.row,'总磷','dataValue')}}&nbsp;</span>
+                  <span style="font-weight: bolder">{{testData(scope.row,'总磷')}}</span>
+                </div>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -209,7 +218,7 @@
                 <el-tooltip
                   class="item"
                   effect="light"
-                  :content="tip(scope.row,'总磷','lastSrcDataValue','原始数据')"
+                  :content="tip(scope.row,'总磷','lastSrcDataValue','原始数据',false)"
                   placement="right"
                 >
                   <el-button type="text">{{tableText(scope.row,'总磷','lastDataValue')}}</el-button>
@@ -248,10 +257,13 @@
               <el-tooltip
                 class="item"
                 effect="light"
-                :content="tip(scope.row,'总氮','srcDataValue','原始数据')"
+                :content="tip(scope.row,'总氮','srcDataValue','原始数据',true)"
                 placement="right"
               >
-                <el-button type="text">{{tableText(scope.row,'总氮','dataValue')}}</el-button>
+                <div class="dataText">
+                  <span>{{tableText(scope.row,'总氮','dataValue')}}&nbsp;</span>
+                  <span style="font-weight: bolder">{{testData(scope.row,'总氮')}}</span>
+                </div>
               </el-tooltip>
             </template>
           </el-table-column>
@@ -286,7 +298,7 @@
                 <el-tooltip
                   class="item"
                   effect="light"
-                  :content="tip(scope.row,'总氮','lastSrcDataValue','原始数据')"
+                  :content="tip(scope.row,'总氮','lastSrcDataValue','原始数据',false)"
                   placement="right"
                 >
                   <el-button type="text">{{tableText(scope.row,'总氮','lastDataValue')}}</el-button>
@@ -347,9 +359,6 @@ export default {
           this.paramValue["dtTo"] = data.params.endTime;
           this.paramValue["pointId"] = data.params.pointId;
           this.getTableList();
-          // setTimeout(() => {
-            
-          // }, 300);
         }
       });
     },
@@ -401,7 +410,7 @@ export default {
         vList.push(valueList);
       });
       console.log(vList);
-      return vList
+      return vList;
     },
     // 动态展示因子数据
     _factorShow(val) {
@@ -421,6 +430,19 @@ export default {
         }
       }
     },
+    // 测试结果添加标记位
+    testData(val, name) {
+      let text = val.value.filter(item => item.paramName == name);
+      if (text.length === 0) {
+        return " ";
+      } else {
+        if (text[0].flag === null) {
+          return " ";
+        } else {
+          return text[0].flag;
+        }
+      }
+    },
     // 更改不合格颜色
     color(val, name, key) {
       let text = val.value.filter(item => item.paramName == name);
@@ -435,15 +457,25 @@ export default {
       }
     },
     // 合格提示
-    tip(val, name, key, tips) {
+    tip(val, name, key, tips, isShow) {
       let text = val.value.filter(item => item.paramName == name);
       if (text.length === 0) {
         return "--";
       } else {
-        if (text[0][key] === null) {
+        if (text[0][key] === null && text[0].flag === null) {
           return "--";
         } else {
-          return tips + ":" + text[0][key];
+          if (isShow) {
+            if (text[0][key] === null && text[0].flag !== null) {
+              return "标记位:" + text[0].flagName;
+            } else if (text[0][key] !== null && text[0].flag === null) {
+              return tips + ":" + text[0][key];
+            } else {
+              return tips + ":" + text[0][key] + "; 标记位:" + text[0].flagName;
+            }
+          } else {
+            return tips + ":" + text[0][key];
+          }
         }
       }
     }
@@ -471,6 +503,9 @@ body {
 }
 .el-button--text {
   color: #606266 !important;
+}
+.dataText {
+  cursor: pointer;
 }
 .no {
   color: #f00 !important;

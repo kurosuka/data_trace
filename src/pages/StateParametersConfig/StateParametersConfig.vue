@@ -29,7 +29,7 @@
           </el-select>
         </div>
         <div class="select">
-          <el-input v-model="factorValue" placeholder="关键字（因子编码，因子名称）" clearable></el-input>
+          <el-input v-model="factorValue" placeholder="关键字（状态参数编码，状态参数名称）" clearable></el-input>
         </div>
         <el-button class="btn" type="primary" @click="search">查找</el-button>
       </div>
@@ -39,7 +39,8 @@
         :data="tableList" 
         stripe
         size="mini"
-        @selection-change="handleSelectionChange">
+        @selection-change="handleSelectionChange"
+        height="calc(100% - 10px)">
         <el-table-column
           type="selection"
           width="55">
@@ -113,7 +114,7 @@
           <el-input type="number" v-model="indexMsg.sortNumber"></el-input>
         </el-form-item>
         <el-form-item label="描述" style="width:100%">
-          <el-input type="textarea" :rows="2" v-model="indexMsg.description" placeholder="请输入备注" maxlength="500"></el-input>
+          <el-input type="textarea" :rows="2" v-model="indexMsg.description" placeholder="请输入描述" maxlength="500"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -476,6 +477,9 @@ body {
 .select>.el-input{
   width:220px !important;
 }
+.select:nth-of-type(2)>.el-input{
+  width:260px !important;
+}
 .body {
   flex: 1;
 }
@@ -505,5 +509,9 @@ body {
 }
 .el-form-item__error {
   left: 14% !important;
+}
+.page {
+  padding-right: 5px;
+  padding-bottom: 5px;
 }
 </style>

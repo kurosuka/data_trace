@@ -39,7 +39,8 @@
         :data="tableList" 
         stripe
         size="mini"
-        @selection-change="handleSelectionChange">
+        @selection-change="handleSelectionChange"
+        height="calc(100% - 10px)">
         <el-table-column
           type="selection"
           width="55">
@@ -130,7 +131,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[5, 10, 20]"
+        :page-sizes="[15, 20, 30]"
         :page-size="size"
         style="float:right"
         layout="total, sizes, prev, pager, next, jumper"
@@ -143,6 +144,13 @@
 <script>
 export default {
   data: function(){
+    const check = (rule, value, callback)=>{
+      if(value.length === 0){
+        return callback(new Error('请选择状态参数'));
+      }else {
+        callback();
+      }
+    }
     return {
       contaminantsList: [],
       contaminantsValue: '',
@@ -152,7 +160,7 @@ export default {
       tableList: [],
       total: 0,
       page: 0,
-      size: 5,
+      size: 15,
       dialogVisible: false,
       dialogVisible1: false,
       multipleSelection: '',
@@ -172,7 +180,7 @@ export default {
           { required: true, message: '请选择监测污染物', trigger: 'change' },
         ],
         state: [
-          { required: true, message: '请选择状态参数', trigger: 'change' },
+          { required: true, validator: check, trigger: 'blur'},
         ],
         upperValue: [
           { required: true, message: '请输入参考默认上限', trigger: 'blur' },
@@ -245,10 +253,10 @@ export default {
     getTableList(){
       let url = this.baseUrl + '/factor/stateParam/page';
       let obj = {
-        factorCode: '',
-        keyword: '',
-        pageNo: '',
-        pageSize: ''
+        factorCode: this.contaminantsValue,
+        keyword: this.factorValue,
+        pageNo: this.page,
+        pageSize: this.size
       }
       this.$axios.get(url,{
         params: obj
@@ -291,12 +299,11 @@ export default {
         }
       })
     },
-    // 参考上下限
-    text(val){
-      console.log(val)
-    },
     // 查询
-    search(){},
+    search(){
+      this.page = 1;
+      this.getTableList();
+    },
     // 新增
     add(){
       this.dialogVisible = true;
@@ -342,11 +349,11 @@ export default {
       this.delId=arr.join(",");
       this.$confirm('确定要删除吗?').then(()=>{
         console.log(this.delId)
-        // this.handleDel();
+        this.handleDel();
       }).catch(()=>{});
     },
     async handleDel(){
-      var url = this.baseUrl + '';
+      var url = this.baseUrl + '/factor/stateParam/batchDelete';
       try{
         var res=await this.$axios.delete(url,{
           params:{
@@ -382,7 +389,8 @@ export default {
     saveNew(formName){
       this.getTitle();
       console.log(this.title)
-      let url = this.baseUrl + '/factor/stateParam/save';
+      // let url = this.baseUrl + '/factor/stateParam/save';
+      let url = this.baseUrl + '';
       let newFormData = new FormData();
       newFormData.append('factorCode',this.factorMsg.contaminants);
       newFormData.append('userGuid','test');
@@ -507,11 +515,6 @@ body {
   flex: 1;
 }
 /* 新增、编辑 */
-/* .editForm {
-  display:flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-} */
 .el-dialog__header {
   background-color: #cecece;
 }
@@ -521,16 +524,11 @@ body {
 .el-form-item__content>.el-input {
   width: 86% !important;
 }
-/* .el-form-item__content>.el-select>.el-input{
-  width: 109% !important;
-}
-.el-select-dropdown {
-  min-width: 210px !important;
-}
-.el-textarea {
-  width: 92% !important;
-} */
 .el-form-item__error {
   left: 14% !important;
+}
+.page {
+  padding-right: 5px;
+  padding-bottom: 5px;
 }
 </style>

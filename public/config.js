@@ -9,7 +9,8 @@
 
 // API接口地址
 window.API = 'http://183.166.140.243:8088/api';
-window.baseUrl = 'http://183.166.140.243:8088';
+// window.baseUrl = 'http://183.166.140.243:8088';
+window.baseUrl = 'http://192.168.90.8:8081';
 window.testUrl = 'http://192.168.90.41:8024/api'
 
 window.pageList = [{
