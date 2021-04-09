@@ -198,17 +198,22 @@ export default {
       let day = date.getDate();
       let hours = date.getHours();
       let str;
+      let _day;
+      let _hours;
       let time1,time2;
+      day < 10 ? _day = '0' + day : _day = day;
+      hours < 10 ? _hours = '0' + hours : _hours = hours;
       mounth < 10 ? time1 = '0' + (mounth - 1) : time1 = mounth;
       mounth < 10 ? time2 = '0' + mounth : time2 = mounth;
       if (mounth == "1") {
-        str = (year - 1) + "-12-" + day + " " + hours;
+        str = (year - 1) + "-12-" + _day + " " + _hours;
       } else if(mounth == "3"){
-        str = year + "-03-01" + " " + hours;
+        str = year + "-03-01" + " " + _hours;
       } else {
-        str = year + "-" + time1 + "-" + day + " " + hours;
+        str = year + "-" + time1 + "-" + _day + " " + _hours;
       }
-      let end = year + "-" + time2 + "-" + day + " " + hours;
+      let end = year + "-" + time2 + "-" + _day + " " + _hours;
+      console.log(end)
       this.strTime = str;
       this.endTime = end;
     }

@@ -167,19 +167,15 @@ export default {
       rules: {
         paramCode: [
           { required: true, message: '请输入因子编码', trigger: 'blur' },
-          // { max: 5, message: '长度需小于50个字符', trigger: 'blur' }
         ],
         paramName: [
           { required: true, message: '请输入因子名称', trigger: 'blur' },
-          // { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
         ],
         typeName: [
           { required: true, message: '请选择指标类型', trigger: 'change' },
-          // { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
         ],
         measureUnitName: [
           { required: true, message: '请选择计量单位', trigger: 'change' },
-          // { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
         ],
       },
       delId: '',
