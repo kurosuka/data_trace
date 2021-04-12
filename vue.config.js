@@ -113,6 +113,13 @@ module.exports = {
       title: '因子状态配置',
       chunks: ['chunk-vendors', 'chunk-common', 'FactorStateConfig']
     },
+    WeekQualityControl: { // 周质控
+      entry: './src/pages/WeekQualityControl/WeekQualityControl.js',
+      template: './public/index.html',
+      filename: 'WeekQualityControl.html',
+      title: '因子状态配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControl']
+    },
   },
   // 接口代理
   

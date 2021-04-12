@@ -474,6 +474,9 @@ export default {
               return tips + ":" + text[0][key] + "; 标记位:" + text[0].flagName;
             }
           } else {
+            if(text[0][key] === null){
+              return '--';
+            }
             return tips + ":" + text[0][key];
           }
         }
