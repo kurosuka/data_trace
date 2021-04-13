@@ -117,8 +117,22 @@ module.exports = {
       entry: './src/pages/WeekQualityControl/WeekQualityControl.js',
       template: './public/index.html',
       filename: 'WeekQualityControl.html',
-      title: '因子状态配置',
+      title: '周质控',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControl']
+    },
+    WeekQualityControlDefect: { // 周质控缺失
+      entry: './src/pages/WeekQualityControlDefect/WeekQualityControlDefect.js',
+      template: './public/index.html',
+      filename: 'WeekQualityControlDefect.html',
+      title: '周质控缺失',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControlDefect']
+    },
+    WeekQualityControlExamine: { // 周质控审核
+      entry: './src/pages/WeekQualityControlExamine/WeekQualityControlExamine.js',
+      template: './public/index.html',
+      filename: 'WeekQualityControlExamine.html',
+      title: '周质控审核',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControlExamine']
     },
   },
   // 接口代理

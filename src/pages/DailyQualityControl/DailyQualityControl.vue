@@ -258,7 +258,7 @@ body {
   line-height: 0;
 }
 .el-radio {
-  margin-bottom: 5px !important;
+  margin-bottom: 12px !important;
 }
 .el-radio__inner {
   border-radius: 0 !important;
