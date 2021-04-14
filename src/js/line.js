@@ -12,10 +12,9 @@ export function Line(arr, chartTitle) {
     title.push(arr[0].paramName);
     arr.map((item) => {
       time.push(item.dataTime);
-      val
     });
     _time = Array.from(new Set(time));
-    _time = _time.slice(0).sort((a, b) => (b < a ? -1 : 1));
+    _time = _time.slice(0).sort((a, b) => (a < b ? -1 : 1));
     _time.map(list => {
       let valueList = arr.filter((item) => {
         if (item.dataTime == list) {

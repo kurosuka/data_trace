@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="header">
-      <div>
+      <div class="btmGroup">
         <el-button
           type="success"
           @click="add"
@@ -29,7 +29,7 @@
           </el-select>
         </div>
         <div class="select">
-          <el-input v-model="factorValue" placeholder="关键字（因子编码，因子名称）" clearable></el-input>
+          <el-input v-model="factorValue" placeholder="关键字（状态参数编码，状态参数名称）" clearable></el-input>
         </div>
         <el-button class="btn" type="primary" @click="search">查找</el-button>
       </div>
@@ -39,18 +39,16 @@
         :data="tableList" 
         stripe
         size="mini"
-        @selection-change="handleSelectionChange">
+        @selection-change="handleSelectionChange"
+        height="calc(100% - 10px)">
         <el-table-column
           type="selection"
           width="55">
         </el-table-column>
-        <el-table-column
-          type="selection"
-          width="55">
-        </el-table-column>
+        <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
         <el-table-column prop="" label="操作" align="center" width="100px">
           <template slot-scope="scope">
-            <el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(scope.row)">编辑</el-button>
+            <el-button type="text" icon="el-icon-edit" size="mini" @click="edit(scope.row)">编辑</el-button>
           </template>
         </el-table-column>
         <el-table-column 
@@ -69,17 +67,17 @@
       style="text-align:left !important"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
-      width="600px"
+      width="700px"
     >
       <el-form ref="form" label-width="80px" size="mini" :model="indexMsg" :rules="rules" class="editForm">
-        <el-form-item label="因子编码" style="width:49%" prop="factor">
-          <el-input v-model="indexMsg.factor" placeholder="请输入因子编码" maxlength="50"></el-input>
+        <el-form-item label="状态参数编码" style="width:49%" prop="paramCode">
+          <el-input v-model="indexMsg.paramCode" placeholder="请输入状态参数编码" maxlength="50"></el-input>
         </el-form-item>
-        <el-form-item label="因子名称" style="width:49%" prop="factorName">
-          <el-input v-model="indexMsg.factorName" placeholder="请输入因子名称" maxlength="100"></el-input>
+        <el-form-item label="状态参数名称" style="width:49%" prop="paramName">
+          <el-input v-model="indexMsg.paramName" placeholder="请输入状态参数名称" maxlength="100"></el-input>
         </el-form-item>
-        <el-form-item label="指标类型" style="width:49%" prop="indexType">
-          <el-select v-model="indexMsg.indexType" placeholder="请选择" filterable>
+        <el-form-item label="指标类型" style="width:49%" prop="typeName">
+          <el-select v-model="indexMsg.typeName" placeholder="请选择" filterable>
             <el-option
               v-for="item in indexList"
               :key="item.itemValue"
@@ -88,8 +86,8 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="计量单位" style="width:49%" prop="measurement">
-          <el-select v-model="indexMsg.measurement" placeholder="请选择">
+        <el-form-item label="计量单位" style="width:49%" prop="measureUnitName">
+          <el-select v-model="indexMsg.measureUnitName" placeholder="请选择">
             <el-option
               v-for="item in measurementList"
               :key="item.itemValue"
@@ -98,14 +96,25 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="默认小数位" style="width:49%" prop="decimal">
-          <el-input type="number" v-model="indexMsg.decimal"></el-input>
+        <el-form-item label="默认小数位" style="width:49%" prop="decimalNumber">
+          <el-input type="number" v-model="indexMsg.decimalNumber"></el-input>
+        </el-form-item>
+        <el-form-item label="是否使用" style="width:49%" prop="flagEnable">
+          <el-tooltip :content="indexMsg.flagEnable" placement="top">
+            <el-switch
+              v-model="indexMsg.flagEnable"
+              active-color="#13ce66"
+              inactive-color="#ff4949"
+              active-value="是"
+              inactive-value="否">
+            </el-switch>
+          </el-tooltip>
         </el-form-item>
         <el-form-item label="排序" style="width:49%" prop="sortNumber">
           <el-input type="number" v-model="indexMsg.sortNumber"></el-input>
         </el-form-item>
-        <el-form-item label="备注" style="width:100%">
-          <el-input type="textarea" :rows="2" v-model="indexMsg.note" placeholder="请输入备注" maxlength="500"></el-input>
+        <el-form-item label="描述" style="width:100%">
+          <el-input type="textarea" :rows="2" v-model="indexMsg.description" placeholder="请输入描述" maxlength="500"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -140,13 +149,14 @@ export default {
       label: [],
       tableList: [],
       indexMsg: {
-        factor: '',
-        factorName: '',
-        indexType: '',
-        measurement: '',
-        decimal: '',
+        paramCode: '',
+        paramName: '',
+        typeName: '',
+        measureUnitName: '',
+        decimalNumber: '',
+        flagEnable: '否',
         sortNumber: '',
-        note: ''
+        description: ''
       },
       total: 0,
       page: 0,
@@ -155,15 +165,20 @@ export default {
       dialogVisible: false,
       multipleSelection: '',
       rules: {
-        factor: [
+        paramCode: [
           { required: true, message: '请输入因子编码', trigger: 'blur' },
-          { max: 5, message: '长度需小于50个字符', trigger: 'blur' }
         ],
-        factorName: [
+        paramName: [
           { required: true, message: '请输入因子名称', trigger: 'blur' },
-          // { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
+        ],
+        typeName: [
+          { required: true, message: '请选择指标类型', trigger: 'change' },
+        ],
+        measureUnitName: [
+          { required: true, message: '请选择计量单位', trigger: 'change' },
         ],
       },
+      delId: '',
       baseUrl: window.testUrl
     }
   },
@@ -181,7 +196,7 @@ export default {
     //分页条件
     handleSizeChange(val){
       this.size = val
-      // this.getTabList()
+      this.getTableList()
     },
     //关闭弹出框
     handleClose(done) {
@@ -190,19 +205,19 @@ export default {
     },
     handleCurrentChange(val) {
       this.page = val;
-      // this.getTabList();
+      this.getTableList();
     },
     // 获取指标类型
     getIndexList(){
       this._publicFun('状态参数指标类别').then(res => {
-        console.log(res)
         this.indexList = res;
+        console.log(res)
+        this.getTableList();
       })
     },
     // 获取计量单位
     getMeasurementList(){
       this._publicFun('状态参数计量单位').then(res => {
-        console.log(res)
         this.measurementList = res;
       })
     },
@@ -210,28 +225,184 @@ export default {
     getTableList(){
       let url = this.baseUrl + '/stateParam/page';
       let obj = {
-        typeCode: '',
-        keyword: '',
-        pageNo: '',
-        pageSize: ''
+        typeCode: this.indexValue,
+        keyword: this.factorValue,
+        pageNo: this.page,
+        pageSize: this.size
       }
       this.$axios.get(url,{
         params: obj
       }).then(res => {
+        if(res.status == 200){
+          if(res.data.code == 200){
+            let val = res.data.data;
+            this.total = val.total;
+            this.size = val.size;
+            this.page = val.current;
+            let list = val.records;
+            let cloneList = JSON.parse(JSON.stringify(list));
+            this.tableList = cloneList.map(item => {
+              if(item.flagEnable === 0){
+                item.flagEnable = '否';
+              }else if(item.flagEnable == 1){
+                item.flagEnable = '是';
+              }
+              return item;
+            });
+            let _tableList = {
+              paramCode: '状态参数编码',
+              paramName: '状态参数名称',
+              typeName: '指标类别',
+              measureUnitName: '计量单位',
+              decimalNumber: '默认小数位',
+              flagEnable: '是否使用',
+              sortNumber: '排序值'
+            };
+            let labelList=Object.entries(_tableList);
+            this.label=labelList.map(function(item){
+              return {
+                title:item[1],
+                prop:item[0]
+              };
+            });
+          }
+        }
         console.log(res)
       })
     },
     // 查询
-    search(){},
+    search(){
+      this.page = 1;
+      this.getTableList();
+    },
     // 新增
     add(){
       this.dialogVisible = true;
       this.addFlag = true;
+      let obj = {
+        paramCode: '',
+        paramName: '',
+        typeName: '',
+        measureUnitName: '',
+        decimalNumber: '',
+        flagEnable: '否',
+        sortNumber: '',
+        description: ''
+      };
+      this.indexMsg = obj;
+    },
+    // 编辑
+    edit(row){
+      let url = this.baseUrl + '/stateParam/getById';
+      this.dialogVisible = true;
+      this.addFlag = false;
+      this.$axios.get(url,{
+        params: {
+          id: row.id
+        }
+      }).then(res => {
+        console.log(res)
+        if(res.status == 200){
+          if(res.data.code == 200){
+            let list = res.data.data
+            this.indexMsg.paramCode = list.paramCode;
+            this.indexMsg.paramName = list.paramName;
+            this.indexMsg.typeName = list.typeCode;
+            this.indexMsg.measureUnitName = list.measureUnit;
+            this.indexMsg.decimalNumber = list.decimalNumber;
+            if(list.flagEnable === 0){
+              this.indexMsg.flagEnable = "否";
+            }else if(list.flagEnable == 1){
+              this.indexMsg.flagEnable = "是";
+            }
+            this.indexMsg.sortNumber = list.sortNumber;
+            this.indexMsg.description = list.description;
+          }
+        }
+      })
     },
     // 删除
-    del(){},
+    del(){
+       if(this.multipleSelection.length===0){
+        alert("请选择想要删除项！");
+        return false;
+      }
+      var arr=[];
+      this.multipleSelection.forEach((item)=>{
+        arr.push(item.id);
+      });
+      this.delId=arr.join(",");
+      this.$confirm('确定要删除吗?').then(()=>{
+        console.log(this.delId)
+        this.handleDel();
+      }).catch(()=>{});
+    },
+    async handleDel(){
+      let url = this.baseUrl + '/stateParam/batchDelete';
+      try{
+        let res=await this.$axios.delete(url,{
+          params:{
+            ids:this.delId
+          }
+        });
+        console.log(res)
+        if(res.data.code==200){
+          this.$message({
+            message: res.data.msg,
+            type: 'success'
+          });
+        }else if(res.data.code == 500){
+          this.$message.error(res.data.msg);
+        }
+        this.delId = "";
+        this.getTableList();
+      }catch(e){
+        console.log(e)
+      }
+    },
     // 保存
-    save(){},
+    save(formName){
+      let url = this.baseUrl + '/stateParam/save';
+      let flag;
+      if(this.indexMsg.flagEnable == "是"){
+        flag = 1
+      }else if(this.indexMsg.flagEnable == "否"){
+        flag = 0;
+      }
+      this.$refs[formName].validate((valid) => {
+        if(valid){
+          this.$confirm('确认提交？').then(()=>{
+            var obj = {
+              creator: 'test',
+              modifier: 'test',
+              paramCode: this.indexMsg.paramCode,
+              paramName: this.indexMsg.paramName,
+              typeCode: this.indexMsg.typeName,
+              measureUnit: this.indexMsg.measureUnitName,
+              decimalNumber: this.indexMsg.decimalNumber,
+              flagEnable: flag,
+              sortNumber: this.indexMsg.sortNumber,
+              description: this.indexMsg.description
+            };
+            console.log(obj);
+            this.$axios.post(url,obj).then(res => {
+              console.log(res)
+              if(res.data.code==200){
+                this.$message({
+                  message: res.data.msg,
+                  type: 'success'
+                });
+                this.getTableList();
+                this.dialogVisible = false;
+                this.$refs[formName].resetFields();
+              }else if(res.data.code == 500){
+                this.$message.error(res.data.msg);
+              }
+            });
+          });
+        }
+      });
+    },
     // 取消
     reset(formName){
       this.dialogVisible = false;
@@ -281,6 +452,9 @@ body {
   margin: 10px 5px;
   height: 30px;
 }
+.btmGroup {
+  padding-left: 10px;
+}
 .query {
   display: flex;
   width: 700px;
@@ -299,16 +473,41 @@ body {
 .select>.el-input{
   width:220px !important;
 }
+.select:nth-of-type(2)>.el-input{
+  width:260px !important;
+}
 .body {
   flex: 1;
 }
 /* 新增、编辑 */
-.editForm{
+.editForm {
   display:flex;
   flex-wrap: wrap;
   justify-content: space-between;
 }
-.el-dialog__header{
+.el-dialog__header {
   background-color: #cecece;
+}
+.el-form-item__label {
+  width: 110px !important;
+}
+.el-form-item__content>.el-input {
+  width: 86% !important;
+}
+.el-form-item__content>.el-select>.el-input{
+  width: 109% !important;
+}
+.el-select-dropdown {
+  min-width: 210px !important;
+}
+.el-textarea {
+  width: 92% !important;
+}
+.el-form-item__error {
+  left: 14% !important;
+}
+.page {
+  padding-right: 5px;
+  padding-bottom: 5px;
 }
 </style>
