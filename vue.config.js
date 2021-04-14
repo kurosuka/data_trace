@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-04-01 14:32:51
+ * @LastEditTime: 2021-04-08 09:39:07
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -56,6 +56,20 @@ module.exports = {
       filename: 'supportDocument.html',
       title: '佐证材料',
       chunks: ['chunk-vendors', 'chunk-common', 'SupportDocument']
+    },
+    WeekQualityData: { // 右键周质控
+      entry: './src/pages/WeekQualityData/WeekQualityData.js',
+      template: './public/index.html',
+      filename: 'WeekQualityData.html',
+      title: '周质控',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityData']
+    },
+    HistoryData: { // 右键历史数据
+      entry: './src/pages/HistoryData/HistoryData.js',
+      template: './public/index.html',
+      filename: 'HistoryData.html',
+      title: '周质控',
+      chunks: ['chunk-vendors', 'chunk-common', 'HistoryData']
     },
     DailyQualityControl: {// 日质控
       // page 的入口

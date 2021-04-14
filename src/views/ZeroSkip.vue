@@ -1,29 +1,34 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-22 09:35:07
- * @LastEditTime: 2021-04-01 17:21:40
+ * @LastEditTime: 2021-04-08 09:18:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\pages\zeroSkip\zeroSkip.vue
 -->
 <template>
   <div class="zero-skip">
-    <!--测试结果详情-->
-      <div class="navlist">
-        <div>测试值：<span>{{testValue}}</span></div>
-        <div>测试时间：<span>{{testTime}}</span></div>
-        <!-- <div>分析方法：<span>{{testFn}}</span></div> -->
-      </div>
     <div class="table">
       <!--零点数据-->
     <el-table :data="zeroData" :border="true" :row-class-name="_tableRowClassName">
       <el-table-column label="序号" type="index" align="center"></el-table-column>
       <el-table-column label="日期"  width="150px" prop="dataTime" align="center" :show-overflow-tooltip="true" :resizable="true"></el-table-column>
       <el-table-column label="测试结果" prop="dataValue" align="center">
+        <template slot-scope="scope">
+          <div>
+            <el-tooltip :content="scope.row.flagName" placement="right" :disabled="scope.row.flagName === null">
+              <span>{{scope.row.dataValue === null ? '--' : scope.row.dataValue}} {{scope.row.flag}}</span>
+            </el-tooltip>
+          </div>
+        </template>
       </el-table-column>
       <el-table-column label="零点核查" align="center" prop="">
         <el-table-column label="标准样浓度" align="center" prop="standardValue"></el-table-column>
-        <el-table-column label="绝对误差" align="center" prop="wcRate"></el-table-column>
+        <el-table-column label="绝对误差" align="center" prop="wcRate">
+          <template slot-scope="scope">
+            {{scope.row.wcRate !== null ? scope.row.wcRate : '--'}}
+          </template>
+        </el-table-column>
         <el-table-column label="合格情况" align="center" prop="wcQualified">
           <template slot-scope="scope">
             <span :class="{red : _isRed(scope.row.wcQualified)}">{{scope.row.wcQualified}}</span>
@@ -31,9 +36,21 @@
         </el-table-column>
       </el-table-column>
       <el-table-column label="24小时零点漂移" align="center" prop="drift">
-        <el-table-column label="前一次测试结果" align="center" prop="lastDataValue"></el-table-column>
+        <el-table-column label="前一次测试结果" align="center" prop="lastDataValue">
+          <template slot-scope="scope">
+          <div>
+            <el-tooltip :content="scope.row.lastFlagName" placement="right" :disabled="scope.row.lastFlagName === null">
+              <span>{{scope.row.lastDataValue === null ? '--' : scope.row.lastDataValue}} {{scope.row.lastFlag}}</span>
+            </el-tooltip>
+          </div>
+        </template>
+        </el-table-column>
         <el-table-column label="跨度值" align="center" prop="spanValue"></el-table-column>
-        <el-table-column label="相对误差" align="center" prop="zdRate"></el-table-column>
+        <el-table-column label="相对误差" align="center" prop="zdRate">
+          <template slot-scope="scope">
+            {{scope.row.zdRate !== null ? scope.row.zdRate : '--'}}
+          </template>
+        </el-table-column>
         <el-table-column label="合格情况" align="center" prop="zdQualified">
           <template slot-scope="scope">
             <span :class="{red : _isRed(scope.row.zdQualified)}">{{scope.row.zdQualified}}</span>
@@ -45,10 +62,22 @@
     <el-table :data="spanData" class="skip" :border="true" :row-class-name="_tableRowClassName">
       <el-table-column label="序号" type="index" align="center"></el-table-column>
       <el-table-column label="日期" prop="dataTime" width="150px" align="center" :show-overflow-tooltip="true" :resizable="true"></el-table-column>
-      <el-table-column label="测试结果" prop="dataValue" align="center"></el-table-column>
+      <el-table-column label="测试结果" prop="dataValue" align="center">
+        <template slot-scope="scope">
+          <div>
+            <el-tooltip :content="scope.row.flagName" placement="right" :disabled="scope.row.flagName === null">
+              <span>{{scope.row.dataValue === null ? '--' : scope.row.dataValue}} {{scope.row.flag}}</span>
+            </el-tooltip>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="跨度核查" align="center" prop="zeroCheck">
         <el-table-column label="标准样浓度" align="center" prop="standardValue"></el-table-column>
-        <el-table-column label="相对误差" align="center" prop="wcRate"></el-table-column>
+        <el-table-column label="相对误差" align="center" prop="wcRate">
+          <template slot-scope="scope">
+            {{scope.row.wcRate !== null ? scope.row.wcRate : '--'}}
+          </template>
+        </el-table-column>
         <el-table-column label="合格情况" align="center" prop="wcQualified">
           <template slot-scope="scope">
             <span :class="{red : _isRed(scope.row.wcQualified)}">{{scope.row.wcQualified}}</span>
@@ -56,9 +85,21 @@
         </el-table-column>
       </el-table-column>
       <el-table-column label="24小时跨度漂移" align="center" prop="drift">
-        <el-table-column label="前一次测试结果" align="center" prop="lastDataValue"></el-table-column>
+        <el-table-column label="前一次测试结果" align="center" prop="lastDataValue">
+            <template slot-scope="scope">
+            <div>
+              <el-tooltip :content="scope.row.lastFlagName" placement="right" :disabled="scope.row.lastFlagName === null">
+                <span>{{scope.row.lastDataValue === null ? '--' : scope.row.lastDataValue}} {{scope.row.lastFlag}}</span>
+              </el-tooltip>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="跨度值" align="center" prop="spanValue"></el-table-column>
-        <el-table-column label="相对误差" align="center" prop="zdRate"></el-table-column>
+        <el-table-column label="相对误差" align="center" prop="zdRate">
+          <template slot-scope="scope">
+            {{scope.row.zdRate !== null ? scope.row.zdRate : '--'}}
+          </template>
+        </el-table-column>
         <el-table-column label="合格情况" align="center" prop="zdQualified">
           <template slot-scope="scope">
             <span :class="{red : _isRed(scope.row.zdQualified)}">{{scope.row.zdQualified}}</span>
@@ -81,6 +122,8 @@ export default {
       testValue: '0.35',
       testTime: '2020-03-01 00:00:00',
       testFn: '高锰酸盐氧化-ORP电位滴定法',
+      flag: '', // 测试值标记位
+      flagName: null, // 标记位中文含义
       zeroData: [  // 零点数据
       ], 
       spanData: [ // 跨度数据
@@ -115,7 +158,9 @@ export default {
         }) : [];
         console.log(topData);
         this.testTime = topData.length ? topData[0].dataTime : '--';
-        this.testValue = topData.length ? topData[0].dataValue : '--'
+        this.testValue = topData.length ? topData[0].dataValue : '--';
+        this.flag = topData.length ? topData[0].flag : '';
+        this.flagName = topData.length ? topData[0].flagName : '';
       })
     },
     // 给定行颜色
