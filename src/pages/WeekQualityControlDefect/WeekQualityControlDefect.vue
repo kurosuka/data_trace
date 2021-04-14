@@ -305,10 +305,7 @@ body {
 .el-form-item__label {
   width: 110px !important;
 }
-.el-form-item__content>.el-input {
-  width: 86% !important;
-}
-.el-form-item__error {
-  left: 14% !important;
+.el-form-item:nth-of-type(2) .el-input__inner,.el-form-item:nth-of-type(3) .el-input__inner {
+  width: 89% !important;
 }
 </style>
