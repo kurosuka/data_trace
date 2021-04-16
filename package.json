@@ -13,6 +13,7 @@
     "core-js": "^3.6.5",
     "echarts": "^4.9.0",
     "element-ui": "^2.15.1",
+    "file-saver": "^2.0.5",
     "moment": "^2.29.1",
     "reset.css": "^2.0.2",
     "sinoyd-ui": "^0.1.5",
@@ -20,7 +21,9 @@
     "vue-element-dialog-draggable": "^1.1.0",
     "vue-property-decorator": "^8.0.0",
     "vue-router": "^3.2.0",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "xlsx": "^0.16.9",
+    "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

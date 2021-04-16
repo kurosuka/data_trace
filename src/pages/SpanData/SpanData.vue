@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="table">
-      <el-table :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
+      <el-table id="out-table" :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
         <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
         <el-table-column label="日期" prop="time" align="center" min-width="150px"></el-table-column>
         <!-- 高锰酸盐指数 -->
@@ -329,6 +329,7 @@
   </div>
 </template>
 <script>
+import { exportExcel } from '../../js/tools'
 export default {
   data: function() {
     return {
@@ -350,14 +351,18 @@ export default {
     // 获取外部数据
     getValue() {
       window.addEventListener("message", eve => {
-        this.loading = true;
         let data = eve.data;
         if (data.params !== undefined) {
-          this.factor = data.params.factorList;
-          this.paramValue["dtFrom"] = data.params.strTime;
-          this.paramValue["dtTo"] = data.params.endTime;
-          this.paramValue["pointId"] = data.params.pointId;
-          this.getTableList();
+          if(data.params.isExport){
+            exportExcel("out-table", "跨度数据"); // 导出
+          }else{
+            this.loading = true;
+            this.factor = data.params.factorList;
+            this.paramValue["dtFrom"] = data.params.strTime;
+            this.paramValue["dtTo"] = data.params.endTime;
+            this.paramValue["pointId"] = data.params.pointId;
+            this.getTableList();
+          }
         }
       });
     },

@@ -59,6 +59,7 @@
         </el-select>
       </div>
       <el-button class="btn" type="primary" @click="search">查找</el-button>
+      <el-button class="btn" type="warning" @click="exportTable">导出</el-button>
     </div>
     <div class="body">
       <el-tabs v-model="tabActive" type="card" @tab-click="changeClick">
@@ -99,7 +100,8 @@ export default {
       baseUrl: window.baseUrl,
       tabActive: "0",
       pageList: window.pageList,
-      pageUrl: window.pageList[0].url
+      pageUrl: window.pageList[0].url,
+      isExportTable: false
     };
   },
   mounted: function() {
@@ -139,6 +141,7 @@ export default {
     },
     // 查询
     search() {
+      this.isExportTable = false;
       if (this.areaPoint === "") {
         alert("请选择站点！");
         return false;
@@ -166,6 +169,11 @@ export default {
     iframeLoad() {
       this.iframeParam();
     },
+    // 导出
+    exportTable(){
+      this.isExportTable = true;
+      this.iframeParam()
+    },
     // iframe广播参数
     iframeParam() {
       let iframeWin = this.$refs.iframe.contentWindow;
@@ -179,7 +187,8 @@ export default {
         factorList: this.factorValue,
         pointId: this.areaPoint,
         strTime: this.strTime,
-        endTime: this.endTime
+        endTime: this.endTime,
+        isExport: this.isExportTable
       };
       console.log(obj);
       iframeWin.postMessage(
@@ -189,6 +198,7 @@ export default {
         },
         "*"
       );
+      this.isExportTable = false;
     },
     // 获取当前时间
     getTime() {
