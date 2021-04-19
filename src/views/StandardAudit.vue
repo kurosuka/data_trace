@@ -111,7 +111,7 @@ export default {
       auditForm: { //  是否审核参数
         radio: '1',
       },
-      base: 'http://192.168.90.41:8024/api' //window.Api // 接口api地址
+      base: window.Api // 接口api地址
     };
   },
   computed: {

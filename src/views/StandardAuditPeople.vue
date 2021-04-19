@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-03-24 17:06:43
- * @LastEditTime: 2021-04-06 15:46:03
+ * @LastEditTime: 2021-04-16 13:41:58
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\views\StantardAuditPeople.vue
@@ -64,7 +64,7 @@ export default {
       loading: false,    // loading加载
       filterText: '', // 左侧树输入框
       currentKey: '', // 左侧树默认值
-      base: 'http://192.168.90.41:8024/api', //window.API api接口地址
+      base: window.API // api接口地址
     }
   },
   mounted() {

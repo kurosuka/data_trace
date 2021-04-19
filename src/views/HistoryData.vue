@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-04-08 09:36:08
- * @LastEditTime: 2021-04-08 17:40:17
+ * @LastEditTime: 2021-04-16 14:11:40
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\views\HistoryData.vue
@@ -138,7 +138,7 @@ export default {
           hold: true
         }
       ],
-      loading: true, // 数据加载控制
+      loading: false, // 数据加载控制
     }
   },
   mounted() {

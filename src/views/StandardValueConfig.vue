@@ -30,7 +30,7 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="primary" @click="getAuditTableData" v-preventReClick>查询</el-button>
+              <el-button type="primary" @click="getAuditTableData" v-preventReClick icon="el-icon-search">查询</el-button>
             </el-form-item>
             <el-form-item label="">
               <el-button type="warning" @click="dialogToggle"
@@ -345,7 +345,7 @@ export default {
         pageSize: 20,
         total: 80
       },
-      base: /* window.API */'http://192.168.90.41:8024/api' // 接口api地址
+      base: window.API // 接口api地址
     };
   },
   components: {
