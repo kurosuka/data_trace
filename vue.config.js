@@ -148,6 +148,13 @@ module.exports = {
       title: '周质控审核',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControlExamine']
     },
+    FactorConfig: { // 因子范围配置
+      entry: './src/pages/FactorConfig/FactorConfig.js',
+      template: './public/index.html',
+      filename: 'FactorConfig.html',
+      title: '因子范围配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
+    },
   },
   // 接口代理
   
