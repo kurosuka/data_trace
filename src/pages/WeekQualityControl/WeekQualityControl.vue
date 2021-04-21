@@ -51,9 +51,9 @@
         >
           <el-option
             v-for="item in factorList"
-            :key="item.value"
-            :label="item.title"
-            :value="item.value"
+            :key="item.factorCode"
+            :label="item.factorName"
+            :value="item.factorCode"
           ></el-option>
         </el-select>
       </div>
@@ -134,8 +134,13 @@ export default {
       standardValue: '',
       tableList: [],
       label: [],
-      loading: false
+      loading: false,
+      baseUrl: window.configUrl
     }
+  },
+  mounted: function(){
+    this.getPointList();
+    this.getFactorList();
   },
   methods: {
     indexMethod(index) {
@@ -143,7 +148,29 @@ export default {
     },
     // 获取点位信息
     getPointList(){
-      
+      let url = this.baseUrl + '/weekQuality/getPointList';
+      this.$axios.get(url).then(res => {
+        console.log(res)
+        if(res.status == 200){
+          if(res.data.code == 200){
+            this.pointList = res.data.data;
+            // this.getTableList();
+          }
+        }
+      })
+    },
+    // 获取因子信息
+    getFactorList(){
+      let url = this.baseUrl + '/weekQuality/queryWeekFactorList';
+      this.$axios.get(url).then(res => {
+        console.log(res)
+        if(res.status == 200){
+          if(res.data.code == 200){
+            this.factorList = res.data.data;
+            // this.getTableList();
+          }
+        }
+      })
     },
     handleCheckedChange(){},
     // 获取表格数据
