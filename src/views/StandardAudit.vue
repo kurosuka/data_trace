@@ -30,10 +30,10 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="primary" @click="getNotAuditList(null)" v-preventReClick>查询</el-button>
+              <el-button type="primary" @click="getNotAuditList(null)" v-preventReClick icon="el-icon-search">查询</el-button>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="warning" @click="audit"
+              <el-button type="warning" @click="audit" icon="el-icon-check"
                 >审核</el-button
               >
             </el-form-item>
@@ -111,7 +111,7 @@ export default {
       auditForm: { //  是否审核参数
         radio: '1',
       },
-      base: window.Api // 接口api地址
+      base: window.API // 接口api地址
     };
   },
   computed: {
@@ -162,7 +162,7 @@ export default {
     _selectData() {},
     // 获取点位数据
     getPoints() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId')
      return  this.$axios({
         method: "get",
         url: `${this.base}/spanValuesSetting/findPointList`,
@@ -213,7 +213,7 @@ export default {
     },
     // 审核按钮点击
     auditClick() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId')
       const data = this.multiSelection.map(item=> {
         return {
           id: item.id,
