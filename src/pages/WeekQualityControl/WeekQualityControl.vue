@@ -64,10 +64,11 @@
         </el-select>
       </div>
       <el-button class="btn" type="primary" @click="search">查找</el-button>
+      <el-button class="btn" type="warning" @click="exportData">导出</el-button>
     </div>
     <div class="body">
       <el-table :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
-        <el-table-column fixed label="序号" type="index" :index="indexMethod"></el-table-column>
+        <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
         <el-table-column
           v-for="(item) in label"
           :key="item.title"
@@ -96,6 +97,7 @@
 </template>
 
 <script>
+import { exportExcel } from '../../js/exportExcel'
 export default {
   data: function() {
     return {
@@ -197,11 +199,14 @@ export default {
     getTableList() {
       let url = this.baseUrl + "/weekQuality/queryWeekCheckList";
       let obj = {
-        pointId: this.areaPoint,
+        // pointId: this.areaPoint,
+        pointId: '347',
         factorCodeList: this.factorValue,
         isqualifiedList: this.standardValue,
-        startTime: this.strTime,
-        endTime: this.endTime,
+        // startTime: this.strTime,
+        // endTime: this.endTime,
+        startTime: '2021-03-02 13',
+        endTime: '2021-04-09 13',
         pageNo: this.page,
         pageSize: this.size
       };
@@ -213,24 +218,17 @@ export default {
         this.page = val.current;
         let list = val.records;
         let cloneList = JSON.parse(JSON.stringify(list));
-        this.tableList = cloneList.map(item => {
-          if (item.flagEnable === 0) {
-            item.flagEnable = "否";
-          } else if (item.flagEnable == 1) {
-            item.flagEnable = "是";
-          }
-          return item;
-        });
+        this.tableList = cloneList;
         let _tableList = {
-          factorName: "站点名称",
-          paramCode: "日期",
-          paramName: "监测项目",
-          typeName: "仪器值",
-          measureUnitName: "标液编号",
-          decimalNumber: "标准液浓度",
-          upperValue: "误差",
-          lowerValue: "技术要求",
-          lowerValue1: "合格情况",
+          pointName: "站点名称",
+          dateTime: "日期",
+          factorName: "监测项目",
+          checkValue: "仪器值",
+          solutionNumber: "标液编号",
+          standardValue: "标准液浓度",
+          errorValue: "误差",
+          technicalConditions: "技术要求",
+          qualified: "合格情况",
         };
         let labelList = Object.entries(_tableList);
         this.label = labelList.map(function(item) {
@@ -243,7 +241,50 @@ export default {
     },
     // 查询
     search() {
-      console.log(this.strTime);
+      if(this.strTime === null){
+        alert('请选择开始时间！');
+        return false;
+      }
+      if(this.endTime === null){
+        alert('请选择结束时间！');
+        return false;
+      }
+      if(this.factorValue.length === 0 || this.factorValue === null){
+        alert('请选择监测因子！');
+        return false;
+      }
+      if(this.standardValue.length === 0 || this.standardValue === null){
+        alert('请选择合格情况！');
+        return false;
+      }
+      this.page = 1;
+      this.getTableList();
+    },
+    // 导出
+    exportData(){
+      let url = this.baseUrl + '/weekQuality/exportWeekCheckData';
+      let obj = {
+        // pointId: this.areaPoint,
+        pointId: '347',
+        factorCodeList: this.factorValue,
+        isqualifiedList: this.standardValue,
+        // startTime: this.strTime,
+        // endTime: this.endTime,
+        startTime: '2021-03-02 13',
+        endTime: '2021-04-09 13',
+        pageNo: this.page,
+        pageSize: this.size
+      };
+      this.$axios.post(url,obj,{
+        responseType:'blob'
+      }).then(res => {
+        if(res.status == 200){
+          let file = res.data;
+          let blob = new Blob([file]);
+          let fileName='周质控数据.xlsx';
+          exportExcel(blob,fileName)
+        }
+      })
     },
     // 获取当前时间
     getTime() {
