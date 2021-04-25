@@ -148,6 +148,28 @@ module.exports = {
       title: '周质控审核',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControlExamine']
     },
+    WeekStandardValueConfig: { //  周质控跨度值标准值配置
+      entry: './src/pages/WeekStandardValueConfig/weekStandardValueConfig.js',
+      template: './public/index.html',
+      filename: 'weekStandardValueConfig.html',
+      title: '周质控跨度值标准值配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardValueConfig']
+    },
+   
+    WeekStandardAudit: {  // 周质控跨度值标准值审核
+      entry: './src/pages/WeekStandardAudit/weekStandardAudit.js',
+      template: './public/index.html',
+      filename: 'weekStandardAudit.html',
+      title: '周质控跨度值标准值审核',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAudit']
+    },WeekStandardAuditPeople: { // 周质控点位跨度值标准值审核人员分配
+      entry: './src/pages/WeekStandardAuditPeople/weekStandardAuditPeople.js',
+      template: './public/index.html',
+      filename: 'weekStandardAuditPeople.html',
+      title: '周质控点位跨度值标准值审核人员分配',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAuditPeople']
+    }
+    
   },
   // 接口代理
   
