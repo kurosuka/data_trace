@@ -213,6 +213,10 @@ export default {
       this.size = val
       this.getTableList()
     },
+    handleCurrentChange(val) {
+      this.page = val;
+      this.getTableList();
+    },
     //关闭弹出框
     handleClose(done) {
       this.$refs["form"].resetFields();
@@ -222,10 +226,7 @@ export default {
       this.$refs["form"].resetFields();
       done();
     },
-    handleCurrentChange(val) {
-      this.page = val;
-      this.getTableList();
-    },
+    
     // 获取监测污染物
     getIndexList(){
       let url = this.baseUrl + '/factor/stateParam/factorList';

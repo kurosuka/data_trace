@@ -3,7 +3,7 @@
     <div class="header">
       <div class="select">
         <span>站点：</span>
-        <el-select v-model="pointValue" placeholder="请选择" multiple collapse-tags>
+        <el-select v-model="pointValue" placeholder="请选择"  collapse-tags>
           <el-option-group
             v-for="(group,index) in pointList"
             :key="group.id"
@@ -74,7 +74,7 @@ export default {
   data: function() {
     return {
       pointList: [],
-      pointValue: [],
+      pointValue: '',
       strTime: "",
       endTime: "",
       factorList: [
@@ -97,7 +97,7 @@ export default {
       ],
       factorValue: ["w01019", "w21003", "w21011", "w21001"],
       areaPoint: "",
-      baseUrl: window.baseUrl,
+      baseUrl: window.API,
       tabActive: "0",
       pageList: window.pageList,
       pageUrl: window.pageList[0].url,
@@ -111,7 +111,7 @@ export default {
   methods: {
     // 获取测点
     getPointList() {
-      let url = this.baseUrl + "/api/audit/auth/pointTree";
+      let url = this.baseUrl + "/audit/auth/pointTree";
       this.$axios
         .get(url, {
           params: {
@@ -123,18 +123,18 @@ export default {
             if (res.data.code == 200) {
               let obj = res.data;
               this.pointList = obj.data;
-              this.pointValue.push(obj.data[0].children[0].title);
+              this.pointValue = obj.data[0].children[0].title;
               this.areaPoint = obj.data[0].children[0].id;
             }
           }
         });
     },
     handleCheckedChange() {
-      this.pointValue = [];
+      this.pointValue = '';
       this.pointList.map(item => {
         item.children.map(list => {
           if (this.areaPoint == list.id) {
-            this.pointValue.push(list.title);
+            this.pointValue= list.title;
           }
         });
       });

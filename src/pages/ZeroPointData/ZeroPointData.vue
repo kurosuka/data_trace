@@ -338,7 +338,7 @@ export default {
       factor: ["w01019", "w21003", "w21011", "w21001"],
       paramValue: {},
       btnColor: false,
-      baseUrl: window.baseUrl
+      baseUrl: window.API
     };
   },
   mounted: function() {
@@ -370,7 +370,7 @@ export default {
     // 获取表格数据
     getTableList() {
       console.log(this.factor);
-      let url = this.baseUrl + "/api/quality/zeroDrift";
+      let url = this.baseUrl + "/quality/zeroDrift";
       let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
         console.log(res);

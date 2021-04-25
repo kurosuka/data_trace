@@ -34,14 +34,6 @@ export const exportExcel = (function (id, name) {
       wb = XLSX.utils.table_to_book(document.querySelector('#out-table'), xlsxParam);
 
     }
-
-    /*  if (fix) {
-       document.querySelector('#' + id).children[0].removeChild(fix);
-       wb = XLSX.utils.table_to_book(document.querySelector('#' + id));
-       document.querySelector('#' + id).children[0].appendChild(fix);
-     } else {
-       wb = XLSX.utils.table_to_book(document.querySelector('#' + id));
-     } */
     let sheetName = wb.SheetNames[0];
     for (let key in wb.Sheets.Sheet1) {
       if (Object.prototype.toString.call(wb.Sheets.Sheet1[key]) === '[object Object]') {
