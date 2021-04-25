@@ -91,7 +91,7 @@
         class="editForm"
       >
         <el-form-item label="点位" style="width:100%" prop="areaPoint">
-          <el-select v-model="weekMsg.pointValue" placeholder="请选择">
+          <el-select v-model="weekMsg.pointValue" placeholder="请选择" :disabled="!addFlag">
             <el-option-group
               v-for="(group) in pointList"
               :key="group.id"
@@ -455,7 +455,7 @@ export default {
       this.dialogVisible = true;
       this.addFlag = true;
       let obj = {
-        pointValue: this.weekMsg.pointValue,
+        pointValue: "",
         areaPoint: "",
         monthYear: this.nowTime,
         week: "",
