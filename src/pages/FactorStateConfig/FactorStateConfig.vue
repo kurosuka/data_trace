@@ -339,11 +339,11 @@ export default {
     },
     // 删除
     del(){
-       if(this.multipleSelection.length===0){
+      if(this.multipleSelection.length===0){
         alert("请选择想要删除项！");
         return false;
       }
-      var arr=[];
+      let arr=[];
       this.multipleSelection.forEach((item)=>{
         arr.push(item.id);
       });
@@ -354,9 +354,9 @@ export default {
       }).catch(()=>{});
     },
     async handleDel(){
-      var url = this.baseUrl + '/factor/stateParam/batchDelete';
+      let url = this.baseUrl + '/factor/stateParam/batchDelete';
       try{
-        var res=await this.$axios.delete(url,{
+        let res=await this.$axios.delete(url,{
           params:{
             ids:this.delId
           }

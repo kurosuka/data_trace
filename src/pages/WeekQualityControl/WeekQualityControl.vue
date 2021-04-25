@@ -199,14 +199,14 @@ export default {
     getTableList() {
       let url = this.baseUrl + "/weekQuality/queryWeekCheckList";
       let obj = {
-        // pointId: this.areaPoint,
-        pointId: '347',
+        pointId: this.areaPoint,
+        // pointId: '347',
         factorCodeList: this.factorValue,
         isqualifiedList: this.standardValue,
-        // startTime: this.strTime,
-        // endTime: this.endTime,
-        startTime: '2021-03-02 13',
-        endTime: '2021-04-09 13',
+        startTime: this.strTime,
+        endTime: this.endTime,
+        // startTime: '2021-03-02 13',
+        // endTime: '2021-04-09 13',
         pageNo: this.page,
         pageSize: this.size
       };
@@ -228,7 +228,7 @@ export default {
           standardValue: "标准液浓度",
           errorValue: "误差",
           technicalConditions: "技术要求",
-          qualified: "合格情况",
+          isqualified: "合格情况",
         };
         let labelList = Object.entries(_tableList);
         this.label = labelList.map(function(item) {
@@ -264,14 +264,14 @@ export default {
     exportData(){
       let url = this.baseUrl + '/weekQuality/exportWeekCheckData';
       let obj = {
-        // pointId: this.areaPoint,
-        pointId: '347',
+        pointId: this.areaPoint,
+        // pointId: '347',
         factorCodeList: this.factorValue,
         isqualifiedList: this.standardValue,
-        // startTime: this.strTime,
-        // endTime: this.endTime,
-        startTime: '2021-03-02 13',
-        endTime: '2021-04-09 13',
+        startTime: this.strTime,
+        endTime: this.endTime,
+        // startTime: '2021-03-02 13',
+        // endTime: '2021-04-09 13',
         pageNo: this.page,
         pageSize: this.size
       };
