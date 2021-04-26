@@ -76,6 +76,7 @@
     </div>
     <!-- 新增、编辑 -->
     <el-dialog
+      v-if="dialogVisible"
       :title="addFlag?'新增':'修改'"
       style="text-align:left !important"
       :visible.sync="dialogVisible"
@@ -312,6 +313,7 @@ export default {
     },
     handleClose(done) {
       this.$refs["form"].resetFields();
+      this.$refs.upload.clearFiles();
       done();
     },
     //分页条件
@@ -464,6 +466,7 @@ export default {
         fileList: []
       };
       this.weekMsg = obj;
+      this._getWeek(this.nowTime);
     },
     // 修改
     edit(val){
@@ -504,12 +507,19 @@ export default {
     },
     _save(formName) {
       let url = this.baseUrl + "/weekQuality/editWeekMissingApplicationSave";
+      // let url = this.baseUrl + "";
       let file = this.$refs.upload.uploadFiles;
       let formData = new FormData();
-      file.map(item => {
-        formData.append("file", item.raw);
+      let lastFile = '';
+      file.forEach(item => {
+        if(item.raw){
+          formData.append("file", item.raw);
+        }else {
+          lastFile += item.url + ',';
+        }
       });
-      // formData.append("filePath", );
+      console.log(lastFile.replace(/,$/gi,''));
+      formData.append("existFilePath", lastFile.replace(/,$/gi,''));
       formData.append("userUid", "39bd85ac-55e7-431e-9fa7-a217dcea23bf");
       formData.append("operatorUid", this.pid);
       formData.append("id", this.updateId);
@@ -568,6 +578,7 @@ export default {
     },
     // 根据选择月份变换周
     changeTime() {
+      this.weekMsg.week = '';
       let date = new Date();
       let mounth = date.getMonth() + 1;
       this._getWeek(mounth);
