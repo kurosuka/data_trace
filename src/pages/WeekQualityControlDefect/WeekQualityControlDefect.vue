@@ -409,19 +409,19 @@ export default {
             item.status = "已拒绝";
           }
           if (item.week == 1) {
-            item.week = '第一周(1-7日)';
+            item['weekDay'] = '第一周(1-7日)';
           } else if (item.week == 2) {
-            item.week = '第二周(8-14日)';
+            item['weekDay'] = '第二周(8-14日)';
           } else if (item.week == 3) {
-            item.week = '第三周(15-21日)';
+            item['weekDay'] = '第三周(15-21日)';
           } else if (item.week == 4) {
-            item.week = '第四周(22-' + moment(item.month).daysInMonth() + '日)';
+            item['weekDay'] = '第四周(22-' + moment(item.month).daysInMonth() + '日)';
           }
           return item;
         });
         let _tableList = {
           month: "年月",
-          week: "周",
+          weekDay: "周",
           pointName: "站点名称",
           operatorName: "运维商",
           remark: "简要说明",
@@ -478,6 +478,7 @@ export default {
       this.weekMsg.reason = val.reasonUid;
       this.weekMsg.remark = val.remark;
       this.weekMsg.fileList = this._fileArr(val);
+      this.pid = val.operatorUid;
     },
     // 保存
     save(formName) {
@@ -508,6 +509,7 @@ export default {
       file.map(item => {
         formData.append("file", item.raw);
       });
+      // formData.append("filePath", );
       formData.append("userUid", "39bd85ac-55e7-431e-9fa7-a217dcea23bf");
       formData.append("operatorUid", this.pid);
       formData.append("id", this.updateId);
