@@ -514,7 +514,7 @@ export default {
       file.forEach(item => {
         if(item.raw){
           formData.append("file", item.raw);
-        }else {
+        }else { 
           lastFile += item.url + ',';
         }
       });
