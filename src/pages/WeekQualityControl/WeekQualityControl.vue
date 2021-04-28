@@ -199,8 +199,8 @@ export default {
     getTableList() {
       let url = this.baseUrl + "/weekQuality/queryWeekCheckList";
       let obj = {
-        pointId: this.areaPoint,
-        // pointId: '347',
+        // pointId: this.areaPoint,
+        pointId: '347',
         factorCodeList: this.factorValue,
         isqualifiedList: this.standardValue,
         startTime: this.strTime,
@@ -218,7 +218,12 @@ export default {
         this.page = val.current;
         let list = val.records;
         let cloneList = JSON.parse(JSON.stringify(list));
-        this.tableList = cloneList;
+        this.tableList = cloneList.map(item => {
+          if (item.isqualified === null || item.isqualified === '') {
+            item.isqualified = "/";
+          }
+          return item;
+        });
         let _tableList = {
           pointName: "站点名称",
           dateTime: "日期",
