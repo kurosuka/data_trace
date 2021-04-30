@@ -48,7 +48,7 @@
         <el-table-column label="点位名称" prop="pointName"></el-table-column>
         <el-table-column label="监测项目" prop="factorName"></el-table-column>
         <el-table-column label="编号" prop="standardNumber"></el-table-column>
-        <el-table-column label="跨度标准浓液浓度" prop="spanStandard"></el-table-column>
+        <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
         <el-table-column label="提交人" prop="submitterName"></el-table-column>
         <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
       </el-table>
@@ -70,7 +70,7 @@
                 prop="factorName"
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
-              <el-table-column label="标准液浓度" prop="spanStandard"></el-table-column>
+              <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column label="审核人" prop="reviewerName"></el-table-column>
@@ -144,7 +144,7 @@
         <!-- <el-table-column label="零点标准浓液浓度" prop="zeroStandard"></el-table-column> -->
         <el-table-column label="编号" prop="standardNumber"></el-table-column>
         <el-table-column
-          label="跨度标准浓液浓度"
+          label="标准浓液浓度"
           prop="spanStandard"
         ></el-table-column>
         <el-table-column label="提交人" prop="submitterName"></el-table-column>
@@ -381,7 +381,7 @@
         method: 'get',
         url: `${this.base}/weekSpanValuesSetting/findHistoryByPointAndFactory`,
         params: {
-          pointId: this.form.pointOption.toString(),
+          pointIds: this.form.pointOption.toString(),
           reviewStatus: 1,
           factorCode: factorCode
         }
@@ -420,13 +420,14 @@
       this.$axios({
         method: 'get',
         url: `${this.base}/weekSpanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption.toString(),
+        params: {pointIds: this.form.pointOption.toString(),
           factorCode: factorCode,
           reviewStatus: 0}
       }).then(res=> {
-        // this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
-        this.auditNottableData = res.data.data
-        
+        this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+        // this.auditNottableData = res.data.data
+        this.getAuditTableData(null)
+        this.getRejectTableData(null)
         setTimeout(() => {
           this.loading = false;
         }, 500);
@@ -452,10 +453,11 @@
         setTimeout(() => {
           this.loading = false;
         }, 500);
-        this.getNotAuditList(null); // 获取未审核数据
+        // this.getNotAuditList(null); // 获取未审核数据
         // this.getRejectTableData(null); // 获取未通过数据
-       console.log(res);
-        this.tableData = res.data.data
+      //  console.log(res);
+        this.tableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode))
+        // console.log(this.tableData);
       })
 
     },
@@ -465,9 +467,9 @@
       this.$axios({
         method: 'get',
         url: `${this.base}/weekSpanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption.toString(),factorCode: factorCode,reviewStatus: 2}
+        params: {pointIds: this.form.pointOption.toString(),factorCode: factorCode,reviewStatus: 2}
       }).then(res=> {
-        this.rejectTableData = res.data.data
+        this.rejectTableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode))
       }).catch((err)=> {
         this.$notify({
           title: '提示',

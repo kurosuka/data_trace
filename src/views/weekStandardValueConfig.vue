@@ -57,7 +57,7 @@
                 prop="factorName"
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
-              <el-table-column label="标准液浓度" prop="spanStandard"></el-table-column>
+              <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column label="审核人" prop="reviewerName"></el-table-column>
@@ -131,11 +131,14 @@
     <!--设置标准值弹窗-->
     <el-dialog
       title="项目设置详情"
+      width="900"
       :visible.sync="dialogVisble"
       :close-on-click-modal="false"
       :destroy-on-close="true"
       v-if="dialogVisble"
       v-draggable
+      class="set_dialog"
+      
     >
       <el-table :data="dialogTableData" :border="true" size="small">
         <el-table-column
@@ -272,7 +275,7 @@
         <!-- <el-table-column label="零点标准浓液浓度" prop="zeroStandard"></el-table-column> -->
         <el-table-column label="编号" prop="standardNumber"></el-table-column>
         <el-table-column
-          label="跨度标准浓液浓度"
+          label="标准浓液浓度"
           prop="spanStandard"
         ></el-table-column>
         <el-table-column label="提交人" prop="submitterName"></el-table-column>
@@ -479,8 +482,10 @@ export default {
         this.getNotAuditTableData(null); // 获取未审核数据
         this.getRejectTableData(null); // 获取未通过数据
        console.log(res);
-        this.tableData = res.data.data
-// console.log(JSON.parse(JSON.stringify(res.data.data)));
+        // this.tableData = res.data.data
+        this.tableData =   res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode))
+// console.log(arr);
+   // console.log(JSON.parse(JSON.stringify(res.data.data)));
         this.sourceData = JSON.parse(JSON.stringify(res.data.data));
         this.factorList.forEach((item, index) => {
           console.log(item);
@@ -530,10 +535,14 @@ export default {
       this.$axios({
         method: 'get',
         url: `${this.base}/weekSpanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 0}
+        params: {pointIds: this.form.pointOption,
+          factorCode: factorCode,reviewStatus: 0}
       }).then(res=> {
-        // this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
-        this.auditNottableData = res.data.data
+        this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+        // this.auditNottableData = res.data.data
+        res.data.data.filter(item=>{
+          console.log(item);
+        })
       }).catch((err)=> {
         this.$notify({
           title: '提示',
@@ -547,9 +556,10 @@ export default {
       this.$axios({
         method: 'get',
         url: `${this.base}/weekSpanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 2}
+        params: {pointIds: this.form.pointOption,factorCode: factorCode,reviewStatus: 2}
       }).then(res=> {
-        this.rejectTableData = res.data.data
+        // this.rejectTableData =res.data.data
+        this.rejectTableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
       }).catch((err)=> {
         this.$notify({
           title: '提示',
@@ -573,7 +583,7 @@ export default {
         method: 'get',
         url: `${this.base}/weekSpanValuesSetting/findHistoryByPointAndFactory`,
         params: {
-          pointId: this.form.pointOption,
+          pointIds: this.form.pointOption,
           reviewStatus: 1,
           factorCode: factorCode
         }
@@ -610,21 +620,7 @@ export default {
         )
         console.log(codArr,waterArr, dianArr,zhuoArr,phArr);
         console.log(index);
-        
-  /*     if (index == 1) {
-        // this.dialogForm[index].cod = codArr.length ? codArr[0].spanValues : null;
-        // this.dialogForm[index].water = waterArr.length ? waterArr[0].spanValues : null;
-        // this.dialogForm[index].zhuo = zhuoArr.length ? zhuoArr[0].spanValues : null;
-        // this.dialogForm[index].dian = dianArr.length ? dianArr[0].spanValues : null;
-        // this.dialogForm[index].ph = phArr.length ? phArr[0].spanValues : null;
-      } else if (index == 2) {
-        // this.dialogForm[index].cod = codArr.length ? codArr[0].zeroStandard : null;
-        // this.dialogForm[index].water = waterArr.length ? waterArr[0].zeroStandard : null;
-        // this.dialogForm[index].zhuo = zhuoArr.length ? zhuoArr[0].zeroStandard : null;
-        // this.dialogForm[index].dian = dianArr.length ? dianArr[0].spanValues : null;
-        // this.dialogForm[index].ph = phArr.length ? phArr[0].zeroStandard : null;
-
-      } else */ if (index == 0) {
+ if (index == 0) {
         // 编号
         this.dialogForm[index].cod = codArr.length ? codArr[0].standardNumber : null;
         this.dialogForm[index].water = waterArr.length ? waterArr[0].standardNumber : null;
@@ -637,7 +633,7 @@ export default {
 this.dialogForm[index].cod = codArr.length ? codArr[0].spanStandard : null;
         this.dialogForm[index].water = waterArr.length ? waterArr[0].spanStandard : null;
         this.dialogForm[index].zhuo = zhuoArr.length ? zhuoArr[0].spanStandard : null;
-        this.dialogForm[index].dian = dianArr.length ? dianArr[0].spanValues : null;
+        this.dialogForm[index].dian = dianArr.length ? dianArr[0].spanStandard : null;
         this.dialogForm[index].ph = phArr.length ? phArr[0].spanStandard : null;
       }
     });
@@ -646,7 +642,7 @@ this.dialogForm[index].cod = codArr.length ? codArr[0].spanStandard : null;
 };
 </script>
 
-<style lang="scss" scoped>
+<style >
 .nav .el-form-item {
   margin-right: 30px;
 }
@@ -665,5 +661,8 @@ this.dialogForm[index].cod = codArr.length ? codArr[0].spanStandard : null;
 }
 .daily-quality /deep/ .el-dialog__header {
   cursor: move;
+}
+.set_dialog .el-dialog{
+  width: 900px !important;
 }
 </style>
