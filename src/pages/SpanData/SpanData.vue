@@ -3,7 +3,7 @@
     <div class="table">
       <el-table id="out-table" :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
         <el-table-column label="序号" type="index" :index="indexMethod"></el-table-column>
-        <el-table-column label="日期" prop="time" align="center" min-width="150px"></el-table-column>
+        <el-table-column label="日期" prop="time" align="center" min-width="160px"></el-table-column>
         <!-- 高锰酸盐指数 -->
         <el-table-column
           v-if="_factorShow('w01019')"

@@ -148,7 +148,17 @@ module.exports = {
       title: '周质控审核',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControlExamine']
     },
+<<<<<<< HEAD
 
+=======
+    FactorConfig: { // 合格标准配置
+      entry: './src/pages/FactorConfig/FactorConfig.js',
+      template: './public/index.html',
+      filename: 'FactorConfig.html',
+      title: '合格标准配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
+    },
+>>>>>>> 6947914ced2dab735954989bf5f91a6a7bff65e0
     WeekStandardValueConfig: { //  周质控跨度值标准值配置
       entry: './src/pages/WeekStandardValueConfig/weekStandardValueConfig.js',
       template: './public/index.html',
@@ -156,7 +166,6 @@ module.exports = {
       title: '周质控跨度值标准值配置',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardValueConfig']
     },
-   
     WeekStandardAudit: {  // 周质控跨度值标准值审核
       entry: './src/pages/WeekStandardAudit/weekStandardAudit.js',
       template: './public/index.html',
@@ -169,6 +178,7 @@ module.exports = {
       filename: 'weekStandardAuditPeople.html',
       title: '周质控点位跨度值标准值审核人员分配',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAuditPeople']
+<<<<<<< HEAD
     },
     
 
@@ -179,6 +189,10 @@ module.exports = {
       title: '合格标准配置',
       chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
     },
+=======
+    },
+    
+>>>>>>> 6947914ced2dab735954989bf5f91a6a7bff65e0
   },
   // 接口代理
   
