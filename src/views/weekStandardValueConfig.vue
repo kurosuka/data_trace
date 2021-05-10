@@ -85,23 +85,7 @@
                 prop="factorName"
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
-<<<<<<< HEAD
-              <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
-=======
               <el-table-column label="标准溶液浓度" prop="spanStandard"></el-table-column>
-              <!-- <el-table-column
-                label="跨度值"
-                prop="spanValues"
-              ></el-table-column>
-              <el-table-column
-                label="零点标准浓液浓度"
-                prop="zeroStandard"
-              ></el-table-column>
-              <el-table-column
-                label="跨度标准浓液浓度"
-                prop="spanStandard"
-              ></el-table-column> -->
->>>>>>> bfea1a33b384e4c0058740a85a72fdd575229167
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
             </el-table>
@@ -586,7 +570,10 @@ export default {
           factorCode: factorCode
         }
       }).then(res=> {
-        this.historyData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+        console.log(factorCode);
+        this.historyData = res.data.data.filter(item=>{
+       return item.factorCode==factorCode
+        });
       })
     },
     // tabs切换
