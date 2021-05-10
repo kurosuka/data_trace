@@ -8,7 +8,7 @@
           <el-form :model="form" :inline="true">
             <el-form-item label="点位"
               >
-              <el-select v-model="form.pointOption" placeholder="请选择">
+              <el-select v-model="form.pointOption" placeholder="请选择" filterable>
                 <el-option v-for="item in pointData" :key="item.pointId" :label="item.pointName" :value="item.pointId"></el-option>
               </el-select>
             </el-form-item>
@@ -61,11 +61,11 @@
                 prop="spanValues"
               ></el-table-column>
               <el-table-column
-                label="零点标准浓液浓度"
+                label="零点标准溶液浓度"
                 prop="zeroStandard"
               ></el-table-column>
               <el-table-column
-                label="跨度标准浓液浓度"
+                label="跨度标准溶液浓度"
                 prop="spanStandard"
               ></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
@@ -99,11 +99,11 @@
                 prop="spanValues"
               ></el-table-column>
               <el-table-column
-                label="零点标准浓液浓度"
+                label="零点标准溶液浓度"
                 prop="zeroStandard"
               ></el-table-column>
               <el-table-column
-                label="跨度标准浓液浓度"
+                label="跨度标准溶液浓度"
                 prop="spanStandard"
               ></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
@@ -130,11 +130,11 @@
                 prop="spanValues"
               ></el-table-column>
               <el-table-column
-                label="零点标准浓液浓度"
+                label="零点标准溶液浓度"
                 prop="zeroStandard"
               ></el-table-column>
               <el-table-column
-                label="跨度标准浓液浓度"
+                label="跨度标准溶液浓度"
                 prop="spanStandard"
               ></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
@@ -281,7 +281,7 @@
 </template>
 
 <script>
-import { getLocalstorage } from '../js/utils';
+import { getLocalstorage, getUrlParams } from '../js/utils';
 import '../scss/globel.scss'
 export default {
   name: "StandardValueConfig",
@@ -392,7 +392,7 @@ export default {
       const obj = {
         pointId: this.form.pointOption,
         reviewStatus: 0,
-        submitter: getLocalstorage('UserId')
+        submitter: getLocalstorage('UserId') || getUrlParams(top.location.href).UserGuid
       };
       if(options.every(item=>this._checkNumber(item[name]))) {
         obj.factorCode= facotrCode;
@@ -448,7 +448,7 @@ export default {
     _selectData() {},
     // 获取点位数据
     getPoints() {
-      let userId = getLocalstorage('UserId')
+      let userId = getLocalstorage('UserId') || getUrlParams(top.location.href).UserGuid
      return  this.$axios({
         method: "get",
         url: `${this.base}/spanValuesSetting/findPointList`,
@@ -520,7 +520,7 @@ export default {
       this.$axios({
         method: 'get',
         url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 0}
+        params: {pointIds: this.form.pointOption,factorCode: factorCode,reviewStatus: 0}
       }).then(res=> {
         this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
       }).catch((err)=> {
@@ -536,7 +536,7 @@ export default {
       this.$axios({
         method: 'get',
         url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 2}
+        params: {pointIds: this.form.pointOption,factorCode: factorCode,reviewStatus: 2}
       }).then(res=> {
         this.rejectTableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
       }).catch((err)=> {

@@ -57,7 +57,7 @@
                 prop="factorName"
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
-              <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
+              <el-table-column label="标准溶液浓度" prop="spanStandard"></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column label="审核人" prop="reviewerName"></el-table-column>
@@ -85,7 +85,23 @@
                 prop="factorName"
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
+<<<<<<< HEAD
               <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
+=======
+              <el-table-column label="标准溶液浓度" prop="spanStandard"></el-table-column>
+              <!-- <el-table-column
+                label="跨度值"
+                prop="spanValues"
+              ></el-table-column>
+              <el-table-column
+                label="零点标准浓液浓度"
+                prop="zeroStandard"
+              ></el-table-column>
+              <el-table-column
+                label="跨度标准浓液浓度"
+                prop="spanStandard"
+              ></el-table-column> -->
+>>>>>>> bfea1a33b384e4c0058740a85a72fdd575229167
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
             </el-table>
@@ -106,7 +122,7 @@
                 prop="factorName"
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
-              <el-table-column label="标准浓液浓度" prop="spanStandard"></el-table-column>
+              <el-table-column label="标准溶液浓度" prop="spanStandard"></el-table-column>
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
               <el-table-column label="审核人" prop="reviewerName"></el-table-column>
@@ -261,7 +277,7 @@
         <el-table-column label="监测项目" prop="factorName"></el-table-column>
         <el-table-column label="编号" prop="standardNumber"></el-table-column>
         <el-table-column
-          label="标准浓液浓度"
+          label="标准溶液浓度"
           prop="spanStandard"
         ></el-table-column>
         <el-table-column label="提交人" prop="submitterName"></el-table-column>
@@ -301,7 +317,7 @@ export default {
           zhuo: "input1", // 浊度
         },
         {
-          title: "标准浓液浓度",
+          title: "标准溶液浓度",
           cod: "input", //溶解氧
           water: "input", // 水温
           ph: "input", // ph

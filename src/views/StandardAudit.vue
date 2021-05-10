@@ -8,9 +8,12 @@
           <el-form :model="form" :inline="true">
             <el-form-item label="点位"
               >
-              <el-select v-model="form.pointOption" placeholder="请选择">
-                <el-option v-for="item in pointData" :key="item.pointId" :label="item.pointName" :value="item.pointId"></el-option>
-              </el-select>
+              <el-tooltip :content="pointTooltip" placement="top" :disabled="pointTooltip == ''">
+                <el-select v-model="form.pointOption" placeholder="请选择" multiple :collapse-tags="true" :clearable="true">
+                  <el-input v-model="filterText" placeholder="输入筛选条件进行过滤" class="filter-text"></el-input>
+                  <el-option v-for="item in pointData" :key="item.pointId" :label="item.pointName" :value="item.pointId" v-show="item.pointName.includes(filterText)"></el-option>
+                </el-select>
+              </el-tooltip>
             </el-form-item>
             <el-form-item label="监测项目">
               <el-tooltip :content="selectTooltip" placement="top" :disabled="form.selectValue.length == 0">
@@ -30,7 +33,7 @@
               </el-tooltip>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="primary" @click="getNotAuditList(null)" v-preventReClick icon="el-icon-search">查询</el-button>
+              <el-button type="primary" @click="search" v-preventReClick icon="el-icon-search">查询</el-button>
             </el-form-item>
             <el-form-item label="">
               <el-button type="warning" @click="audit" icon="el-icon-check"
@@ -39,38 +42,110 @@
             </el-form-item>
           </el-form>
         </div>
-        <!--数据表格-->
-        <el-table ref="eltree" :data="auditNottableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
-          <el-table-column type="selection"></el-table-column>
-              <el-table-column label="序号" type="index"></el-table-column>
-              <el-table-column label="操作">
-                <template slot-scope="scope">
-                  <el-button type="primary" icon="el-icon-edit" size="mini" @click="rowClick(scope)"></el-button>
-                </template>
-              </el-table-column>
-              <el-table-column
-                label="点位名称"
-                prop="pointName"
-              ></el-table-column>
-              <el-table-column
-                label="监测项目"
-                prop="factorName"
-              ></el-table-column>
-              <el-table-column
-                label="跨度值"
-                prop="spanValues"
-              ></el-table-column>
-              <el-table-column
-                label="零点标准浓液浓度"
-                prop="zeroStandard"
-              ></el-table-column>
-              <el-table-column
-                label="跨度标准浓液浓度"
-                prop="spanStandard"
-              ></el-table-column>
-              <el-table-column label="提交人" prop="submitterName"></el-table-column>
-              <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
+        <el-tabs v-model="activeName" type="card" @tab-click="handleClick">
+          <el-tab-pane label="未审核" name="0">
+            <!--未审核数据表格-->
+            <el-table ref="eltree" :data="auditNottableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
+              <el-table-column type="selection"></el-table-column>
+                  <el-table-column label="序号" type="index"></el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-tooltip content="审核" placement="top">
+                        <el-button type="primary" icon="el-icon-check" size="mini" @click="rowClick(scope)"></el-button>
+                      </el-tooltip>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="点位名称"
+                    prop="pointName"
+                  ></el-table-column>
+                  <el-table-column
+                    label="监测项目"
+                    prop="factorName"
+                  ></el-table-column>
+                  <el-table-column
+                    label="跨度值"
+                    prop="spanValues"
+                  ></el-table-column>
+                  <el-table-column
+                    label="零点标准溶液浓度"
+                    prop="zeroStandard"
+                  ></el-table-column>
+                  <el-table-column
+                    label="跨度标准溶液浓度"
+                    prop="spanStandard"
+                  ></el-table-column>
+                  <el-table-column label="提交人" prop="submitterName"></el-table-column>
+                  <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
             </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="已审核" name="1">
+            <!--已审核数据表格-->
+            <el-table :data="IsAudittableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
+                  <el-table-column label="序号" type="index"></el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button type="primary" icon="el-icon-edit" size="mini" @click="rowClick(scope)"></el-button>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="点位名称"
+                    prop="pointName"
+                  ></el-table-column>
+                  <el-table-column
+                    label="监测项目"
+                    prop="factorName"
+                  ></el-table-column>
+                  <el-table-column
+                    label="跨度值"
+                    prop="spanValues"
+                  ></el-table-column>
+                  <el-table-column
+                    label="零点标准溶液浓度"
+                    prop="zeroStandard"
+                  ></el-table-column>
+                  <el-table-column
+                    label="跨度标准溶液浓度"
+                    prop="spanStandard"
+                  ></el-table-column>
+                  <el-table-column label="提交人" prop="submitterName"></el-table-column>
+                  <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+          <el-tab-pane label="未通过" name="2">
+            <!--未通过数据表格-->
+            <el-table :data="rejectTableData" size="middle" @selection-change="handleSelectionChange" v-loading="loading">
+                  <el-table-column label="序号" type="index"></el-table-column>
+                  <el-table-column label="操作">
+                    <template slot-scope="scope">
+                      <el-button type="primary" icon="el-icon-edit" size="mini" @click="rowClick(scope)"></el-button>
+                    </template>
+                  </el-table-column>
+                  <el-table-column
+                    label="点位名称"
+                    prop="pointName"
+                  ></el-table-column>
+                  <el-table-column
+                    label="监测项目"
+                    prop="factorName"
+                  ></el-table-column>
+                  <el-table-column
+                    label="跨度值"
+                    prop="spanValues"
+                  ></el-table-column>
+                  <el-table-column
+                    label="零点标准溶液浓度"
+                    prop="zeroStandard"
+                  ></el-table-column>
+                  <el-table-column
+                    label="跨度标准溶液浓度"
+                    prop="spanStandard"
+                  ></el-table-column>
+                  <el-table-column label="提交人" prop="submitterName"></el-table-column>
+                  <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
+            </el-table>
+          </el-tab-pane>
+        </el-tabs>
       </el-main>
     </el-container>
     <!--审核弹窗-->
@@ -92,7 +167,7 @@
 </template>
 
 <script>
-import { getLocalstorage } from '../js/utils';
+import { getLocalstorage, getUrlParams } from '../js/utils';
 import '../scss/globel.scss'
 export default {
   name: "StandardAudit",
@@ -100,10 +175,13 @@ export default {
     return {
       form: {                     // 表单数据
         selectValue: [],
-        pointOption: ''
+        pointOption: [],
       },
+      filterText: '',
       factorList: [], // 因子列表
       auditNottableData: [], // 未审核数据
+      IsAudittableData: [], // 已审核数据
+      rejectTableData: [], // 未通过数据
       auditDialogVisble: false, // 审核弹窗显示控制
       loading: false, // 表格loading
       pointData: [], // 点位数据
@@ -111,6 +189,7 @@ export default {
       auditForm: { //  是否审核参数
         radio: '1',
       },
+      activeName: '0',
       base: window.API // 接口api地址
     };
   },
@@ -125,6 +204,11 @@ export default {
         })
         .join(",");
     },
+    pointTooltip() {
+      return this.pointData.filter(item=> {
+        return this.form.pointOption.includes(item.pointId)
+      }).map(item=>item.pointName).toString();
+    }
   },
   mounted() {
     // 初始化数据
@@ -132,7 +216,7 @@ export default {
       .then(this.$axios.spread((res1, res2)=> {
          this.pointData = res1.data.data;
           // 给点位初始值
-          this.form.pointOption = this.pointData[0].pointId;
+          this.form.pointOption = [this.pointData[0].pointId];
           this.factorList = res2.data.data;
           //初始值
           this.form.selectValue = this.factorList.map(item=>item.factorCode);
@@ -162,7 +246,7 @@ export default {
     _selectData() {},
     // 获取点位数据
     getPoints() {
-      let userId = getLocalstorage('UserId')
+      let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid
      return  this.$axios({
         method: "get",
         url: `${this.base}/spanValuesSetting/findPointList`,
@@ -182,7 +266,7 @@ export default {
       this.$axios({
         method: 'get',
         url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
-        params: {pointId: this.form.pointOption,factorCode: factorCode,reviewStatus: 0}
+        params: {pointIds: this.form.pointOption.toString(),factorCode: factorCode,reviewStatus: 0},
       }).then(res=> {
         this.auditNottableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
         setTimeout(() => {
@@ -199,6 +283,65 @@ export default {
         }, 500);
       })
     },
+    // 获取已审核数据
+    getIsAuditList(factorCode) {
+      this.loading = true;
+      this.$axios({
+        method: 'get',
+        url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
+        params: {pointIds: this.form.pointOption.toString(),factorCode: factorCode,reviewStatus: 1},
+      }).then(res=> {
+        this.IsAudittableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
+      }).catch((err)=> {
+        this.$notify({
+          title: '提示',
+          message: err,
+          type: 'error'
+        });
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
+      })
+    },
+    // 获取未通过数据
+    getRejectTableList(factorCode) {
+      this.loading = true;
+      this.$axios({
+        method: 'get',
+        url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
+        params: {pointIds: this.form.pointOption.toString(),factorCode: factorCode,reviewStatus: 2}
+      }).then(res=> {
+        this.rejectTableData = res.data.data.filter(item=>this.form.selectValue.includes(item.factorCode));
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
+      }).catch((err)=> {
+        this.$notify({
+          title: '提示',
+          message: err,
+          type: 'error'
+        });
+        setTimeout(() => {
+          this.loading = false;
+        }, 500);
+      })
+    },
+    // 查询
+    search() {
+      if(this.form.pointOption.length == 0) {
+        this.$notify({
+          type: 'error',
+          message: '请选择点位'
+        })
+        return
+      }
+      this.getNotAuditList(null); // 未审核数据
+      this.getIsAuditList(null); // 审核数据
+      this.getRejectTableList(null); // 未通过数据
+    },
     // 表格行数据选择
     handleSelectionChange(val) {
       console.log(val);
@@ -213,7 +356,7 @@ export default {
     },
     // 审核按钮点击
     auditClick() {
-      let userId = getLocalstorage('UserId')
+      let userId = getLocalstorage('UserId') || getUrlParams(top.location.href).UserGuid
       const data = this.multiSelection.map(item=> {
         return {
           id: item.id,
@@ -250,6 +393,11 @@ export default {
     },
     close() {
       this.auditDialogVisble = false;
+    },
+    handleClick(data) {
+      console.log(data);
+      this.multiSelection = [];
+      this.$refs.eltree.clearSelection();
     }
   },
 };
@@ -258,5 +406,15 @@ export default {
 <style lang="scss" scoped>
 .nav .el-form-item {
   margin-right: 30px;
+}
+.filter-text {
+  padding: 0 10px 10px 10px;
+  width: auto;
+}
+.daily-quality /deep/ .el-tag.el-tag--info {
+  max-width: 100px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
