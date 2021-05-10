@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-05-10 11:49:09
+ * @LastEditTime: 2021-05-10 13:16:38
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -207,14 +207,6 @@ module.exports = {
       title: '流程日志',
       chunks: ['chunk-vendors', 'chunk-common', 'RightProcessLog']
     },
-    // 关键参数配置
-    KeyConfig: {
-      entry: './src/pages/KeyConfig/index.js',
-      template: './public/index.html',
-      filename: 'keyConfig.html',
-      title: '关键参数配置',
-      chunks: ['chunk-vendors', 'chunk-common', 'KeyConfig']
-    }
     },
   // 接口代理
   
