@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-05-10 14:30:33
+ * @LastEditTime: 2021-05-10 15:21:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -35,7 +35,7 @@ module.exports = {
       title: '跨度值标准值配置',
       chunks: ['chunk-vendors', 'chunk-common', 'standardValueConfig']
     },
-    standardAudit: {  // 跨度值标准值审核
+    standardAudit: { // 跨度值标准值审核
       entry: './src/pages/StandardAudit/standardAudit.js',
       template: './public/index.html',
       filename: 'standardAudit.html',
@@ -70,7 +70,7 @@ module.exports = {
       title: '周质控',
       chunks: ['chunk-vendors', 'chunk-common', 'HistoryData']
     },
-    DailyQualityControl: {// 日质控
+    DailyQualityControl: { // 日质控
       // page 的入口
       entry: './src/pages/DailyQualityControl/DailyQualityControl.js',
       // 模板来源
@@ -82,7 +82,7 @@ module.exports = {
       title: '日质控',
       // 在这个页面中包含的块，默认情况下会包含
       // 提取出来的通用 chunk 和 vendor chunk。
-      chunks: ['chunk-vendors', 'chunk-common', 'DailyQualityControl'],  
+      chunks: ['chunk-vendors', 'chunk-common', 'DailyQualityControl'],
     },
     ZeroPointData: { // 零点数据
       entry: './src/pages/ZeroPointData/ZeroPointData.js',
@@ -161,7 +161,7 @@ module.exports = {
       title: '周质控跨度值标准值配置',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardValueConfig']
     },
-    WeekStandardAudit: {  // 周质控跨度值标准值审核
+    WeekStandardAudit: { // 周质控跨度值标准值审核
       entry: './src/pages/WeekStandardAudit/weekStandardAudit.js',
       template: './public/index.html',
       filename: 'weekStandardAudit.html',
@@ -206,7 +206,7 @@ module.exports = {
       title: '流程日志',
       chunks: ['chunk-vendors', 'chunk-common', 'RightProcessLog']
     },
-    },
+  },
 
   // 接口代理
 

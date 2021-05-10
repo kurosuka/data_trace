@@ -386,7 +386,7 @@
     },
     // 获取点位数据
     getPoints() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
      return  this.$axios({
         method: "get",
         url: `${this.base}/weekSpanValuesSetting/findPointList`,
@@ -479,7 +479,7 @@
     },
     // 审核按钮点击
     auditClick() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
       const data = this.multiSelection.map(item=> {
         return {
           id: item.id,
