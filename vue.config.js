@@ -2,7 +2,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-05-08 15:09:04
+ * @LastEditTime: 2021-05-10 11:49:09
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -148,11 +148,39 @@ module.exports = {
       title: '周质控审核',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekQualityControlExamine']
     },
-    FactorConfig: { // 因子范围配置
+    FactorConfig: { // 合格标准配置
       entry: './src/pages/FactorConfig/FactorConfig.js',
       template: './public/index.html',
       filename: 'FactorConfig.html',
-      title: '因子范围配置',
+      title: '合格标准配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
+    },
+    WeekStandardValueConfig: { //  周质控跨度值标准值配置
+      entry: './src/pages/WeekStandardValueConfig/weekStandardValueConfig.js',
+      template: './public/index.html',
+      filename: 'weekStandardValueConfig.html',
+      title: '周质控跨度值标准值配置',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardValueConfig']
+    },
+    WeekStandardAudit: {  // 周质控跨度值标准值审核
+      entry: './src/pages/WeekStandardAudit/weekStandardAudit.js',
+      template: './public/index.html',
+      filename: 'weekStandardAudit.html',
+      title: '周质控跨度值标准值审核',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAudit']
+    },
+    WeekStandardAuditPeople: { // 周质控点位跨度值标准值审核人员分配
+      entry: './src/pages/WeekStandardAuditPeople/weekStandardAuditPeople.js',
+      template: './public/index.html',
+      filename: 'weekStandardAuditPeople.html',
+      title: '周质控点位跨度值标准值审核人员分配',
+      chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAuditPeople']
+    },
+    FactorConfig: { // 合格标准配置
+      entry: './src/pages/FactorConfig/FactorConfig.js',
+      template: './public/index.html',
+      filename: 'FactorConfig.html',
+      title: '合格标准配置',
       chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
     },
     // 关键参数查询
@@ -187,7 +215,7 @@ module.exports = {
       title: '关键参数配置',
       chunks: ['chunk-vendors', 'chunk-common', 'KeyConfig']
     }
-  },
+    },
   // 接口代理
   
   productionSourceMap: false,

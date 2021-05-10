@@ -213,6 +213,10 @@ export default {
       this.size = val
       this.getTableList()
     },
+    handleCurrentChange(val) {
+      this.page = val;
+      this.getTableList();
+    },
     //关闭弹出框
     handleClose(done) {
       this.$refs["form"].resetFields();
@@ -222,10 +226,7 @@ export default {
       this.$refs["form"].resetFields();
       done();
     },
-    handleCurrentChange(val) {
-      this.page = val;
-      this.getTableList();
-    },
+    
     // 获取监测污染物
     getIndexList(){
       let url = this.baseUrl + '/factor/stateParam/factorList';
@@ -338,11 +339,11 @@ export default {
     },
     // 删除
     del(){
-       if(this.multipleSelection.length===0){
+      if(this.multipleSelection.length===0){
         alert("请选择想要删除项！");
         return false;
       }
-      var arr=[];
+      let arr=[];
       this.multipleSelection.forEach((item)=>{
         arr.push(item.id);
       });
@@ -353,9 +354,9 @@ export default {
       }).catch(()=>{});
     },
     async handleDel(){
-      var url = this.baseUrl + '/factor/stateParam/batchDelete';
+      let url = this.baseUrl + '/factor/stateParam/batchDelete';
       try{
-        var res=await this.$axios.delete(url,{
+        let res=await this.$axios.delete(url,{
           params:{
             ids:this.delId
           }

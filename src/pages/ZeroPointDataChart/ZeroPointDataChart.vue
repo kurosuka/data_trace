@@ -12,7 +12,7 @@ export default {
       factor: [],
       paramValue: {},
       style: "",
-      baseUrl: window.baseUrl,
+      baseUrl: window.API,
     };
   },
   mounted: function() {
@@ -38,7 +38,7 @@ export default {
     },
     // 获取图表数据
     getChartList() {
-      let url = this.baseUrl + "/api/quality/zeroDrift";
+      let url = this.baseUrl + "/quality/zeroDrift";
       // let param = {
       //   dtFrom: "2019-10-13 02",
       //   dtTo: "2019-10-26 02",

@@ -3,7 +3,7 @@
     <div class="table">
       <el-table id="out-table" :data="tableList" stripe v-loading="loading" size="mini" height="calc(100% - 10px)">
         <el-table-column fixed label="序号" type="index" :index="indexMethod"></el-table-column>
-        <el-table-column fixed label="日期" prop="time" align="center" min-width="150px"></el-table-column>
+        <el-table-column fixed label="日期" prop="time" align="center" min-width="160px"></el-table-column>
         <!-- 高锰酸盐指数 -->
         <el-table-column
           v-if="_factorShow('w01019')"
@@ -338,7 +338,7 @@ export default {
       factor: ["w01019", "w21003", "w21011", "w21001"],
       paramValue: {},
       btnColor: false,
-      baseUrl: window.baseUrl
+      baseUrl: window.API
     };
   },
   mounted: function() {
@@ -370,7 +370,7 @@ export default {
     // 获取表格数据
     getTableList() {
       console.log(this.factor);
-      let url = this.baseUrl + "/api/quality/zeroDrift";
+      let url = this.baseUrl + "/quality/zeroDrift";
       let param = this.paramValue;
       this.$axios.post(url, param).then(res => {
         console.log(res);

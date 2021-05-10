@@ -8,9 +8,13 @@
  */
 
 // API接口地址
+<<<<<<< HEAD
 window.API = 'http://192.168.90.41:8024/api';
 window.baseUrl = 'http://183.166.140.243:8088';
 // window.baseUrl = 'http://192.168.90.8:8081';
+=======
+window.API = 'http://183.166.140.243:8088/api';
+>>>>>>> 3fe339b7f4631e18f8b4353daad47b5e97efd0c6
 window.testUrl = 'http://192.168.90.41:8024/api';
 window.configUrl = 'http://192.168.90.55:9082/api';
 
