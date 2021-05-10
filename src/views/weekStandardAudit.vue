@@ -56,11 +56,6 @@
           <el-tab-pane label="已审核">
             <el-table :data="tableData" size="middle">
               <el-table-column label="序号" type="index"></el-table-column>
-              <!-- 
-                <template slot-scope="scope">
-                  <span>{{_index(scope.$index)}}</span>
-                </template>
-              </el-table-column> -->
               <el-table-column
                 label="点位名称"
                 prop="pointName"
@@ -85,9 +80,6 @@
           <el-tab-pane label="未通过" >
             <el-table :data="rejectTableData" size="middle">
               <el-table-column label="序号" type="index">
-                <!-- <template slot-scope="scope">
-                  <span>{{_index(scope.$index)}}</span>
-                </template> -->
               </el-table-column>
               <el-table-column
                 label="点位名称"
@@ -134,14 +126,9 @@
     >
       <el-table :data="historyData" height="calc(500px - 80px)">
         <el-table-column label="序号" type="index">
-          <!-- <template slot-scope="scope">
-            <span>{{_index(scope.$index)}}</span>
-          </template> -->
         </el-table-column>
         <el-table-column label="点位名称" prop="pointName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="监测项目" prop="factorName"></el-table-column>
-        <!-- <el-table-column label="跨度值" prop="spanValues"></el-table-column> -->
-        <!-- <el-table-column label="零点标准浓液浓度" prop="zeroStandard"></el-table-column> -->
         <el-table-column label="编号" prop="standardNumber"></el-table-column>
         <el-table-column
           label="标准浓液浓度"
@@ -399,7 +386,7 @@
     },
     // 获取点位数据
     getPoints() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
      return  this.$axios({
         method: "get",
         url: `${this.base}/weekSpanValuesSetting/findPointList`,
@@ -492,7 +479,7 @@
     },
     // 审核按钮点击
     auditClick() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
       const data = this.multiSelection.map(item=> {
         return {
           id: item.id,

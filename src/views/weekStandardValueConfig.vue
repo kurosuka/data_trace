@@ -1,4 +1,3 @@
-
 <template>
   <div id="app" class="daily-quality">
     <el-container>
@@ -86,18 +85,6 @@
               ></el-table-column>
               <el-table-column label="编号" prop="standardNumber"></el-table-column>
               <el-table-column label="标准溶液浓度" prop="spanStandard"></el-table-column>
-              <!-- <el-table-column
-                label="跨度值"
-                prop="spanValues"
-              ></el-table-column>
-              <el-table-column
-                label="零点标准浓液浓度"
-                prop="zeroStandard"
-              ></el-table-column>
-              <el-table-column
-                label="跨度标准浓液浓度"
-                prop="spanStandard"
-              ></el-table-column> -->
               <el-table-column label="提交人" prop="submitterName"></el-table-column>
               <el-table-column label="提交时间" prop="submissionTime" :show-overflow-tooltip="true"></el-table-column>
             </el-table>
@@ -271,8 +258,6 @@
         </el-table-column>
         <el-table-column label="点位名称" prop="pointName" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column label="监测项目" prop="factorName"></el-table-column>
-        <!-- <el-table-column label="跨度值" prop="spanValues"></el-table-column> -->
-        <!-- <el-table-column label="零点标准浓液浓度" prop="zeroStandard"></el-table-column> -->
         <el-table-column label="编号" prop="standardNumber"></el-table-column>
         <el-table-column
           label="标准溶液浓度"
@@ -394,10 +379,6 @@ export default {
         reviewStatus: 0,
         submitter: getLocalstorage('userGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
       };
-    /*   console.log(name,facotrCode,obj);
-      console.log(options[0][name]);
-      console.log(options[1][name]);
-      console.log(options); */
       // 校验
        if(this._checkNumber(options[1][name])) {
         obj.factorCode= facotrCode;
@@ -454,7 +435,7 @@ export default {
     _selectData() {},
     // 获取点位数据
     getPoints() {
-      let userId = getLocalstorage('UserGuid') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
+      let userId = getLocalstorage('UserId') || '4aea3f54-4e3e-4c4e-b283-a90cc0c16873'
      return  this.$axios({
         method: "get",
         url: `${this.base}/weekSpanValuesSetting/findPointList`,
@@ -588,7 +569,10 @@ export default {
           factorCode: factorCode
         }
       }).then(res=> {
-        this.historyData = res.data.data;
+        console.log(factorCode);
+        this.historyData = res.data.data.filter(item=>{
+       return item.factorCode==factorCode
+        });
       })
     },
     // tabs切换

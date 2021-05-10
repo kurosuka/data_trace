@@ -562,7 +562,7 @@ export default {
         method: 'get',
         url: `${this.base}/spanValuesSetting/findHistoryByPointAndFactory`,
         params: {
-          pointId: this.form.pointOption,
+          pointIds: this.form.pointOption,
           reviewStatus: 1,
           factorCode: factorCode
         }
