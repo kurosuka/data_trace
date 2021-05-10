@@ -1,14 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 13:34:08
- * @LastEditTime: 2021-04-07 09:35:09
+ * @LastEditTime: 2021-04-28 16:11:24
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\public\config.js
  */
 
 // API接口地址
-window.API = 'http://183.166.140.243:8088/api';
+window.API = 'http://192.168.90.41:8024/api';
 window.baseUrl = 'http://183.166.140.243:8088';
 // window.baseUrl = 'http://192.168.90.8:8081';
 window.testUrl = 'http://192.168.90.41:8024/api';
