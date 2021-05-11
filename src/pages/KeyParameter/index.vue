@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2021-05-06 13:19:55
- * @LastEditTime: 2021-05-06 16:55:15
+ * @LastEditTime: 2021-05-10 17:36:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\pages\KeyParameter\index.vue
@@ -19,6 +19,21 @@
           </el-form-item>
           <el-form-item label="结束时间">
             <el-date-picker v-model="headerForm.end" type="datetime" placeholder="请选择数据结束时间" value-format="yyyy-MM-dd HH:00:00"></el-date-picker>
+          </el-form-item>
+          <el-form-item label="匹配情况">
+            <el-select v-model="headerForm.match" placeholder="请选择" multiple>
+              <el-option label="匹配" value="1"></el-option>
+              <el-option label="不匹配" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="监测因子">
+            <el-tooltip :content="factorTooltip" placement="top">
+              <el-select v-model="headerForm.factor" placeholder="请选择" multiple>
+                <el-option label="氨氮" value="0"></el-option>
+                <el-option label="总磷" value="1"></el-option>
+                <el-option label="总氮" value="2"></el-option>
+              </el-select>
+            </el-tooltip>
           </el-form-item>
           <el-button type="primary" @click="search">查询</el-button>
         </el-form>
@@ -54,7 +69,9 @@ export default {
     return {
       headerForm: { // 头部查询参数
         start: '',
-        end: ''
+        end: '',
+        match:[],
+        factor: []
       },
       keyList: [{ // 表格列表
         id: 1,
@@ -78,6 +95,11 @@ export default {
         console.log(res);
       })
     },
+  },
+  computed: {
+    factorTooltip() {
+      return '111'
+    }
   }
 }
 </script>
@@ -92,5 +114,12 @@ html, body {
 }
 .el-dialog__header {
   cursor: move;
+}
+.key-paramseter .el-select .el-select__tags>span {
+  display: flex;
+  overflow: hidden;
+}
+.key-paramseter span.el-tag {
+  display: block;
 }
 </style>

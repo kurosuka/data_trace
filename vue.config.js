@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-05-10 15:21:47
+ * @LastEditTime: 2021-05-10 17:42:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -206,6 +206,14 @@ module.exports = {
       title: '流程日志',
       chunks: ['chunk-vendors', 'chunk-common', 'RightProcessLog']
     },
+    // 备案
+    RecordTable: {
+      entry: './src/pages/RecordTable/RecordTable.js',
+      template: './public/index.html',
+      filename: 'RecordTable.html',
+      title: '流程日志',
+      chunks: ['chunk-vendors', 'chunk-common', 'RecordTable']
+    }
   },
 
   // 接口代理
