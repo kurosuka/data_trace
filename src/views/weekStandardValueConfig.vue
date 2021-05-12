@@ -328,7 +328,7 @@ export default {
         pageSize: 20,
         total: 80
       },
-      base: window.testUrl // 接口api地址
+      base: window.API // 接口api地址
     };
   },
   components: {
