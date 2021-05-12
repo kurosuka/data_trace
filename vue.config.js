@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-11 10:10:28
- * @LastEditTime: 2021-05-10 13:16:38
+ * @LastEditTime: 2021-05-10 17:42:14
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\vue.config.js
@@ -10,7 +10,6 @@
 const path = require("path");
 const resolve = dir => path.join(__dirname, dir);
 module.exports = {
-
   publicPath: './',
   // 生产打包的文件夹
   outputDir: 'quality-control-project',
@@ -176,13 +175,6 @@ module.exports = {
       title: '周质控点位跨度值标准值审核人员分配',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAuditPeople']
     },
-    FactorConfig: { // 合格标准配置
-      entry: './src/pages/FactorConfig/FactorConfig.js',
-      template: './public/index.html',
-      filename: 'FactorConfig.html',
-      title: '合格标准配置',
-      chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
-    },
     // 关键参数查询
     KeyParameter: {
       entry: './src/pages/KeyParameter/index.js',
@@ -207,6 +199,14 @@ module.exports = {
       title: '流程日志',
       chunks: ['chunk-vendors', 'chunk-common', 'RightProcessLog']
     },
+    // 备案
+    RecordTable: {
+      entry: './src/pages/RecordTable/RecordTable.js',
+      template: './public/index.html',
+      filename: 'RecordTable.html',
+      title: '状态参数备案',
+      chunks: ['chunk-vendors', 'chunk-common', 'RecordTable']
+    }
   },
 
   // 接口代理

@@ -205,7 +205,7 @@ export default {
         deviationLowerValue: [{ validator: checkDeviation, trigger: "blur" }]
       },
       delId: "",
-      baseUrl: window.configUrl
+      baseUrl: window.API
     };
   },
   mounted: function() {
