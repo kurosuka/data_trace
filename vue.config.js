@@ -175,13 +175,6 @@ module.exports = {
       title: '周质控点位跨度值标准值审核人员分配',
       chunks: ['chunk-vendors', 'chunk-common', 'WeekStandardAuditPeople']
     },
-    FactorConfig: { // 合格标准配置
-      entry: './src/pages/FactorConfig/FactorConfig.js',
-      template: './public/index.html',
-      filename: 'FactorConfig.html',
-      title: '合格标准配置',
-      chunks: ['chunk-vendors', 'chunk-common', 'FactorConfig']
-    },
     // 关键参数查询
     KeyParameter: {
       entry: './src/pages/KeyParameter/index.js',
