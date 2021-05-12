@@ -162,7 +162,7 @@
               placeholder="请输入"
               v-if="scope.row.water  != 'btn'"
             >
-              <template slot="append" v-if="scope.row.cod == 'input'">mg/L</template>
+              <template slot="append" v-if="scope.row.cod == 'input'">°C</template>
             </el-input>
             <el-button
               type="primary"
@@ -172,7 +172,7 @@
               >提交</el-button
             >
             <span v-else-if="Number(scope.row.water)"
-              >{{ scope.row.water }}mg/L</span
+              >{{ scope.row.water }}°C</span
             >
           </template>
         </el-table-column>
@@ -183,7 +183,7 @@
               placeholder="请输入"
               v-if="scope.row.dian  != 'btn'"
             >
-              <template slot="append" v-if="scope.row.cod == 'input'">mg/L</template>
+              <template slot="append" v-if="scope.row.cod == 'input'">μS/cm</template>
             </el-input>
             <el-button
               type="primary"
@@ -193,7 +193,7 @@
               >提交</el-button
             >
             <span v-else-if="Number(scope.row.dian)"
-              >{{ scope.row.ph }}mg/L</span
+              >{{ scope.row.ph }}μS/cm</span
             >
           </template>
         </el-table-column>
@@ -204,7 +204,7 @@
               placeholder="请输入"
               v-if="scope.row.zhuo  != 'btn'"
             >
-              <template slot="append" v-if="scope.row.cod == 'input'">mg/L</template>
+              <template slot="append" v-if="scope.row.cod == 'input'">NTU</template>
             </el-input>
             <el-button
               type="primary"
@@ -214,7 +214,7 @@
               >提交</el-button
             >
             <span v-else-if="Number(scope.row.zhuo)"
-              >{{ scope.row.zhuo }}mg/L</span
+              >{{ scope.row.zhuo }}NTU</span
             >
           </template>
         </el-table-column>
@@ -225,7 +225,7 @@
               placeholder="请输入"
               v-if="scope.row.ph  != 'btn'"
             >
-              <template slot="append" v-if="scope.row.cod == 'input'">mg/L</template>
+              <template slot="append" v-if="scope.row.cod == 'input'">无量纲</template>
             </el-input>
             <el-button
               type="primary"
@@ -235,7 +235,7 @@
               >提交</el-button
             >
             <span v-else-if="Number(scope.row.ph)"
-              >{{ scope.row.ph }}mg/L</span
+              >{{ scope.row.ph }}无量纲</span
             >
           </template>
         </el-table-column>

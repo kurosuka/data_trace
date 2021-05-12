@@ -129,7 +129,7 @@ export default {
       page: 0,
       size: 15,
       loading: false,
-      baseUrl: window.configUrl
+      baseUrl: window.API
     };
   },
   mounted: function() {
