@@ -211,7 +211,7 @@ module.exports = {
       entry: './src/pages/RecordTable/RecordTable.js',
       template: './public/index.html',
       filename: 'RecordTable.html',
-      title: '流程日志',
+      title: '状态参数备案',
       chunks: ['chunk-vendors', 'chunk-common', 'RecordTable']
     }
   },
