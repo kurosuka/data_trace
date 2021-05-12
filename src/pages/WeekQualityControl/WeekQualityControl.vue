@@ -199,8 +199,8 @@ export default {
     getTableList() {
       let url = this.baseUrl + "/weekQuality/queryWeekCheckList";
       let obj = {
-        // pointId: this.areaPoint,
-        pointId: '347',
+        pointId: this.areaPoint,
+        //pointId: '347',
         factorCodeList: this.factorValue,
         isqualifiedList: this.standardValue,
         startTime: this.strTime,
