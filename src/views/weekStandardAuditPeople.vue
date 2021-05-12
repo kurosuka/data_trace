@@ -57,7 +57,7 @@ export default {
       loading: false,    // loading加载
       filterText: '', // 左侧树输入框
       currentKey: '', // 左侧树默认值
-      base: window.testUrl // api接口地址
+      base: window.API // api接口地址
     }
   },
   mounted() {

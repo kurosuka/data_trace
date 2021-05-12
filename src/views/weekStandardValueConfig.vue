@@ -218,7 +218,7 @@
             >
           </template>
         </el-table-column>
-        <el-table-column label="ph" align="center">
+        <el-table-column label="pH" align="center">
           <template slot-scope="scope">
             <el-input
               v-model="dialogForm[scope.$index].ph"
@@ -328,7 +328,7 @@ export default {
         pageSize: 20,
         total: 80
       },
-      base: window.testUrl // 接口api地址
+      base: window.API // 接口api地址
     };
   },
   components: {
