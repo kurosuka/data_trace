@@ -218,7 +218,7 @@
             >
           </template>
         </el-table-column>
-        <el-table-column label="ph" align="center">
+        <el-table-column label="pH" align="center">
           <template slot-scope="scope">
             <el-input
               v-model="dialogForm[scope.$index].ph"
