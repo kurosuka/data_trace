@@ -149,7 +149,9 @@ export default {
           this.configMsg.concentrationLowerValue
         ) {
           return callback(new Error("请输入正确的限值"));
-        } 
+        } else {
+        callback();
+      }
       } else {
         callback();
       }
@@ -160,7 +162,9 @@ export default {
           this.configMsg.deviationUpperValue < this.configMsg.deviationLowerValue
         ) {
           return callback(new Error("请输入正确的限值"));
-        }
+        } else {
+        callback();
+      }
       } else {
         callback();
       }
