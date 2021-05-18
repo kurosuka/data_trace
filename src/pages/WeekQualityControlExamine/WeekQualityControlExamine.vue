@@ -115,9 +115,13 @@ export default {
         {
           title: "已拒绝",
           value: "4"
+        },
+        {
+          title: "已超时",
+          value: "5"
         }
       ],
-      stateValue: ["2", "3", "4"],
+      stateValue: ["2", "3", "4", "5"],
       tableList: [],
       label: [
         {
@@ -143,7 +147,7 @@ export default {
       page: 0,
       size: 15,
       loading: false,
-      baseUrl: window.API,
+      baseUrl: window.configUrl,
       subStatus: '',
       fileUrlList: [],
     };
@@ -222,6 +226,8 @@ export default {
             item.status = "已生效";
           } else if (item.status == 4) {
             item.status = "已拒绝";
+          } else if (item.status == 5) {
+            item.status = "已超时";
           }
           if (item.week == 1) {
             item['weekDay'] = '第一周(1-7日)';

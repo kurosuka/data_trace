@@ -61,14 +61,15 @@
         <el-table-column prop label="操作" align="center" width="100px">
           <template slot-scope="scope">
             <el-button v-if="isEdit(scope.row)" type="text" size="mini" @click="edit(scope.row)">修改</el-button>
-            <el-popover
-              placement="left"
-              width="180"
-              trigger="click"
-              >
+            <el-popover placement="left" width="190" trigger="click">
               <p>缺失文件下载项：</p>
-              <a class="file" v-for="item in fileUrlList" :key="item.url" :href="item.url">{{item.name}}</a>
-              <el-button slot="reference" type="text" size="mini" @click="download(scope.row)">下载</el-button> 
+              <a
+                class="file"
+                v-for="item in fileUrlList"
+                :key="item.url"
+                :href="item.url"
+              >{{item.name}}</a>
+              <el-button slot="reference" type="text" size="mini" @click="download(scope.row)">下载</el-button>
             </el-popover>
           </template>
         </el-table-column>
@@ -154,7 +155,7 @@
             ref="upload"
             :action="uploadUrl"
             :file-list="weekMsg.fileList"
-            accept=""
+            accept
             :before-remove="beforeRemove"
             :auto-upload="false"
             :limit="5"
@@ -191,9 +192,9 @@ const moment = require("moment");
 export default {
   data: function() {
     const checkFile = (rule, value, callback) => {
-      if(this.$refs.upload.uploadFiles.length === 0){
-        return callback(new Error('请选择上传文件'));
-      }else {
+      if (this.$refs.upload.uploadFiles.length === 0) {
+        return callback(new Error("请选择上传文件"));
+      } else {
         callback();
       }
     };
@@ -219,9 +220,13 @@ export default {
         {
           title: "已拒绝",
           value: "4"
+        },
+        {
+          title: "已超时",
+          value: "5"
         }
       ],
-      stateValue: ["1", "2", "3", "4"],
+      stateValue: ["1", "2", "3", "4", "5"],
       tableList: [],
       label: [
         {
@@ -264,7 +269,7 @@ export default {
       ],
       weekList: [],
       dialogVisible: false,
-      addFlag:true,
+      addFlag: true,
       weekMsg: {
         pointValue: "",
         areaPoint: "",
@@ -281,25 +286,22 @@ export default {
         monthYear: [
           { required: true, message: "请选择缺失年月", trigger: "change" }
         ],
-        week: [
-          { required: true, message: "请选择缺失周", trigger: "change" }
-        ],
+        week: [{ required: true, message: "请选择缺失周", trigger: "change" }],
         reason: [
           { required: true, message: "请选择点位缺失原因", trigger: "change" }
         ],
-        fileList: [
-          { required: true, validator: checkFile},
-        ],
+        fileList: [{ required: true, validator: checkFile }]
       },
-      subStatus: '',
-      pid: '',
-      baseUrl: window.API,
+      subStatus: "",
+      pid: "",
+      baseUrl: window.configUrl,
       uploadUrl: "",
       showTime: true,
       pickerOptions: {},
-      updateId: '',
-      nowTime: '',
-      fileUrlList: []
+      updateId: "",
+      nowTime: "",
+      fileUrlList: [],
+      applicationTime: ""
     };
   },
   mounted: function() {
@@ -326,7 +328,7 @@ export default {
       this.getTableList();
     },
     beforeRemove(file) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
+      return this.$confirm(`确定移除 ${file.name}？`);
     },
     // 获取点位信息
     getPointList() {
@@ -409,15 +411,18 @@ export default {
             item.status = "已生效";
           } else if (item.status == 4) {
             item.status = "已拒绝";
+          } else if (item.status == 5) {
+            item.status = "已超时";
           }
           if (item.week == 1) {
-            item['weekDay'] = '第一周(1-7日)';
+            item["weekDay"] = "第一周(1-7日)";
           } else if (item.week == 2) {
-            item['weekDay'] = '第二周(8-14日)';
+            item["weekDay"] = "第二周(8-14日)";
           } else if (item.week == 3) {
-            item['weekDay'] = '第三周(15-21日)';
+            item["weekDay"] = "第三周(15-21日)";
           } else if (item.week == 4) {
-            item['weekDay'] = '第四周(22-' + moment(item.month).daysInMonth() + '日)';
+            item["weekDay"] =
+              "第四周(22-" + moment(item.month).daysInMonth() + "日)";
           }
           return item;
         });
@@ -446,9 +451,9 @@ export default {
     },
     // 是否展示修改
     isEdit(val) {
-      if(val.status == "已保存"){
+      if (val.status == "已保存") {
         return true;
-      }else {
+      } else {
         return false;
       }
     },
@@ -468,12 +473,26 @@ export default {
       this.weekMsg = obj;
       this._getWeek(this.nowTime);
     },
+    // 获取缺失周时间
+    weekTimeChange(val) {
+      let time = this.weekMsg.monthYear;
+      if (val == 1) {
+        this.applicationTime = time + "-07 23:59:59";
+      } else if (val == 2) {
+        this.applicationTime = time + "-14 23:59:59";
+      } else if (val == 3) {
+        this.applicationTime = time + "-21 23:59:59";
+      } else if (val == 4) {
+        this.applicationTime =
+          time + "-" + moment(time).daysInMonth() + " 23:59:59";
+      }
+    },
     // 修改
-    edit(val){
+    edit(val) {
       this.dialogVisible = true;
       this.addFlag = false;
       this.updateId = val.id;
-      console.log(val)
+      console.log(val);
       this.weekMsg.pointValue = val.pointName;
       this.weekMsg.areaPoint = val.pointId;
       this.weekMsg.monthYear = val.month;
@@ -482,13 +501,14 @@ export default {
       this.weekMsg.remark = val.remark;
       this.weekMsg.fileList = this._fileArr(val);
       this.pid = val.operatorUid;
+      this._getWeek(val.month);
     },
     // 保存
     save(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$confirm("确认保存？").then(() => {
-            this.subStatus = '1';
+            this.subStatus = "1";
             this._save(formName);
           });
         }
@@ -499,27 +519,30 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           this.$confirm("确认提交？").then(() => {
-            this.subStatus = '2';
+            this.subStatus = "2";
             this._save(formName);
           });
         }
       });
     },
     _save(formName) {
+      console.log(this.weekMsg.monthYear);
+      this.weekTimeChange(this.weekMsg.week);
       let url = this.baseUrl + "/weekQuality/editWeekMissingApplicationSave";
       // let url = this.baseUrl + "";
       let file = this.$refs.upload.uploadFiles;
       let formData = new FormData();
-      let lastFile = '';
+      let lastFile = "";
       file.forEach(item => {
-        if(item.raw){
+        if (item.raw) {
           formData.append("file", item.raw);
-        }else { 
-          lastFile += item.url + ',';
+        } else {
+          lastFile += item.url + ",";
         }
       });
-      console.log(lastFile.replace(/,$/gi,''));
-      formData.append("existFilePath", lastFile.replace(/,$/gi,''));
+      console.log(this.applicationTime);
+      console.log(lastFile.replace(/,$/gi, ""));
+      formData.append("existFilePath", lastFile.replace(/,$/gi, ""));
       formData.append("userUid", "39bd85ac-55e7-431e-9fa7-a217dcea23bf");
       formData.append("operatorUid", this.pid);
       formData.append("id", this.updateId);
@@ -527,9 +550,10 @@ export default {
       formData.append("pointId", this.weekMsg.areaPoint);
       formData.append("month", this.weekMsg.monthYear);
       formData.append("week", this.weekMsg.week);
+      formData.append("applicationTime", this.applicationTime);
       formData.append("reasonUid", this.weekMsg.reason);
       formData.append("remark", this.weekMsg.remark);
-      this.$axios.post(url,formData).then(res => {
+      this.$axios.post(url, formData).then(res => {
         console.log(res);
         if (res.data.code == 200) {
           this.$message({
@@ -541,6 +565,7 @@ export default {
           this.updateId = "";
           this.subStatus = "";
           this.pid = "";
+          this.applicationTime = "";
           this.$refs[formName].resetFields();
         } else if (res.data.code == 500) {
           this.$message.error(res.data.msg);
@@ -556,29 +581,29 @@ export default {
     del() {},
     // 下载
     download(val) {
-      if(val.filePath === '' ||  val.filePath === null){
-        alert('暂无缺失文件！');
+      if (val.filePath === "" || val.filePath === null) {
+        alert("暂无缺失文件！");
         return false;
       }
       console.log(this._fileArr(val));
       this.fileUrlList = this._fileArr(val);
     },
     // 构造下载文件数组
-    _fileArr(val){
-      let path = val.filePath.split(',');
+    _fileArr(val) {
+      let path = val.filePath.split(",");
       let arr = [];
       path.map(item => {
         let obj = {};
-        let name = item.split('/');
-        obj['name'] = name[name.length - 1];
-        obj['url'] = item;
-        arr.push(obj)
+        let name = item.split("/");
+        obj["name"] = name[name.length - 1];
+        obj["url"] = item;
+        arr.push(obj);
       });
       return arr;
     },
     // 根据选择月份变换周
     changeTime() {
-      this.weekMsg.week = '';
+      this.weekMsg.week = "";
       let date = new Date();
       let mounth = date.getMonth() + 1;
       this._getWeek(mounth);
@@ -589,20 +614,17 @@ export default {
       let year = date.getFullYear();
       let mounth = date.getMonth() + 1;
       let str;
-      let time1, time2;
-      mounth < 10 ? (time1 = "0" + (mounth - 1)) : (time1 = mounth);
-      mounth < 10 ? (time2 = "0" + mounth) : (time2 = mounth);
+      let end = moment().format("YYYY-MM");
+      let time;
+      mounth < 10 ? (time = "0" + (mounth - 1)) : (time = mounth);
       if (mounth == "1") {
         str = year - 1 + "-12";
       } else {
-        str = year + "-" + time1;
+        str = year + "-" + time;
       }
-      let end = year + "-" + time2;
       this.strTime = str;
       this.endTime = end;
       this.nowTime = end;
-      this.weekMsg.monthYear = end;
-      this._getWeek(end);
     },
     // 生成周下拉内容
     _getWeek(val) {
@@ -613,35 +635,42 @@ export default {
       let isSelect2 = true;
       let isSelect3 = true;
       let isSelect4 = true;
-      if (day >= 1 && day <= 7) {
-        isSelect1 = false;
-        isSelect2 = false;
-      } else if (day >= 8 && day <= 14) {
-        isSelect2 = false;
-        isSelect3 = false;
-      } else if (day >= 15 && day <= 21) {
-        isSelect3 = false;
-        isSelect4 = false;
-      } else if (day > 21) {
-        this.showTime = false;
-        let obj = {
-          disabledDate: time => {
-            return (
-              time.getTime() < moment().valueOf() ||
-              time.getTime() >
-                moment()
-                  .add(lastDay, "d")
-                  .valueOf()
-            );
-          }
-        };
-        this.pickerOptions = obj;
-        if (moment(newMonth).month() == moment().month()) {
-          isSelect4 = false;
-        } else if (moment(newMonth).valueOf() > moment().valueOf()) {
+      if (
+        moment(moment().format("YYYY-MM")).valueOf() <=
+        moment(newMonth).valueOf()
+      ) {
+        if (day >= 1 && day <= 7) {
           isSelect1 = false;
+          isSelect2 = false;
+        } else if (day >= 8 && day <= 14) {
+          isSelect2 = false;
+          isSelect3 = false;
+        } else if (day >= 15 && day <= 21) {
+          isSelect3 = false;
+          isSelect4 = false;
+        } else if (day > 21) {
+          this.showTime = false;
+          let obj = {
+            disabledDate: time => {
+              console.log(time);
+              return (
+                time.getTime() < moment().valueOf() ||
+                time.getTime() >
+                  moment()
+                    .add(lastDay, "d")
+                    .valueOf()
+              );
+            }
+          };
+          this.pickerOptions = obj;
+          if (moment(newMonth).month() == moment().month()) {
+            isSelect4 = false;
+          } else if (moment(newMonth).valueOf() > moment().valueOf()) {
+            isSelect1 = false;
+          }
         }
       }
+
       let arr = [
         {
           title: "第一周(1-7日)",
@@ -748,7 +777,7 @@ body {
   display: inline-block;
   margin-top: 6px;
   text-decoration: none;
-  color: #409EFF;
+  color: #409eff;
   font-size: 12px;
 }
 /* 新增、编辑 */
