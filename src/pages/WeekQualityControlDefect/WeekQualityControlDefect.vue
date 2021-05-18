@@ -294,7 +294,7 @@ export default {
       },
       subStatus: "",
       pid: "",
-      baseUrl: window.configUrl,
+      baseUrl: window.API,
       uploadUrl: "",
       showTime: true,
       pickerOptions: {},
