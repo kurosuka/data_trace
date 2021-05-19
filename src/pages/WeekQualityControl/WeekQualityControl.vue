@@ -129,12 +129,13 @@ export default {
       page: 0,
       size: 15,
       loading: false,
-      baseUrl: window.API
+      baseUrl: window.configUrl,
+      userUid: ''
     };
   },
   mounted: function() {
     this.getTime();
-    this.getPointList();
+    this.getUserMsg();
     this.getFactorList();
   },
   methods: {
@@ -150,10 +151,20 @@ export default {
       this.page = val;
       this.getTableList();
     },
+    // 获取用户uid
+    getUserMsg(){
+      this.userUid = sessionStorage.getItem('UserId');
+      this.getPointList();
+    },
     // 获取点位信息
     getPointList() {
       let url = this.baseUrl + "/weekQuality/getPointList";
-      this.$axios.get(url).then(res => {
+      this.$axios.get(url,{
+        params: {
+          // userUid: '4ce5bed9-78bd-489f-8b3f-a830098759c4'
+          userUid: this.userUid
+        }
+      }).then(res => {
         console.log(res);
         if (res.status == 200) {
           if (res.data.code == 200) {

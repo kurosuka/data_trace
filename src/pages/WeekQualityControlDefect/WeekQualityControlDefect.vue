@@ -306,7 +306,7 @@ export default {
   },
   mounted: function() {
     this.getTime();
-    this.getPointList();
+    this.getUserMsg();
     this.getReasonList();
   },
   methods: {
@@ -330,10 +330,19 @@ export default {
     beforeRemove(file) {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
+    // 获取用户uid
+    getUserMsg(){
+      this.userUid = sessionStorage.getItem('UserId');
+      this.getPointList();
+    },
     // 获取点位信息
     getPointList() {
       let url = this.baseUrl + "/weekQuality/getPointList";
-      this.$axios.get(url).then(res => {
+      this.$axios.get(url,{
+        params: {
+          userUid: this.userUid
+        }
+      }).then(res => {
         console.log(res);
         if (res.status == 200) {
           if (res.data.code == 200) {

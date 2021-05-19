@@ -154,7 +154,7 @@ export default {
   },
   mounted: function() {
     this.getTime();
-    this.getPointList();
+    this.getUserMsg();
   },
   methods: {
     indexMethod(index) {
@@ -169,10 +169,19 @@ export default {
       this.page = val;
       this.getTableList();
     },
+    // 获取用户uid
+    getUserMsg(){
+      this.userUid = sessionStorage.getItem('UserId');
+      this.getPointList();
+    },
     // 获取点位信息
     getPointList() {
       let url = this.baseUrl + "/weekQuality/getPointList";
-      this.$axios.get(url).then(res => {
+      this.$axios.get(url,{
+        params: {
+          userUid: this.userUid
+        }
+      }).then(res => {
         console.log(res);
         if (res.status == 200) {
           if (res.data.code == 200) {
