@@ -150,6 +150,7 @@ export default {
       baseUrl: window.API,
       subStatus: '',
       fileUrlList: [],
+      userUid: ""
     };
   },
   mounted: function() {

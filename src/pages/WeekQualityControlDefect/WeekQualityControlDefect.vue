@@ -301,7 +301,8 @@ export default {
       updateId: "",
       nowTime: "",
       fileUrlList: [],
-      applicationTime: ""
+      applicationTime: "",
+      userUid: ""
     };
   },
   mounted: function() {
