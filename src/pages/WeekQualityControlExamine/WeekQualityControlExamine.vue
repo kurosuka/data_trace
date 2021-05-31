@@ -115,9 +115,13 @@ export default {
         {
           title: "已拒绝",
           value: "4"
+        },
+        {
+          title: "已超时",
+          value: "5"
         }
       ],
-      stateValue: ["2", "3", "4"],
+      stateValue: ["2", "3", "4", "5"],
       tableList: [],
       label: [
         {
@@ -146,11 +150,12 @@ export default {
       baseUrl: window.API,
       subStatus: '',
       fileUrlList: [],
+      userUid: ""
     };
   },
   mounted: function() {
     this.getTime();
-    this.getPointList();
+    this.getUserMsg();
   },
   methods: {
     indexMethod(index) {
@@ -165,10 +170,19 @@ export default {
       this.page = val;
       this.getTableList();
     },
+    // 获取用户uid
+    getUserMsg(){
+      this.userUid = sessionStorage.getItem('UserId');
+      this.getPointList();
+    },
     // 获取点位信息
     getPointList() {
       let url = this.baseUrl + "/weekQuality/getPointList";
-      this.$axios.get(url).then(res => {
+      this.$axios.get(url,{
+        params: {
+          userUid: this.userUid
+        }
+      }).then(res => {
         console.log(res);
         if (res.status == 200) {
           if (res.data.code == 200) {
@@ -222,6 +236,8 @@ export default {
             item.status = "已生效";
           } else if (item.status == 4) {
             item.status = "已拒绝";
+          } else if (item.status == 5) {
+            item.status = "已超时";
           }
           if (item.week == 1) {
             item['weekDay'] = '第一周(1-7日)';

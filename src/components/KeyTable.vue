@@ -10,9 +10,22 @@
   <div class="key-table">
     <el-table :data="keyTable">
       <el-table-column label="序号" type="index"></el-table-column>
-      <el-table-column label="参数值"></el-table-column>
-      <el-table-column label="备案范围"></el-table-column>
-      <el-table-column label="是否匹配"></el-table-column>
+      <el-table-column label="名称" prop="paramName"></el-table-column>
+      <el-table-column label="参数值">
+        <template slot-scope="scope">
+          {{scope.row.v != '' ? scope.row.v : '--'}}
+        </template>
+      </el-table-column>
+      <el-table-column label="备案范围">
+        <template slot-scope="scope">
+          {{_txt(scope.row.paramLowerLimit, scope.row.paramUpperLimit)}}
+        </template>
+      </el-table-column>
+      <el-table-column label="是否匹配">
+        <template slot-scope="scope">
+           <span :style="{'color': scope.row.status === '0' ? '#ff0000' : ''}">{{_matchTxt(scope.row.status)}}</span>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
@@ -33,7 +46,29 @@ export default {
       },
       required: false
     }
-  }
+  },
+  methods: {
+    _txt(lower, upper){
+      if(lower!=null && upper != null) {
+        return `${lower}~${upper}`
+      } else {
+        return '--'
+      }
+    },
+    _matchTxt(val) {
+      console.log(typeof val);
+      if(val == 1) {
+        return '匹配'
+      }
+      if(val == 0) {
+        return '不匹配'
+      }
+      if(val === undefined) {
+        return '--'
+      }
+      return val;
+    }
+  },
 }
 </script>
 

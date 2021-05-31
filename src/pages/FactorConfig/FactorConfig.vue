@@ -150,8 +150,10 @@ export default {
         ) {
           return callback(new Error("请输入正确的限值"));
         } else {
-          callback();
-        }
+        callback();
+      }
+      } else {
+        callback();
       }
     };
     const checkDeviation = (rule, value, callback) => {
@@ -161,8 +163,10 @@ export default {
         ) {
           return callback(new Error("请输入正确的限值"));
         } else {
-          callback();
-        }
+        callback();
+      }
+      } else {
+        callback();
       }
     };
     return {

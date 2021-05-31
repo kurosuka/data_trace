@@ -6,3 +6,24 @@
  * @Description: In User Settings Edit
  * @FilePath: \data_trace\src\pages\RightKeyParameter\request.js
  */
+// 获取单个点位因子的状态参数详情
+import axios from 'axios'
+const $axios = axios.create({
+  baseURL: 'http://192.168.90.55:9082/api'
+})
+export function queryParamByPointFactor(params = {}) {
+  return $axios.request({
+    method: 'get',
+    params,
+    url: '/paramRecord/queryParamByPointFactor'
+  })
+}
+// 关键参数匹配情况
+export function queryParamMatch(data = {}) {
+  return $axios.request({
+    method: 'post',
+    headers: {'Content-Type': 'application/json;charset=UTF-8'},
+    url: '/instrumentParamsData/queryParamMatch',
+    data,
+  })
+}

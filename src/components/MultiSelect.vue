@@ -41,7 +41,11 @@
         :check-on-click-node="true"
         :filter-node-method="filterNode"
         :expand-on-click-node="false"
+<<<<<<< HEAD
         :default-checked-keys="this.defaultData"
+=======
+        :default-checked-keys="defaultData"
+>>>>>>> dd7c6ac97f4531d1521b5638be92c64419e3e96e
         @node-click="nodeClick" :props="defaultPropsInner"></el-tree>
       </el-option>
       </el-select>
@@ -166,6 +170,22 @@ export default {
         }
       })
     },
+    // 树数据扁平化
+    _flatter(data) {
+      let cloneData = JSON.parse(JSON.stringify(data))   //先将原来的数组深拷贝一份，防止影响到原来的数据
+      let obj = [];
+      var fn = (cloneData)=> {
+        cloneData.map(item=> {
+          if(item.children == null) {
+            obj.push(item)
+          } else {
+            fn(item.children)
+          }
+        })
+      }
+      fn(cloneData);
+      return obj
+    },
      filterNode(value, data) {
         if (!value) return true;
         console.log(data)
@@ -183,8 +203,16 @@ export default {
     defaultData: {
       deep: true,
       handler(newval) {
-      console.log(newval);
-      }
+        console.log(newval);
+        const flatList = this._flatter(this.selectData);
+        this.addForm.pointName = flatList.filter(item=> {
+         return newval.includes(item.id);
+        }).map(item=> {
+          return item.title
+        });
+        console.log(this.addForm.pointName);
+      },
+      // immediate: true
     }
   }
 };
