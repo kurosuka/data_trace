@@ -1,0 +1,27 @@
+[{
+  "id":1,
+  "keyParams":"测量检出限",
+  "min":"0.02",
+  "max":"0.02",
+  "unit":"mg/L",
+  "people":"小花",
+  "tstamp":"2019-12-20"
+},
+{
+  "id":2,
+  "keyParams":"消解温度",
+  "min":"40",
+  "max":"60",
+  "unit":"mg/L",
+  "people":"小花",
+  "tstamp":"2019-12-20"
+},
+{
+  "id":3,
+  "keyParams":"消解温度",
+  "min":"4",
+  "max":"10",
+  "unit":"min",
+  "people":"小花",
+  "tstamp":"2019-12-20"
+}]
