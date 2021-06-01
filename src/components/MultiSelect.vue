@@ -41,11 +41,7 @@
         :check-on-click-node="true"
         :filter-node-method="filterNode"
         :expand-on-click-node="false"
-<<<<<<< HEAD
-        :default-checked-keys="this.defaultData"
-=======
         :default-checked-keys="defaultData"
->>>>>>> dd7c6ac97f4531d1521b5638be92c64419e3e96e
         @node-click="nodeClick" :props="defaultPropsInner"></el-tree>
       </el-option>
       </el-select>

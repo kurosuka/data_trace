@@ -10,7 +10,7 @@ import axios from 'axios'
 import { getLocalstorage, getUrlParams } from '../../js/utils.js';
 let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid
 const $axios = axios.create({
-  baseURL: 'http://192.168.90.55:9082/api'
+  baseURL: window.API
 })
 export function getKeyTable(params = {}) {
   console.log(process.env.VUE_APP_URL);
