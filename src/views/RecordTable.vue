@@ -25,7 +25,8 @@
               <el-button type="warning" @click="handleRecord">备案</el-button>
             </el-form-item>
             <el-form-item label="">
-              <el-button type="danger" @click="handleDelete('uid')" icon="el-icon-delete">删除</el-button>
+              <el-button type="danger" @click="handleDelete('uid')" icon="el-icon-delete"
+                :disabled="multipleSelection.length>0?false:true">删除</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -74,7 +75,8 @@
     </el-container>
     <!--tab页切换-->
     <!-- 备案弹出框 -->
-    <el-dialog title="备案" :visible.sync="recordDialog" width="1000px" :before-close="handleClose">
+    <el-dialog title="备案" :visible.sync="recordDialog" width="1000px" :before-close="handleClose"
+      :close-on-click-modal="false">
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <div>
           <el-form-item label="水站名称:" prop="pointName" class="form_style">
@@ -106,15 +108,13 @@
             </el-button>
 
             <div class="ruleForm_span">
-              <!-- <span>备注:</span>
+              <span>备注:</span>
               <span>名称：量程一，量程二</span>
-              <span>值：默认填写量程范围最大值，如果量程范围为：0-50，则填写50，不允许填写0-50或0~50或0,50等</span> -->
+              <span>值：量程为0-50，下限填写0，上限填写50</span>
             </div>
             <el-table border ref="multipleTable" :data="ruleFormTableData" tooltip-effect="dark" style="width: 100%">
-
               <el-table-column label="删除">
                 <template slot-scope="scope">
-
                   <el-button size="mini" type="danger" @click="handleDelete('rangeUid',scope.$index, scope.row)"
                     icon="el-icon-delete">
                   </el-button>
@@ -136,14 +136,16 @@
                   :value="item.rangeUid"></el-option>
               </el-select>
             </div>
-            <div style="font-size: 12px;margin: 10px 0;color: red;">请填写下限，上限；只允许录入数字</div>
+            <div style="font-size: 12px;margin: 10px 0;color: red;">请填写上限，下限；只允许录入数字</div>
             <el-form class="keyParams_form" :model="keyParamsForm" ref="keyParamsForm" label-width="100px">
               <el-form-item v-for="(item,index) in ParamsList" :label="item.paramName" :key="item.id"
                 class="keyparams_style">
                 <span>上限:</span>
                 <el-input v-model.number="addForm[index].paramUpperLimit" type="number"></el-input>
                 <span>下限:</span>
-                <el-input v-model.number="addForm[index].paramLowerLimit" type="number" @change="paramLimitChange(index)" :disabled="addForm[index].paramUpperLimit==''?true:addForm[index].paramUpperLimit==''"></el-input>
+                <el-input v-model.number="addForm[index].paramLowerLimit" type="number"
+                  @change="paramLimitChange(index)"
+                  :disabled="addForm[index].paramUpperLimit==''?true:addForm[index].paramUpperLimit==''"></el-input>
                 <span>{{item.measureUnitName}}</span>
               </el-form-item>
             </el-form>
@@ -158,7 +160,8 @@
       </span>
     </el-dialog>
     <!-- 量程登记表点击新增弹出模态框 -->
-    <el-dialog title="新增" :visible.sync="saveDialog" width="568px" :before-close="handleClose">
+    <el-dialog title="新增" :visible.sync="saveDialog" width="568px" :before-close="handleClose1"
+      :close-on-click-modal="false">
       <el-form :model="saveForm" ref="saveForm" :rules="saveRules" label-width="100px">
         <div>
           <el-form-item label="名称:" prop="rangeId" class="form_style">
@@ -184,15 +187,15 @@
         </div>
         <div>
           <el-form-item label="下限:" prop="low" class="form_style">
-            <el-input v-model.number="saveForm.low" type="number"></el-input>
+            <el-input v-model.number="saveForm.low" type="number" @change="lowerRangeBlur"></el-input>
           </el-form-item>
           <el-form-item label="上限:" prop="upper" class="form_style">
-            <el-input v-model.number="saveForm.upper" type="number"></el-input>
+            <el-input v-model.number="saveForm.upper" type="number" @change="upperRangeBlur"></el-input>
           </el-form-item>
         </div>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="handleClose()">取 消</el-button>
+        <el-button @click="handleClose1">取 消</el-button>
         <el-button type="primary" @click="handleSave('saveForm')">确定</el-button>
       </span>
     </el-dialog>
@@ -222,6 +225,8 @@
         form: {                     // 表单数据
           selectValue: [],//检测项目
           pointOption: [],//点位
+          newFactors: [],
+          newPoint: [],
         },
         pointData: [],              // 点位数据
         factorList: [],             // 因子下拉数据
@@ -232,9 +237,11 @@
         // 量程范围登记
         ruleForm: {
           pointName: [],//水站名称
+          company: '',
           rangeId: '',//量程
           values: '',//量程值
           factorId: '',
+          analyze: ''
         },
         rules: {
           pointName: [
@@ -275,10 +282,10 @@
             { required: true, message: '请选择关键参数', trigger: 'change' },
           ],
           low: [
-            { required: true, message: '请输入下限', trigger: 'blur' },
+            { required: true, message: '请输入下限值', trigger: 'blur' },
           ],
           upper: [
-            { required: true, message: '请输入上限位', trigger: 'blur' },
+            { required: true, message: '请输入上限值', trigger: 'blur' },
           ],
         },
         activeName: 'range',
@@ -299,7 +306,7 @@
           }
         ],
         flagEdit: '',
-        addFormError:false,
+        addFormError: false,
         // 分页
         currentPage: 1,
         pageSize: 30,
@@ -309,7 +316,7 @@
         multipleSelection: [],
         exportName: [],//导出的点位名
         currentRow: null,
-        flag:1,
+        flag: 1,
         base: window.configUrl // 接口api地址
       };
     },
@@ -336,7 +343,7 @@
     mounted() {
       this.getPoints()
       this.getFactors()
-      this.getPage()
+      // this.getPage()
       this.getAnalyzeList()
       this.getUnitList()
       this.getRangeList()
@@ -353,6 +360,8 @@
       // 表格数据
       getPage() {
         this.loading = true
+        /*  console.log(this.form.selectValue);
+         console.log( this.form.pointOption); */
         var obj = {
           factorCodeList: this.form.selectValue,
           pageNo: this.currentPage,
@@ -428,45 +437,45 @@
       handleSave(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            var value=this.saveForm.low-this.saveForm.upper
-            if(value>0){
-              this.$message({type:'warning',message:'下限值不能大于上限值'})
-            }else{
+            var value = this.saveForm.low - this.saveForm.upper
+            if (value > 0) {
+              this.$message({ type: 'warning', message: '下限值不能大于上限值' })
+            } else {
               let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
-            var keyParams = this.saveForm.keyParams.map(item => {
-              return { paramCode: item }
-            })
-            console.log(keyParams);
-            var obj = {
-              pointId: this.newPointId,//水站名称
-              operationCompany: this.ruleForm.company,//运营单位
-              factorCode: this.ruleForm.factorId,//监测因子
-              analysisMethodUid: this.ruleForm.analyze,//分析方法
-              rangeUid: this.saveForm.rangeId,//量程名称
-              measureUnitUid: this.saveForm.unit,//单位
-              rangeParamList: keyParams,//关键参数
-              lowerRangeLimit: this.saveForm.low,
-              upperRangeLimit: this.saveForm.upper,
-              userUid: userId
-            }
-            console.log(JSON.stringify(obj));
+              var keyParams = this.saveForm.keyParams.map(item => {
+                return { paramCode: item }
+              })
+              console.log(keyParams);
+              var obj = {
+                pointId: this.newPointId,//水站名称
+                operationCompany: this.ruleForm.company,//运营单位
+                factorCode: this.ruleForm.factorId,//监测因子
+                analysisMethodUid: this.ruleForm.analyze,//分析方法
+                rangeUid: this.saveForm.rangeId,//量程名称
+                measureUnitUid: this.saveForm.unit,//单位
+                rangeParamList: keyParams,//关键参数
+                lowerRangeLimit: this.saveForm.low,
+                upperRangeLimit: this.saveForm.upper,
+                userUid: userId
+              }
+              console.log(JSON.stringify(obj));
 
-            this.$axios({
-              url: `${this.base}/paramRecord/addRange`,
-              method: 'post',
-              headers: {
-                'content-type': 'application/json',//添加请求头
-              },
-              data: JSON.stringify(obj)
-            }).then(res => {
-              console.log(res);
-              this.saveDialog = false
-              this.queryRangeByFactor()
-            }).catch(err => {
-              console.log(err);
-            })
+              this.$axios({
+                url: `${this.base}/paramRecord/addRange`,
+                method: 'post',
+                headers: {
+                  'content-type': 'application/json',//添加请求头
+                },
+                data: JSON.stringify(obj)
+              }).then(res => {
+                console.log(res);
+                this.handleClose1()
+                this.queryRangeByFactor()
+              }).catch(err => {
+                console.log(err);
+              })
             }
-           
+
 
           } else {
             console.log('error submit!!');
@@ -542,43 +551,43 @@
       },
       // 备案模态框保存
       handleRecordSave() {
-        if(this.addFormError){
-console.log('err');
-this.$message({type:'warning',message:'备案失败'})
-        }else{
+        if (this.addFormError) {
+          console.log('err');
+          this.$message({ type: 'warning', message: '备案失败' })
+        } else {
           var newForm = []
-        console.log(this.ruleForm);
-        let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
-        newForm.push({
-          rangeParamList: this.addForm,
-          rangeUid: this.ruleForm.rangeId,
-          userUid: userId
-        })
-        console.log(newForm);
-        console.log(newForm[0]);
-        console.log(JSON.stringify(newForm[0]));
-        this.$axios({
-          url: `${this.base}/paramRecord/editParam`,
-          method: 'post',
-          headers: {
-            'content-type': 'application/json;charset=UTF-8',//添加请求头
-          },
-          data: JSON.stringify(newForm[0])
-        }).then(res => {
-          console.log(res);
-          if (res.data.code == 200) {
-            this.queryRangeByFactor()
-            this.$message({ type: 'success', message: '备案成功！' })
-            this.getPage()
-          } else {
+          console.log(this.ruleForm);
+          let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
+          newForm.push({
+            rangeParamList: this.addForm,
+            rangeUid: this.ruleForm.rangeId,
+            userUid: userId
+          })
+          console.log(newForm);
+          console.log(newForm[0]);
+          console.log(JSON.stringify(newForm[0]));
+          this.$axios({
+            url: `${this.base}/paramRecord/editParam`,
+            method: 'post',
+            headers: {
+              'content-type': 'application/json;charset=UTF-8',//添加请求头
+            },
+            data: JSON.stringify(newForm[0])
+          }).then(res => {
+            console.log(res);
+            if (res.data.code == 200) {
+              this.queryRangeByFactor()
+              this.$message({ type: 'success', message: '备案成功！' })
+              this.getPage()
+            } else {
+              this.$message({ type: 'danger', message: '备案失败！' })
+            }
+          }).catch(err => {
+            console.log(err);
             this.$message({ type: 'danger', message: '备案失败！' })
-          }
-        }).catch(err => {
-          console.log(err);
-          this.$message({ type: 'danger', message: '备案失败！' })
-        })
+          })
         }
-        
+
       },
       // 获取点位数据
       getPoints() {
@@ -590,7 +599,7 @@ this.$message({type:'warning',message:'备案失败'})
         }).then(res => {
           // console.log(res);
           this.pointData = res.data.data
-          console.log(this.pointData[0].children[0]);
+          // console.log(this.pointData[0].children[0]);
 
           // 备案弹出框水站名称：默认第一个
           this.ruleForm.pointName = []//弹出框默认展示的
@@ -599,7 +608,12 @@ this.$message({type:'warning',message:'备案失败'})
           this.form.pointOption.push(this.pointData[0].children[0].id)
           this.ruleForm.pointName.push(this.pointData[0].children[0].id)
           this.newPointId = this.pointData[0].children[0].id
-          console.log(this.ruleForm.pointName);
+          // console.log(this.form.pointOption);
+          this.form.newPoint = this.form.pointOption.map(item => item)
+          /*      console.log(this.form.selectValue);
+               console.log(this.form.pointOption); */
+          this.getPage()
+
           this.handlePointChangeData()
         }).catch(err => {
           console.log(err);
@@ -616,12 +630,13 @@ this.$message({type:'warning',message:'备案失败'})
           this.form.selectValue = []
           // 首页因子默认全选
           this.form.selectValue = this.factorList.map(item => item.factorCode)
+          /*  console.log( this.form.newPoint);
+           console.log(this.form.selectValue); */
           // 备案弹出框默认展示第一个
           this.ruleForm.factorId = ''
           this.ruleForm.factorId = this.factorList[0].factorCode
           this.newFactorId = ''
           this.newFactorId = this.factorList[0].factorCode
-
           // console.log(res);
         }).catch(err => {
           console.log(err);
@@ -695,7 +710,7 @@ this.$message({type:'warning',message:'备案失败'})
             }
           })
           console.log(this.newRangeList);
-          this.ruleForm.rangeId=''
+          this.ruleForm.rangeId = ''
           this.queryParams(this.ruleForm.rangeId)
 
         }).catch(err => {
@@ -763,15 +778,29 @@ this.$message({type:'warning',message:'备案失败'})
         }
 
       },
-      paramLimitChange(index){
+      paramLimitChange(index) {
         console.log(index);
-      if(this.addForm[index].paramUpperLimit-this.addForm[index].paramLowerLimit<0){
-        this.$message({type:'warning',message:'下限不能超过上限'})
-        this.addFormError=true
-      }else{
-        this.addFormError=false
+        // this.addFormError=false
+        if (this.addForm[index].paramUpperLimit - this.addForm[index].paramLowerLimit < 0) {
+          this.$message({ type: 'warning', message: '下限不能超过上限' })
+          this.addFormError = true
+        } else {
+          this.addFormError = false
 
-      }
+        }
+      },
+      upperRangeBlur(val) {
+        if (val > 50) {
+          this.$message({ type: 'warning', message: '量程范围为0-50' })
+          this.saveForm.upper = ''
+
+        }
+      },
+      lowerRangeBlur(val) {
+        if (val < 0) {
+          this.$message({ type: 'warning', message: '量程范围为0-50' })
+          this.saveForm.low = ''
+        }
       },
       // 分页
       handleSizeChange(val) {
@@ -792,21 +821,27 @@ this.$message({type:'warning',message:'备案失败'})
       },
       handleClose() {
         this.recordDialog = false
-        this.saveDialog = false
         this.activeName = 'range'
         this.ruleForm.company = ''
         this.ruleForm.rangeId = ''
-        this.saveForm.rangeId = ''
-        this.saveForm.unit = ''
-        this.saveForm.keyParams = []
-        this.saveForm.low = ''
-        this.saveForm.upper = ''
-       /*  this.addForm.id = ''
-        this.addForm.name = ''
-        this.addForm.paramUpperLimit = ''
-        this.addForm.paramLowerLimit = ''
-        this.addForm.unit = '' */
 
+        /*  this.addForm.id = ''
+         this.addForm.name = ''
+         this.addForm.paramUpperLimit = ''
+         this.addForm.paramLowerLimit = ''
+         this.addForm.unit = '' */
+
+      },
+      handleClose1() {
+        console.log(1);
+        this.saveDialog = false
+        /*  this.saveForm.rangeId = ''
+         this.saveForm.keyParams = []
+         this.saveForm.low = ''
+         this.saveForm.upper = '' */
+        this.saveForm.unit = ''
+        this.$refs.saveForm.resetFields(); //对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
+        this.$refs.saveForm.clearValidate();//这个是移除表单项的校验结果
       },
       // 删除量程
       handleDelete(ids, index, row) {
@@ -937,6 +972,7 @@ this.$message({type:'warning',message:'备案失败'})
         // console.log(year + '-' + month + '-' + dd + ' ' + hour+':'+m);
         return year + '-' + month + '-' + dd + ' ' + hour + ':' + m
       },
+
       height() {
         console.log();
       }
@@ -982,18 +1018,11 @@ this.$message({type:'warning',message:'备案失败'})
   .ruleForm_span span {
     display: block;
     color: red;
-    padding: 2px 0;
+    padding: 2px 0 5px 0;
   }
 
   .keyparams_style .el-input {
     width: 110px;
     margin: 0 20px;
-  }
-
-  .keyParams_form {
-    /*   border: 1px solid #E4E7ED;
-    border-radius: 3px;
-    padding: 10px 0;
-    margin-top: 5px; */
   }
 </style>
