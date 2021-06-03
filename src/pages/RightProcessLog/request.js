@@ -8,7 +8,7 @@
  */
 import axios from 'axios'
 const $axios = axios.create({
-  baseURL: 'http://192.168.90.55:9082/api'
+  baseURL: window.API
 })
 /**
  * 

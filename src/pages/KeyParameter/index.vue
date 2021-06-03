@@ -96,311 +96,311 @@
 </template>
 
 <script>
-import KeyTable from '../../components/KeyTable.vue';
+/* import KeyTable from '../../components/KeyTable.vue';
 import MultiSelect from '../../components/MultiSelect.vue'
 import { getPoints, getFactors, queryParam, queryParamByPointFactor,
 queryParamMatch, queryParamProcessLog } from './request.js';
 import axios from 'axios';
 
-const moment = require('moment');
+const moment = require('moment'); */
 export default {
-  components: { MultiSelect, KeyTable },
+  // components: { MultiSelect, KeyTable },
   name: 'KeyParamseter',
   data() {
     return {
-      headerForm: { // 头部查询参数
-        start: moment(new Date()).subtract(1,'day').format('YYYY-MM-DD HH:00:00'),
-        end: moment(new Date()).format('YYYY-MM-DD HH:00:00'),
-        match: null,
-        factor: ''
-      },
-      keyList: [], // 表格列表
-      keyVisible: false,
-      yqLoading: true,
-      pointList: [],
-      matchList: [
-        {
-          label: '全部',
-          value: null,
-        },
-        {
-          label: '匹配',
-          value: 1,
-        },
-        {
-          label: '不匹配',
-          value: 0,
-        }
-      ],
-      yqVisible: false,
-      yqTitle: '',
-      logData: [],
-      factorList: [],
-      defaultData: [],
-      loading: true,
-      pages: {
-        page: 1,
-        rows: 24,
-        sort: 'time-',
-        total: 0,
-        sizes: [24, 36, 48]
-      },
-      selectPointList: [],
-      keyData: [], // 状态参数详情
+      // headerForm: { // 头部查询参数
+      //   start: moment(new Date()).subtract(1,'day').format('YYYY-MM-DD HH:00:00'),
+      //   end: moment(new Date()).format('YYYY-MM-DD HH:00:00'),
+      //   match: null,
+      //   factor: ''
+      // },
+      // keyList: [], // 表格列表
+      // keyVisible: false,
+      // yqLoading: true,
+      // pointList: [],
+      // matchList: [
+      //   {
+      //     label: '全部',
+      //     value: null,
+      //   },
+      //   {
+      //     label: '匹配',
+      //     value: 1,
+      //   },
+      //   {
+      //     label: '不匹配',
+      //     value: 0,
+      //   }
+      // ],
+      // yqVisible: false,
+      // yqTitle: '',
+      // logData: [],
+      // factorList: [],
+      // defaultData: [],
+      // loading: true,
+      // pages: {
+      //   page: 1,
+      //   rows: 24,
+      //   sort: 'time-',
+      //   total: 0,
+      //   sizes: [24, 36, 48]
+      // },
+      // selectPointList: [],
+      // keyData: [], // 状态参数详情
     }
   },
   created() {
-    this.init().then(res=> {
-      const option = {
-        fromTime: this.headerForm.start,
-        toTime: this.headerForm.end,
-        factorCode: this.headerForm.factor,
-        qualified: null,
-        fields: [
-          {
-            "field":"status"
-          },
-          {
-            "field":"code"
-          }
-        ],
-        sns: res.map((item, index)=> {
-          return {
-            sn: /* index */item.id,
-            snName: item.title,
-            orderNum: (this.selectPointList.length - index),
-          }
-        })
-      };
-      console.log(option);
-      this.getKeyList(option);
-    });
+    // this.init().then(res=> {
+    //   const option = {
+    //     fromTime: this.headerForm.start,
+    //     toTime: this.headerForm.end,
+    //     factorCode: this.headerForm.factor,
+    //     qualified: null,
+    //     fields: [
+    //       {
+    //         "field":"status"
+    //       },
+    //       {
+    //         "field":"code"
+    //       }
+    //     ],
+    //     sns: res.map((item, index)=> {
+    //       return {
+    //         sn: /* index */item.id,
+    //         snName: item.title,
+    //         orderNum: (this.selectPointList.length - index),
+    //       }
+    //     })
+    //   };
+    //   console.log(option);
+    //   this.getKeyList(option);
+    // });
   },
   methods: {
-    async init() {
-      await axios.all([getPoints(), getFactors()]).then(
-          axios.spread((res1, res2)=> {
-            this.pointList = res1.data.data;
-            this.factorList = res2.data.data;
-            this.headerForm.factor = this.factorList[0].factorCode;
-            this.defaultData = this._flatter(res1.data.data).map(item => item.id); // 默认点位
-            this.selectPointList = this._flatter(res1.data.data); // 默认点位
-            console.log(this.defaultData);
-          })
-        );
-      return new Promise((resolve, reject)=> {
-        console.log(this.defaultData);
-        resolve(this.selectPointList);
-        reject();
-      })
-    },
-    searchClick() {
-      this.pages.page = 1;
-      this.search();
-    },
-    // 查询
-    search() {
-      const option = {
-        fromTime: this.headerForm.start,
-        toTime: this.headerForm.end,
-        factorCode: this.headerForm.factor,
-        qualified: this.headerForm.match,
-        fields: [
-          {
-              "field": "status"
-          },
-          {
-            'field': 'code'
-          }
-        ],
-        sns: this.selectPointList.map((item, index)=> {
-          return {
-            sn: /* (1+index), */item.id,
-            snName: item.title,
-            orderNum: (this.selectPointList.length - index),
-          }
-        })
-      };
-      this.getKeyList(option)
-    },
-    keyClick(data) {
-      console.log(data);
-      this.getParamByPointFactor({
-        pointId: data.sn,
-        factorCode: this.headerForm.factor,
-      }, data);
-    },
-    getKeyList(data) {
-      queryParam(data, {
-        page: this.pages.page,
-        rows: this.pages.rows,
-        sort: this.pages.sort
-      }).then(res=> {
-        this.keyList = res.data.data;
-        this.pages.total = res.data.count;
-        this.loading = true;
-        setTimeout(() => {
-          this.loading = false;
-        }, 500);
-        if(res.data.code == 500) {
-          this.$message.warning({
-            message: res.data.msg,
-            showClose: true,
-          })
-        }
-      })
-        .catch(err=> {
-          this.$message.warning({
-            message: err,
-            showClose: true
-          })
-      })
-    },
-    getParamByPointFactor(params, row) {
-      // 关键参数
-      queryParamByPointFactor(params).then(res=> {
-        if(!res.data.data) {
-          this.$message.warning({
-            showClose: true,
-            message: '无仪器状态参数'
-          })
-          return
-        }
-        this.keyVisible = true;
-        this.keyData = res.data.data;
-        const opt = {
-          tstamp: row.time,
-          factorCode: this.headerForm.factor,
-          fields: [...this.keyData.map((item)=> {
-            return {
-              field: item.paramCode
-            }
-          }),{field: 'status'}],
-          snCriteria: 
-            {
-              sn: row.sn,
-              snName: row.snName,
-              orderNum: 9999
-            }
-        }
-        queryParamMatch(opt).then(res=> {
-          const MatchData = res.data.data;
-          this.keyData = this.keyData.map(item=> {
-            item.v = MatchData[item.paramCode];
-            item.status = MatchData[`${item.paramCode}_status`];
-            return item;
-          })
-        })
-      })
-      // 匹配情况
+  //   async init() {
+  //     await axios.all([getPoints(), getFactors()]).then(
+  //         axios.spread((res1, res2)=> {
+  //           this.pointList = res1.data.data;
+  //           this.factorList = res2.data.data;
+  //           this.headerForm.factor = this.factorList[0].factorCode;
+  //           this.defaultData = this._flatter(res1.data.data).map(item => item.id); // 默认点位
+  //           this.selectPointList = this._flatter(res1.data.data); // 默认点位
+  //           console.log(this.defaultData);
+  //         })
+  //       );
+  //     return new Promise((resolve, reject)=> {
+  //       console.log(this.defaultData);
+  //       resolve(this.selectPointList);
+  //       reject();
+  //     })
+  //   },
+  //   searchClick() {
+  //     this.pages.page = 1;
+  //     this.search();
+  //   },
+  //   // 查询
+  //   search() {
+  //     const option = {
+  //       fromTime: this.headerForm.start,
+  //       toTime: this.headerForm.end,
+  //       factorCode: this.headerForm.factor,
+  //       qualified: this.headerForm.match,
+  //       fields: [
+  //         {
+  //             "field": "status"
+  //         },
+  //         {
+  //           'field': 'code'
+  //         }
+  //       ],
+  //       sns: this.selectPointList.map((item, index)=> {
+  //         return {
+  //           sn: /* (1+index), */item.id,
+  //           snName: item.title,
+  //           orderNum: (this.selectPointList.length - index),
+  //         }
+  //       })
+  //     };
+  //     this.getKeyList(option)
+  //   },
+  //   keyClick(data) {
+  //     console.log(data);
+  //     this.getParamByPointFactor({
+  //       pointId: data.sn,
+  //       factorCode: this.headerForm.factor,
+  //     }, data);
+  //   },
+  //   getKeyList(data) {
+  //     queryParam(data, {
+  //       page: this.pages.page,
+  //       rows: this.pages.rows,
+  //       sort: this.pages.sort
+  //     }).then(res=> {
+  //       this.keyList = res.data.data;
+  //       this.pages.total = res.data.count;
+  //       this.loading = true;
+  //       setTimeout(() => {
+  //         this.loading = false;
+  //       }, 500);
+  //       if(res.data.code == 500) {
+  //         this.$message.warning({
+  //           message: res.data.msg,
+  //           showClose: true,
+  //         })
+  //       }
+  //     })
+  //       .catch(err=> {
+  //         this.$message.warning({
+  //           message: err,
+  //           showClose: true
+  //         })
+  //     })
+  //   },
+  //   getParamByPointFactor(params, row) {
+  //     // 关键参数
+  //     queryParamByPointFactor(params).then(res=> {
+  //       if(!res.data.data) {
+  //         this.$message.warning({
+  //           showClose: true,
+  //           message: '无仪器状态参数'
+  //         })
+  //         return
+  //       }
+  //       this.keyVisible = true;
+  //       this.keyData = res.data.data;
+  //       const opt = {
+  //         tstamp: row.time,
+  //         factorCode: this.headerForm.factor,
+  //         fields: [...this.keyData.map((item)=> {
+  //           return {
+  //             field: item.paramCode
+  //           }
+  //         }),{field: 'status'}],
+  //         snCriteria: 
+  //           {
+  //             sn: row.sn,
+  //             snName: row.snName,
+  //             orderNum: 9999
+  //           }
+  //       }
+  //       queryParamMatch(opt).then(res=> {
+  //         const MatchData = res.data.data;
+  //         this.keyData = this.keyData.map(item=> {
+  //           item.v = MatchData[item.paramCode];
+  //           item.status = MatchData[`${item.paramCode}_status`];
+  //           return item;
+  //         })
+  //       })
+  //     })
+  //     // 匹配情况
       
-    },
-    // 仪器日志点击
-    yqClick(row, title) {
-      this.yqTitle = title;
-      this.yqVisible = true;
-      console.log(row);
-      this.getParamProcessLog(row);
-    },
-    getParamProcessLog(row) {
-      queryParamProcessLog(
-        {
-        fromTime: row.time,
-        toTime: moment(row.time).add(3, 'hours').format('yyyy-MM-DD HH:59:59'),
-        factorCode: this.headerForm.factor,
-        snCriteria: {
-          orderNum: 9999,
-          sn: /* 1 */row.sn,
-          snName: row.snName
-        },
-        fields: [
-          {
-            "field":"i11001"
-        },
-        {
-            "field":"i21001"
-        }
-        ]
-      }
-      ).then(res => {
-        console.log(res);
-         this.yqLoading = true;
-        this.logData = res.data.data;
-        setTimeout(() => {
-          this.yqLoading = false;
-        }, 500);
-      })
-    },
-    /**
-     * @description 获取选中的点位
-     */
-    selectPoint(data) {
-      console.log(data);
-      this.selectPointList = data;
-    },
-    _factorName(code) {
-      console.log(code);
-      //return this.factorList.filter(item=> {return item.factorCode == code})[0]._factorName;
-      return this.factorList.filter(item=> {
-        return item.factorCode == code
-      }).map(item=>item.factorName).join('');
-    },
-    // 表格索引
-     _index(idx) {
-      return (this.pages.page - 1) * this.pages.rows + (idx + 1)
-    },
-    // 匹配结果
-    _matchResult(data) {
-      return this.matchList.filter(item=>{
-        return item.value == data
-      }).map(item=>item.label).join('')
-    },
-    // 每页条数
-    handleSizeChange(val) {
-      console.log(val);
-      this.pages.rows = val;
-      this.pages.page = 1;
-      this.search();
-    },
-    handleCurrentChange(val) {
-      this.pages.page = val;
-      this.search();
-    },
-    // 树数据扁平化
-    _flatter(data) {
-      let cloneData = JSON.parse(JSON.stringify(data))   //先将原来的数组深拷贝一份，防止影响到原来的数据
-      let obj = [];
-      var fn = (cloneData)=> {
-        cloneData.map(item=> {
-          if(item.children == null) {
-            obj.push(item)
-          } else {
-            fn(item.children)
-          }
-        })
-      }
-      fn(cloneData);
-      return obj
-    },
-  },
-  computed: {
-    gapDay() {
-      return moment(this.headerForm.end).isAfter(this.headerForm.start)
-    }
-  },
-  watch: {
-    gapDay: {
-      handler(newVal) {
-        if(!newVal) {
-          this.$message.warning({
-            showClose: true,
-            message: '开始时间不能大于结束时间'
-          })
-        }
-      },
-      deep: true,
-      immediate: true
-    }
+  //   },
+  //   // 仪器日志点击
+  //   yqClick(row, title) {
+  //     this.yqTitle = title;
+  //     this.yqVisible = true;
+  //     console.log(row);
+  //     this.getParamProcessLog(row);
+  //   },
+  //   getParamProcessLog(row) {
+  //     queryParamProcessLog(
+  //       {
+  //       fromTime: row.time,
+  //       toTime: moment(row.time).add(3, 'hours').format('yyyy-MM-DD HH:59:59'),
+  //       factorCode: this.headerForm.factor,
+  //       snCriteria: {
+  //         orderNum: 9999,
+  //         sn: /* 1 */row.sn,
+  //         snName: row.snName
+  //       },
+  //       fields: [
+  //         {
+  //           "field":"i11001"
+  //       },
+  //       {
+  //           "field":"i21001"
+  //       }
+  //       ]
+  //     }
+  //     ).then(res => {
+  //       console.log(res);
+  //        this.yqLoading = true;
+  //       this.logData = res.data.data;
+  //       setTimeout(() => {
+  //         this.yqLoading = false;
+  //       }, 500);
+  //     })
+  //   },
+  //   /**
+  //    * @description 获取选中的点位
+  //    */
+  //   selectPoint(data) {
+  //     console.log(data);
+  //     this.selectPointList = data;
+  //   },
+  //   _factorName(code) {
+  //     console.log(code);
+  //     //return this.factorList.filter(item=> {return item.factorCode == code})[0]._factorName;
+  //     return this.factorList.filter(item=> {
+  //       return item.factorCode == code
+  //     }).map(item=>item.factorName).join('');
+  //   },
+  //   // 表格索引
+  //    _index(idx) {
+  //     return (this.pages.page - 1) * this.pages.rows + (idx + 1)
+  //   },
+  //   // 匹配结果
+  //   _matchResult(data) {
+  //     return this.matchList.filter(item=>{
+  //       return item.value == data
+  //     }).map(item=>item.label).join('')
+  //   },
+  //   // 每页条数
+  //   handleSizeChange(val) {
+  //     console.log(val);
+  //     this.pages.rows = val;
+  //     this.pages.page = 1;
+  //     this.search();
+  //   },
+  //   handleCurrentChange(val) {
+  //     this.pages.page = val;
+  //     this.search();
+  //   },
+  //   // 树数据扁平化
+  //   _flatter(data) {
+  //     let cloneData = JSON.parse(JSON.stringify(data))   //先将原来的数组深拷贝一份，防止影响到原来的数据
+  //     let obj = [];
+  //     var fn = (cloneData)=> {
+  //       cloneData.map(item=> {
+  //         if(item.children == null) {
+  //           obj.push(item)
+  //         } else {
+  //           fn(item.children)
+  //         }
+  //       })
+  //     }
+  //     fn(cloneData);
+  //     return obj
+  //   },
+  // },
+  // computed: {
+  //   gapDay() {
+  //     return moment(this.headerForm.end).isAfter(this.headerForm.start)
+  //   }
+  // },
+  // watch: {
+  //   gapDay: {
+  //     handler(newVal) {
+  //       if(!newVal) {
+  //         this.$message.warning({
+  //           showClose: true,
+  //           message: '开始时间不能大于结束时间'
+  //         })
+  //       }
+  //     },
+  //     deep: true,
+  //     immediate: true
+  //   }
   }
 }
 </script>
