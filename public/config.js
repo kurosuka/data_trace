@@ -12,7 +12,8 @@ const pageUrl = 'http://183.166.140.243:8087/HS_water_WebUI/QualityControl';
 // API接口地址（正式）
 window.API = 'http://183.166.140.243:8088/api';
 // API接口地址（测试）
-window.testUrl = 'http://192.168.90.41:8024/api';
+// window.testUrl = 'http://192.168.90.41:8024/api';
+window.testUrl = 'http://192.168.90.55:9082/api';
 window.configUrl = 'http://192.168.90.55:9082/api';
 // window.configUrl = 'http://192.168.11.72:9082/api';
 

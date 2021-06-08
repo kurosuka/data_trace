@@ -32,7 +32,6 @@ export const exportExcel = (function (id, name) {
         raw: true
       };
       wb = XLSX.utils.table_to_book(document.querySelector('#out-table'), xlsxParam);
-
     }
     let sheetName = wb.SheetNames[0];
     for (let key in wb.Sheets.Sheet1) {
@@ -45,7 +44,6 @@ export const exportExcel = (function (id, name) {
           //置空的表格的单元格不需要增加边框，故else的时候给单元格增加边框
           XSU.setBorderDefault(wb, sheetName, key)
           // XSU.setBorderDefaultAll(wb, sheetName, key)
-
         }
       }
     }
