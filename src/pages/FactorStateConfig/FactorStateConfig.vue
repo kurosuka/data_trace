@@ -196,7 +196,7 @@ export default {
       title: [],
       updateId: '',
       delId: '',
-      baseUrl: window.testUrl
+      baseUrl: window.API
     }
   },
   mounted: function(){

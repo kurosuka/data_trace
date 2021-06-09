@@ -317,7 +317,7 @@
         exportName: [],//导出的点位名
         currentRow: null,
         flag: 1,
-        base: window.configUrl // 接口api地址
+        base: window.API // 接口api地址
       };
     },
     watch: {
