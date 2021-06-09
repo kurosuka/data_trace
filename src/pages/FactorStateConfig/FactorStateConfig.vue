@@ -80,7 +80,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="状态参数选择" style="width:100%" prop="state">
+        <el-form-item label="状态参数" style="width:100%" prop="state">
           <el-select v-model="factorMsg.state" placeholder="请选择" multiple collapse-tags>
             <el-option
               v-for="item in stateList"
@@ -103,7 +103,7 @@
       :before-close="handleClose1"
       width="400px"
     >
-      <el-form ref="form" label-width="80px" size="mini" :model="limitDataMsg" :rules="rules" class="editForm">
+      <el-form ref="form" label-width="80px" size="mini" :model="limitDataMsg" :rules1="rules" class="editForm">
         <el-form-item label="监测污染物" style="width:100%" prop="factorName">
           <el-input v-model="limitDataMsg.factorName" disabled></el-input>
         </el-form-item>
@@ -168,13 +168,6 @@ export default {
         contaminants: '',
         state: []
       },
-      limitDataMsg: {
-        factorName: '',
-        paramCode: '',
-        paramName: '',
-        upperValue: '',
-        lowerValue: '',
-      },
       rules: {
         contaminants: [
           { required: true, message: '请选择监测污染物', trigger: 'change' },
@@ -182,13 +175,22 @@ export default {
         state: [
           { required: true, validator: check, trigger: 'blur'},
         ],
+      },
+      limitDataMsg: {
+        factorName: '',
+        paramCode: '',
+        paramName: '',
+        upperValue: '',
+        lowerValue: '',
+      },
+      rules1: {
         upperValue: [
           { required: true, message: '请输入参考默认上限', trigger: 'blur' },
-          { max: 5, message: '长度需小于50个字符', trigger: 'blur' }
+          { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
         ],
         lowerValue: [
-          { required: true, message: '请输入选择参考默认上限', trigger: 'blur' },
-          { max: 5, message: '长度需小于50个字符', trigger: 'blur' }
+          { required: true, message: '请输入参考默认下限', trigger: 'blur' },
+          { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
         ],
       },
       title: [],
@@ -388,18 +390,18 @@ export default {
     },
     // 新增保存
     saveNew(formName){
-      this.getTitle();
-      console.log(this.title)
-      // let url = this.baseUrl + '/factor/stateParam/save';
-      let url = this.baseUrl + '';
-      let newFormData = new FormData();
-      newFormData.append('factorCode',this.factorMsg.contaminants);
-      newFormData.append('userGuid','test');
-      newFormData.append('paramCodes',this.factorMsg.state);
-      newFormData.append('paramNames',this.title);
       this.$refs[formName].validate((valid) => {
         if(valid){
           this.$confirm('确认提交？').then(()=>{
+            this.getTitle();
+            console.log(this.title)
+            let url = this.baseUrl + '/factor/stateParam/save';
+            // let url = this.baseUrl + '';
+            let newFormData = new FormData();
+            newFormData.append('factorCode',this.factorMsg.contaminants);
+            newFormData.append('userGuid','test');
+            newFormData.append('paramCodes',this.factorMsg.state);
+            newFormData.append('paramNames',this.title);
             console.log(this.factorMsg.state)
             // var obj = {
             //   factorCode: this.factorMsg.contaminants,

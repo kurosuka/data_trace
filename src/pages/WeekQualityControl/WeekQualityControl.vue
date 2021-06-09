@@ -161,8 +161,8 @@ export default {
       let url = this.baseUrl + "/weekQuality/getPointList";
       this.$axios.get(url,{
         params: {
-          // userUid: '4ce5bed9-78bd-489f-8b3f-a830098759c4'
-          userUid: this.userUid
+          userUid: '4ce5bed9-78bd-489f-8b3f-a830098759c4'
+          // userUid: this.userUid
         }
       }).then(res => {
         console.log(res);
@@ -233,6 +233,8 @@ export default {
           if (item.isqualified === null || item.isqualified === '') {
             item.isqualified = "/";
           }
+          item.checkValue = Number(item.checkValue).toFixed(2);
+          item.standardValue = Number(item.standardValue).toFixed(2);
           return item;
         });
         let _tableList = {
@@ -271,6 +273,10 @@ export default {
       }
       if(this.standardValue.length === 0 || this.standardValue === null){
         alert('请选择合格情况！');
+        return false;
+      }
+      if (new Date(this.strTime + ':00:00').getTime() >= new Date(this.endTime + ':00:00').getTime()) {
+        alert("请选择正确的时间！");
         return false;
       }
       this.page = 1;

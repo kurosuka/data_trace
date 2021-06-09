@@ -13,7 +13,7 @@
           @click="del"
           icon="el-icon-remove-outline"
           size="mini"
-        >删除</el-button>
+        >禁用</el-button>
       </div>
       <div class="query">
         <div class="select">
@@ -97,7 +97,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="默认小数位" style="width:49%" prop="decimalNumber">
-          <el-input type="number" v-model="indexMsg.decimalNumber"></el-input>
+          <el-input type="number" min="0" oninput="if(value.length>10)value=value.slice(0,10)" v-model="indexMsg.decimalNumber"></el-input>
         </el-form-item>
         <el-form-item label="是否使用" style="width:49%" prop="flagEnable">
           <el-tooltip :content="indexMsg.flagEnable" placement="top">
@@ -111,10 +111,10 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item label="排序" style="width:49%" prop="sortNumber">
-          <el-input type="number" v-model="indexMsg.sortNumber"></el-input>
+          <el-input type="number" min="0" oninput="if(value.length>5)value=value.slice(0,5)" v-model="indexMsg.sortNumber"></el-input>
         </el-form-item>
         <el-form-item label="描述" style="width:100%">
-          <el-input type="textarea" :rows="2" v-model="indexMsg.description" placeholder="请输入描述" maxlength="500"></el-input>
+          <el-input type="textarea" :rows="2" v-model="indexMsg.description" placeholder="请输入描述" maxlength="500" show-word-limit></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -128,7 +128,7 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="page"
-        :page-sizes="[5, 10, 20]"
+        :page-sizes="[15, 20, 30]"
         :page-size="size"
         style="float:right"
         layout="total, sizes, prev, pager, next, jumper"
@@ -166,10 +166,10 @@ export default {
       multipleSelection: '',
       rules: {
         paramCode: [
-          { required: true, message: '请输入因子编码', trigger: 'blur' },
+          { required: true, message: '请输入状态参数编码', trigger: 'blur' },
         ],
         paramName: [
-          { required: true, message: '请输入因子名称', trigger: 'blur' },
+          { required: true, message: '请输入状态参数名称', trigger: 'blur' },
         ],
         typeName: [
           { required: true, message: '请选择指标类型', trigger: 'change' },
@@ -179,6 +179,7 @@ export default {
         ],
       },
       delId: '',
+      upDateId: '',
       baseUrl: window.testUrl
     }
   },
@@ -317,6 +318,7 @@ export default {
             }
             this.indexMsg.sortNumber = list.sortNumber;
             this.indexMsg.description = list.description;
+            this.upDateId = list.id;
           }
         }
       })
@@ -324,7 +326,7 @@ export default {
     // 删除
     del(){
        if(this.multipleSelection.length===0){
-        alert("请选择想要删除项！");
+        alert("请选择想要禁用项！");
         return false;
       }
       var arr=[];
@@ -332,7 +334,7 @@ export default {
         arr.push(item.id);
       });
       this.delId=arr.join(",");
-      this.$confirm('确定要删除吗?').then(()=>{
+      this.$confirm('确定要禁用吗?').then(()=>{
         console.log(this.delId)
         this.handleDel();
       }).catch(()=>{});
@@ -373,6 +375,7 @@ export default {
         if(valid){
           this.$confirm('确认提交？').then(()=>{
             var obj = {
+              id: this.upDateId,
               creator: 'test',
               modifier: 'test',
               paramCode: this.indexMsg.paramCode,
@@ -394,6 +397,7 @@ export default {
                 });
                 this.getTableList();
                 this.dialogVisible = false;
+                this.upDateId = '';
                 this.$refs[formName].resetFields();
               }else if(res.data.code == 500){
                 this.$message.error(res.data.msg);
