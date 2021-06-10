@@ -109,7 +109,7 @@ export default {
   data() {
     return {
       headerForm: { // 头部查询参数
-        start: moment(new Date()).subtract(1,'day').format('YYYY-MM-DD HH:00:00'),
+        start: moment(new Date()).subtract(3,'day').format('YYYY-MM-DD HH:00:00'),
         end: moment(new Date()).format('YYYY-MM-DD HH:00:00'),
         match: null,
         factor: ''
@@ -140,10 +140,10 @@ export default {
       loading: true,
       pages: {
         page: 1,
-        rows: 24,
+        rows: 30,
         sort: 'time-',
         total: 0,
-        sizes: [24, 36, 48]
+        sizes: [20, 30, 40]
       },
       selectPointList: [],
       keyData: [], // 状态参数详情
