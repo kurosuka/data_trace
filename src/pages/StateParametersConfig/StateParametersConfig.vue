@@ -160,7 +160,7 @@ export default {
       },
       total: 0,
       page: 0,
-      size: 5,
+      size: 15,
       addFlag: true,
       dialogVisible: false,
       multipleSelection: '',
@@ -180,7 +180,7 @@ export default {
       },
       delId: '',
       upDateId: '',
-      baseUrl: window.testUrl
+      baseUrl: window.API
     }
   },
   mounted: function(){

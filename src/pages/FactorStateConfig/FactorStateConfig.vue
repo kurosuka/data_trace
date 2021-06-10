@@ -103,7 +103,7 @@
       :before-close="handleClose1"
       width="400px"
     >
-      <el-form ref="form" label-width="80px" size="mini" :model="limitDataMsg" :rules1="rules" class="editForm">
+      <el-form ref="form" label-width="80px" size="mini" :model="limitDataMsg" :rules="rules1" class="editForm">
         <el-form-item label="监测污染物" style="width:100%" prop="factorName">
           <el-input v-model="limitDataMsg.factorName" disabled></el-input>
         </el-form-item>
