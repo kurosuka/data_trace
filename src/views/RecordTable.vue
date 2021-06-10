@@ -359,6 +359,7 @@
       },
       // 表格数据
       getPage() {
+this.tableDataRight=[]
         this.loading = true
         /*  console.log(this.form.selectValue);
          console.log( this.form.pointOption); */
@@ -394,10 +395,8 @@
           })
           console.log(this.tableData);
           this.total = res.data.data.total
-          // 默认传表格第一条的量程id，来调用右侧表格数据
+          // 默认传表格第一条的量程id，来调用右侧表格数据(不需要了)
           this.ruleForm.rangeId = res.data.data.records[0].id
-          this.queryParams()
-
         }).catch(err => {
           console.log(err);
           this.loading = false
