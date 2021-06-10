@@ -180,7 +180,7 @@ export default {
       },
       delId: '',
       upDateId: '',
-      baseUrl: window.testUrl
+      baseUrl: window.API
     }
   },
   mounted: function(){

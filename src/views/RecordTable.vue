@@ -317,7 +317,7 @@
         exportName: [],//导出的点位名
         currentRow: null,
         flag: 1,
-        base: window.configUrl // 接口api地址
+        base: window.API // 接口api地址
       };
     },
     watch: {
@@ -396,8 +396,6 @@
           this.total = res.data.data.total
           // 默认传表格第一条的量程id，来调用右侧表格数据
           this.ruleForm.rangeId = res.data.data.records[0].id
-          this.queryParams()
-
         }).catch(err => {
           console.log(err);
           this.loading = false
