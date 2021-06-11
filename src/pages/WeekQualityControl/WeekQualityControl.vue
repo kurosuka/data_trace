@@ -161,8 +161,8 @@ export default {
       let url = this.baseUrl + "/weekQuality/getPointList";
       this.$axios.get(url,{
         params: {
-          userUid: '4ce5bed9-78bd-489f-8b3f-a830098759c4'
-          // userUid: this.userUid
+          // userUid: '4ce5bed9-78bd-489f-8b3f-a830098759c4'
+          userUid: this.userUid
         }
       }).then(res => {
         console.log(res);

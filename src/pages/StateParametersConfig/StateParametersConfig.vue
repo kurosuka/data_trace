@@ -67,14 +67,15 @@
       style="text-align:left !important"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
+      :close-on-click-modal="false"
       width="700px"
     >
       <el-form ref="form" label-width="80px" size="mini" :model="indexMsg" :rules="rules" class="editForm">
         <el-form-item label="状态参数编码" style="width:49%" prop="paramCode">
-          <el-input v-model="indexMsg.paramCode" placeholder="请输入状态参数编码" maxlength="50"></el-input>
+          <el-input v-model="indexMsg.paramCode" placeholder="请输入状态参数编码" maxlength="10"></el-input>
         </el-form-item>
         <el-form-item label="状态参数名称" style="width:49%" prop="paramName">
-          <el-input v-model="indexMsg.paramName" placeholder="请输入状态参数名称" maxlength="100"></el-input>
+          <el-input v-model="indexMsg.paramName" placeholder="请输入状态参数名称" maxlength="20"></el-input>
         </el-form-item>
         <el-form-item label="指标类型" style="width:49%" prop="typeName">
           <el-select v-model="indexMsg.typeName" placeholder="请选择" filterable>
@@ -97,7 +98,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="默认小数位" style="width:49%" prop="decimalNumber">
-          <el-input type="number" min="0" oninput="if(value.length>10)value=value.slice(0,10)" v-model="indexMsg.decimalNumber"></el-input>
+          <el-input type="number" min="0" oninput="if(value.length>5)value=value.slice(0,5)" v-model="indexMsg.decimalNumber" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"></el-input>
         </el-form-item>
         <el-form-item label="是否使用" style="width:49%" prop="flagEnable">
           <el-tooltip :content="indexMsg.flagEnable" placement="top">
@@ -111,7 +112,7 @@
           </el-tooltip>
         </el-form-item>
         <el-form-item label="排序" style="width:49%" prop="sortNumber">
-          <el-input type="number" min="0" oninput="if(value.length>5)value=value.slice(0,5)" v-model="indexMsg.sortNumber"></el-input>
+          <el-input type="number" min="0" oninput="if(value.length>5)value=value.slice(0,5)" v-model="indexMsg.sortNumber" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"></el-input>
         </el-form-item>
         <el-form-item label="描述" style="width:100%">
           <el-input type="textarea" :rows="2" v-model="indexMsg.description" placeholder="请输入描述" maxlength="500" show-word-limit></el-input>
@@ -160,7 +161,7 @@ export default {
       },
       total: 0,
       page: 0,
-      size: 5,
+      size: 15,
       addFlag: true,
       dialogVisible: false,
       multipleSelection: '',
@@ -176,6 +177,9 @@ export default {
         ],
         measureUnitName: [
           { required: true, message: '请选择计量单位', trigger: 'change' },
+        ],
+        sortNumber: [
+          { required: true, message: '请输入排序值', trigger: 'change' },
         ],
       },
       delId: '',

@@ -360,6 +360,7 @@
       // 表格数据
       getPage() {
         this.loading = true
+        this.tableDataRight=[]
         /*  console.log(this.form.selectValue);
          console.log( this.form.pointOption); */
         var obj = {
@@ -396,6 +397,7 @@
           this.total = res.data.data.total
           // 默认传表格第一条的量程id，来调用右侧表格数据
           this.ruleForm.rangeId = res.data.data.records[0].id
+
         }).catch(err => {
           console.log(err);
           this.loading = false
