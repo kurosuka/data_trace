@@ -286,7 +286,7 @@ export default {
         queryParamMatch(opt).then(res=> {
           const MatchData = res.data.data;
           this.keyData = this.keyData.map(item=> {
-            item.v = MatchData[item.paramCode];
+            item.v = MatchData[item.paramCode] == null ? '--' : MatchData[item.paramCode];
             item.status = MatchData[`${item.paramCode}_status`];
             return item;
           })
