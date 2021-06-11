@@ -67,6 +67,7 @@
       style="text-align:left !important"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
+      :close-on-click-modal="false"
       width="400px"
     >
       <el-form ref="form" label-width="80px" size="mini" :model="factorMsg" :rules="rules" class="editForm">
@@ -101,6 +102,7 @@
       style="text-align:left !important"
       :visible.sync="dialogVisible1"
       :before-close="handleClose1"
+      :close-on-click-modal="false"
       width="400px"
     >
       <el-form ref="form" label-width="80px" size="mini" :model="limitDataMsg" :rules="rules1" class="editForm">
