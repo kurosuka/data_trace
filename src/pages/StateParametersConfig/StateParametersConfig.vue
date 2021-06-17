@@ -222,7 +222,7 @@ export default {
     },
     // 获取计量单位
     getMeasurementList(){
-      this._publicFun('状态参数计量单位').then(res => {
+      this._publicFun('计量单位').then(res => {
         this.measurementList = res;
       })
     },
