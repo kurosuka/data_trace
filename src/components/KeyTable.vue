@@ -57,13 +57,13 @@ export default {
     },
     _matchTxt(val) {
       console.log(typeof val);
-      if(val == 1) {
+      if(val === '1') {
         return '匹配'
       }
-      if(val == 0) {
+      if(val === '0') {
         return '不匹配'
       }
-      if(val === undefined) {
+      if(val === '') {
         return '--'
       }
       return val;
