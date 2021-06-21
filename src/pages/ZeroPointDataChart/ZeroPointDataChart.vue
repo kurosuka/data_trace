@@ -17,7 +17,7 @@ export default {
   },
   mounted: function() {
     this.style =
-      "width:" + this.$refs.spanChart.offsetHeight + ";height:400px;";
+      "width:" + this.$refs.spanChart.offsetWidth + ";height:400px;";
     this.getValue();
   },
   methods: {

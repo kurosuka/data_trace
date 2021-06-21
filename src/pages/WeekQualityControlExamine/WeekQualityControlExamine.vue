@@ -70,7 +70,13 @@
               trigger="click"
               >
               <p>缺失文件下载项：</p>
-              <a class="file" v-for="item in fileUrlList" :key="item.url" :href="item.url">{{item.name}}</a>
+              <a
+                class="file"
+                v-for="item in fileUrlList"
+                :key="item.url"
+                :href="item.url"
+                :target="jumpType(item)"
+              >{{item.name}}</a>
               <el-button slot="reference" type="text" size="mini" @click="download(scope.row)">下载</el-button> 
             </el-popover>
           </template>
@@ -270,6 +276,18 @@ export default {
     },
     // 查询
     search() {
+      if(this.strTime === null){
+        alert('请选择开始时间！');
+        return false;
+      }
+      if(this.endTime === null){
+        alert('请选择结束时间！');
+        return false;
+      }
+      if (new Date(this.strTime + ':00:00').getTime() >= new Date(this.endTime + ':00:00').getTime()) {
+        alert("请选择正确的时间！");
+        return false;
+      }
       this.page = 1;
       this.getTableList();
     },
@@ -319,6 +337,14 @@ export default {
         this.getTableList();
       }catch(e){
         console.log(e)
+      }
+    },
+    jumpType(val){
+      let type = val.name.split('.');
+      if (type[1] == 'pdf' || type[1] == 'jpg' || type[1] == 'png' || type[1] == 'txt') {
+        return '_Blank';
+      } else {
+        return '_Self';
       }
     },
     // 下载
@@ -440,6 +466,7 @@ body {
 /* 跳转 */
 .file {
   display: inline-block;
+  width: 190px;
   margin-top: 6px;
   text-decoration: none;
   color: #409EFF;

@@ -59,12 +59,15 @@
         </el-select>
       </div>
       <el-button class="btn" type="primary" @click="search">查找</el-button>
-      <el-button class="btn" type="warning" @click="exportTable">导出</el-button>
+      <el-button v-show="isExport" class="btn" type="warning" @click="exportTable">导出</el-button>
     </div>
-    <div class="body">
+    <div class="body" ref="spanChart">
       <el-tabs v-model="tabActive" type="card" @tab-click="changeClick">
         <el-tab-pane v-for="item in pageList" :key="item.title" :label="item.title"></el-tab-pane>
       </el-tabs>
+      <div class="chart" :style="style" v-show="chartShow">
+        <span>暂无数据</span>
+      </div>
       <iframe ref="iframe" class="tebs" :src="pageUrl" frameborder="0" @load="iframeLoad('iframe')"></iframe>
     </div>
   </div>
@@ -101,10 +104,15 @@ export default {
       tabActive: "0",
       pageList: window.pageList,
       pageUrl: window.pageList[0].url,
-      isExportTable: false
+      isExportTable: false,
+      style: '',
+      chartShow: false,
+      isExport: true,
     };
   },
   mounted: function() {
+    this.style =
+      "width:" + this.$refs.spanChart.offsetWidth + ";height: "+ this.$refs.spanChart.offsetHeight +";"
     this.getTime();
     this.getPointList();
   },
@@ -154,14 +162,38 @@ export default {
         alert("请选择结束时间！");
         return false;
       }
+      if (new Date(this.strTime + ':00:00').getTime() >= new Date(this.endTime + ':00:00').getTime()) {
+        alert("请选择正确的时间！");
+        return false;
+      }
       this.iframeParam();
     },
     // 切换因子触发
     factorChange() {
+      if (this.tabActive == 1 || this.tabActive == 3) {
+        if (this.factorValue.length === 0){
+          this.chartShow= true;
+        } else {
+          this.chartShow= false;
+        }
+      } else {
+        this.chartShow= false;
+      }
       this.iframeParam();
     },
     // 点击tab切换
     changeClick() {
+      if (this.tabActive == 1 || this.tabActive == 3) {
+        this.isExport = false;
+        if (this.factorValue.length === 0){
+          this.chartShow= true;
+        } else {
+          this.chartShow= false;
+        }
+      } else {
+        this.isExport = true;
+        this.chartShow= false;
+      }
       let url = this.pageList[this.tabActive].url;
       this.pageUrl = url;
       this.iframeParam();
@@ -312,5 +344,17 @@ body {
 .tebs {
   width: 100%;
   height: calc(100% - 100px);
+}
+.chart {
+  min-height: 60px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chart span{
+  font-size: 12px;
+  width: 50%;
+  color: #909399;
 }
 </style>
