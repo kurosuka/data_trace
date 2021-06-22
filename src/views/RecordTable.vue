@@ -33,7 +33,7 @@
         <div style="display: flex;">
           <!-- left -->
           <div style="flex: 1;padding-right: 5px;">
-            <el-table :data="tableData" size="middle" height="700px" @row-click="handleRowClick" border
+            <el-table :data="tableData" size="middle" height="80vh" @row-click="handleRowClick" border ref="leftTable"
               @selection-change="handleSelectionChange" highlight-current-row @current-change="handleCurrentChange2">
               <el-table-column type="selection">
               </el-table-column>
@@ -50,8 +50,6 @@
               <el-table-column label="量程单位" prop="measureUnitName"></el-table-column>
               <el-table-column label="是否启用" width="120">
                 <template slot-scope="scope">
-                  <!-- <span>{{scope.row.useOrNot}}</span> -->
-
                   <el-switch v-model="scope.row.useOrNot" active-text="是" inactive-text="否"
                     @change="handleEnabled(scope.row)">
                   </el-switch>
@@ -84,7 +82,7 @@
               :multiType="false" :defaultProps="{children: 'children', label: 'title'}"></multi-check-box>
           </el-form-item>
           <el-form-item label="运营单位:" class="form_style">
-            <el-input v-model="ruleForm.company"></el-input>
+            <el-input v-model="ruleForm.company" readonly></el-input>
           </el-form-item>
         </div>
         <div>
@@ -150,7 +148,6 @@
               </el-form-item>
             </el-form>
           </el-tab-pane>
-
         </el-tabs>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -165,10 +162,7 @@
       <el-form :model="saveForm" ref="saveForm" :rules="saveRules" label-width="100px">
         <div>
           <el-form-item label="名称:" prop="rangeId" class="form_style">
-            <el-select v-model="saveForm.rangeId" placeholder="请选择" :collapse-tags="true">
-              <el-option v-for="item in rangeList" :key="item.rangeUid" :label="item.rangeName" :value="item.rangeUid">
-              </el-option>
-            </el-select>
+            <el-input v-model="saveForm.rangeId"></el-input>
           </el-form-item>
           <el-form-item label="单位:" class="form_style">
             <el-select v-model="saveForm.unit" placeholder="请选择" :collapse-tags="true">
@@ -181,16 +175,16 @@
           <el-form-item label="关键参数:" prop="keyParams" class="form_style">
             <el-select v-model="saveForm.keyParams" :multiple="true" placeholder="请选择" :collapse-tags="true">
               <el-option v-for="item in keyParamsList" :key="item.paramCode" :label="item.paramName"
-                :value="item.paramCode"></el-option>
+                :value="item.paramCode" :disabled="item.disabled"></el-option>
             </el-select>
           </el-form-item>
         </div>
         <div>
           <el-form-item label="下限:" prop="low" class="form_style">
-            <el-input v-model.number="saveForm.low" type="number" @change="lowerRangeBlur"></el-input>
+            <el-input v-model.number="saveForm.low" type="number"></el-input>
           </el-form-item>
           <el-form-item label="上限:" prop="upper" class="form_style">
-            <el-input v-model.number="saveForm.upper" type="number" @change="upperRangeBlur"></el-input>
+            <el-input v-model.number="saveForm.upper" type="number"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -208,7 +202,7 @@
 </template>
 
 <script>
-  import { getLocalstorage } from '../js/utils';
+  import { getLocalstorage, getUrlParams } from '../js/utils';
   import '../scss/globel.scss'
   import MutiSelect from '../components/MutiSelect.vue'
   import MultiCheckBox from '../components/MultiCheckBox.vue'
@@ -336,18 +330,14 @@
           })
           console.log(this.addForm);
         }
-
       },
-
     },
     mounted() {
       this.getPoints()
       this.getFactors()
-      // this.getPage()
       this.getAnalyzeList()
       this.getUnitList()
       this.getRangeList()
-      this.getParamsList()
     },
 
     methods: {
@@ -359,17 +349,15 @@
       },
       // 表格数据
       getPage() {
+        this.tableDataRight = []
         this.loading = true
-        this.tableDataRight=[]
-        /*  console.log(this.form.selectValue);
-         console.log( this.form.pointOption); */
         var obj = {
           factorCodeList: this.form.selectValue,
           pageNo: this.currentPage,
           pageSize: this.pageSize,
           pointIdList: this.form.pointOption
         }
-        console.log(obj);
+        // console.log(obj);
         this.$axios({
           url: `${this.base}/paramRecord/queryParamRecordList`,
           method: 'post',
@@ -379,7 +367,7 @@
           data: JSON.stringify(obj)
         }).then(res => {
           this.loading = false
-          console.log(res.data.data);
+          // console.log(res.data.data);
           this.tableData = res.data.data.records.map(item => {
             return {
               id: item.id,
@@ -395,9 +383,10 @@
           })
           console.log(this.tableData);
           this.total = res.data.data.total
-          // 默认传表格第一条的量程id，来调用右侧表格数据
-          this.ruleForm.rangeId = res.data.data.records[0].id
-
+          // 默认传表格第一条的量程id，来调用右侧表格数据(不需要了)
+          // this.ruleForm.rangeId = res.data.data.records[0].id
+          this.$refs.leftTable.setCurrentRow(this.tableData[0]);
+          this.handleRowClick(this.tableData[0]);
         }).catch(err => {
           console.log(err);
           this.loading = false
@@ -406,20 +395,28 @@
       // 备案
       handleRecord() {
         this.recordDialog = true
+        this.queryDept(this.newPointId)
         this.queryRangeByFactor()
+        console.log(this.factorList[0].factorCode);//第一个因子id
+        this.getParamsList(this.factorList[0].factorCode)
 
       },
       // 点击表格的一行
       handleRowClick(row) {
         console.log(row);
         this.ruleForm.rangeId = row.id
+        // row.factorName
+        this.ruleForm.factorId=  this.factorList.filter(item=>item.factorName==row.factorName).map(item=>item.factorCode).toString()
+        // this.ruleForm.factorId
         this.queryParams()
       },
       // tab切换
       handleClick(tab, event) {
         console.log(tab, event);
-        if (this.activeName == 'keyParams') {
+        if (this.activeName == 'keyParams') {//关键参数登记
           console.log(this.ruleForm.rangeId);
+          this.ruleForm.rangeId = ''
+          this.getParamsList()
           this.queryParams(this.ruleForm.rangeId)
         }
       },
@@ -441,7 +438,8 @@
             if (value > 0) {
               this.$message({ type: 'warning', message: '下限值不能大于上限值' })
             } else {
-              let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
+              let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
+              console.log(this.saveForm.keyParams);
               var keyParams = this.saveForm.keyParams.map(item => {
                 return { paramCode: item }
               })
@@ -451,7 +449,7 @@
                 operationCompany: this.ruleForm.company,//运营单位
                 factorCode: this.ruleForm.factorId,//监测因子
                 analysisMethodUid: this.ruleForm.analyze,//分析方法
-                rangeUid: this.saveForm.rangeId,//量程名称
+                rangeName: this.saveForm.rangeId,//量程名称
                 measureUnitUid: this.saveForm.unit,//单位
                 rangeParamList: keyParams,//关键参数
                 lowerRangeLimit: this.saveForm.low,
@@ -469,14 +467,19 @@
                 data: JSON.stringify(obj)
               }).then(res => {
                 console.log(res);
-                this.handleClose1()
-                this.queryRangeByFactor()
+                if (res.data.code == 500) {
+                  this.$message({ type: 'warning', message: res.data.msg })
+                } else {
+                  this.$message({ type: 'success', message: res.data.msg })
+                  this.getPage()
+                  this.handleClose1()
+                  this.queryRangeByFactor()
+                }
+
               }).catch(err => {
                 console.log(err);
               })
             }
-
-
           } else {
             console.log('error submit!!');
             return false;
@@ -488,22 +491,16 @@
         // 判断一下，同一站点同一个因子下是否有启用的量程
         console.log(row);
         if (row.useOrNot) {//当前行点击已启用，判断
-          var arr = this.tableData.filter(item => {
+          var arr = this.tableData.filter(item => {//过滤出相同点位相同因子的数组
             if (item.pointName == row.pointName && item.factorName == row.factorName) {
               return item
             }
           }).map(ite => ite.useOrNot)
-
-          // console.log(arr);//过滤出相同点位相同因子的数组
           var newArr = arr.filter(arrItem => arrItem == true).map(ite => ite)
-          // console.log(newArr);
           if (newArr.length > 1) {//同一点位下同一因子已有启用的量程
-            // console.log(true);
             this.$message({ type: 'warning', message: '同一站点下同一个因子只能启用一个量程！' })
-            // console.log(row);
             this.getPage(row)
           } else {//同一点位下同一因子未有启用的量程
-            // console.log(false);
             this.enabled(row)
           }
         } else {//当前行点位未启用时直接调用启用接口
@@ -512,7 +509,7 @@
       },
       enabled(row) {
         var useOrNot = ''
-        let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
+        let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
         if (row.useOrNot) {
           useOrNot = 1
         } else {
@@ -557,7 +554,8 @@
         } else {
           var newForm = []
           console.log(this.ruleForm);
-          let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
+          let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
+          console.log(this.addForm);
           newForm.push({
             rangeParamList: this.addForm,
             rangeUid: this.ruleForm.rangeId,
@@ -578,29 +576,29 @@
             if (res.data.code == 200) {
               this.queryRangeByFactor()
               this.$message({ type: 'success', message: '备案成功！' })
+              this.handleClose()
               this.getPage()
             } else {
-              this.$message({ type: 'danger', message: '备案失败！' })
+              this.getPage()
+              this.$message({ type: 'danger', message: res.data.msg })
             }
           }).catch(err => {
             console.log(err);
-            this.$message({ type: 'danger', message: '备案失败！' })
+            this.getPage()
+            this.$message({ type: 'danger', message: err.data.msg })
           })
         }
 
       },
       // 获取点位数据
       getPoints() {
-        let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
+        let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
         this.$axios({
           method: "get",
           url: `${this.base}/paramRecord/getPointList`,
           params: { userUid: userId },
         }).then(res => {
-          // console.log(res);
           this.pointData = res.data.data
-          // console.log(this.pointData[0].children[0]);
-
           // 备案弹出框水站名称：默认第一个
           this.ruleForm.pointName = []//弹出框默认展示的
           this.form.pointOption = []//首页默认展示的
@@ -608,12 +606,8 @@
           this.form.pointOption.push(this.pointData[0].children[0].id)
           this.ruleForm.pointName.push(this.pointData[0].children[0].id)
           this.newPointId = this.pointData[0].children[0].id
-          // console.log(this.form.pointOption);
           this.form.newPoint = this.form.pointOption.map(item => item)
-          /*      console.log(this.form.selectValue);
-               console.log(this.form.pointOption); */
           this.getPage()
-
           this.handlePointChangeData()
         }).catch(err => {
           console.log(err);
@@ -630,18 +624,16 @@
           this.form.selectValue = []
           // 首页因子默认全选
           this.form.selectValue = this.factorList.map(item => item.factorCode)
-          /*  console.log( this.form.newPoint);
-           console.log(this.form.selectValue); */
           // 备案弹出框默认展示第一个
           this.ruleForm.factorId = ''
           this.ruleForm.factorId = this.factorList[0].factorCode
           this.newFactorId = ''
           this.newFactorId = this.factorList[0].factorCode
-          // console.log(res);
         }).catch(err => {
           console.log(err);
         })
       },
+
       // 获取分析方法
       getAnalyzeList() {
         this.$axios({
@@ -651,7 +643,6 @@
           this.analyzeList = res.data.data
           // 备案弹出框分析方法默认展示第一个
           this.ruleForm.analyze = ''
-          // console.log(this.analyzeList[0].analysisMethodUid);
           this.ruleForm.analyze = this.analyzeList[0].analysisMethodUid
         }).catch(err => {
           console.log(err);
@@ -660,7 +651,6 @@
       // 获取量程单位
       getUnitList() {
         this.$axios.get(`${this.base}/paramRecord/queryRangeUnitList`).then(res => {
-          // console.log(res);
           this.unitList = res.data.data
           console.log(this.unitList);
         }).catch(err => {
@@ -675,19 +665,32 @@
           console.log(err);
         })
       },
-      // 选择备案弹出框的名称和因子调用queryRangeByFactor()
-
+      // 选择备案弹出框的名称和因子调用
       handleRange(val1) {
         console.log(val1);//点位id
-        // console.log(val1[0].id);
         this.newPointId = val1
-        this.queryRangeByFactor()
-      },
-      handleFactor(val2) {
-        // console.log(val2);
-        this.newFactorId = val2
+        this.queryDept(val1)
         this.queryRangeByFactor()
 
+      },
+      // 根据点位pid获取运维商信息
+      queryDept(id) {
+        this.$axios({
+          url: `${this.base}/paramRecord/queryDept`,
+          method: 'get',
+          params: { pointId: id }
+        }).then(res => {
+          console.log(res);
+          this.ruleForm.company = res.data.msg
+        }).catch(err => {
+          console.log(err);
+        })
+      },
+      handleFactor(val2) {
+        console.log(val2);
+        this.newFactorId = val2
+        this.queryRangeByFactor()
+        this.getParamsList(val2)
       },
       // 根据点位和因子查询量程
       queryRangeByFactor() {
@@ -710,20 +713,25 @@
             }
           })
           console.log(this.newRangeList);
-          this.ruleForm.rangeId = ''
-          this.queryParams(this.ruleForm.rangeId)
-
+          this.ruleForm.rangeId = ''//-------------------
+          // this.getParamsList()
         }).catch(err => {
           console.log(err);
         })
       },
       // 根据量程查询其下参数
-      queryParams(data) {
-        console.log(this.ruleForm.rangeId);
+      queryParams(data, id) {
+        console.log(id);
+        console.log(data);
+        console.log(this.ruleForm);
+        // factorCode:关键参数中的因子id
         this.$axios({
           url: `${this.base}/paramRecord/queryParamByRangeUid`,
           method: 'get',
-          params: { rangeUid: this.ruleForm.rangeId }
+          params: {
+            rangeUid: this.ruleForm.rangeId,
+            factorCode: this.ruleForm.factorId
+          }
         }).then(res => {
           console.log(res.data.data);
           // 右侧列表
@@ -744,27 +752,25 @@
           console.log(err);
         })
       },
-      isEdit() {
-
-      },
       // 获取关键参数/状态参数列表
       getParamsList() {
         this.$axios({
           url: `${this.base}/paramRecord/queryParamList`,
-          method: 'get'
+          method: 'get',
+          params: { factorCode: this.ruleForm.factorId }
         }).then(res => {
-          console.log(res);
           this.keyParamsList = res.data.data
+          console.log(this.keyParamsList);
+          this.saveForm.keyParams = this.keyParamsList.map(item => item.paramCode)
+          console.log(this.saveForm.keyParams);
+          console.log(this.ruleForm);
         }).catch(err => {
           console.log(err);
         })
       },
 
       handlePointChangeData(val) {
-        // console.log(val);
-        // console.log(this.form.pointOption);
         if (val) {
-          // console.log(true);
           this.form.pointOption = []
           this.exportName = []
           this.form.pointOption = val.map(item => item.id)
@@ -780,20 +786,17 @@
       },
       paramLimitChange(index) {
         console.log(index);
-        // this.addFormError=false
         if (this.addForm[index].paramUpperLimit - this.addForm[index].paramLowerLimit < 0) {
           this.$message({ type: 'warning', message: '下限不能超过上限' })
           this.addFormError = true
         } else {
           this.addFormError = false
-
         }
       },
-      upperRangeBlur(val) {
+      /* upperRangeBlur(val) {
         if (val > 50) {
           this.$message({ type: 'warning', message: '量程范围为0-50' })
           this.saveForm.upper = ''
-
         }
       },
       lowerRangeBlur(val) {
@@ -801,7 +804,7 @@
           this.$message({ type: 'warning', message: '量程范围为0-50' })
           this.saveForm.low = ''
         }
-      },
+      }, */
       // 分页
       handleSizeChange(val) {
         this.pageSize = val
@@ -810,7 +813,6 @@
       handleCurrentChange(val) {
         this.currentPage = val
         this.getPage()
-
       },
       handleCurrentChange2(val) {
         this.currentRow = val;
@@ -824,21 +826,20 @@
         this.activeName = 'range'
         this.ruleForm.company = ''
         this.ruleForm.rangeId = ''
+        // this.ruleForm.pointName = []
+        this.ruleForm.analyze = ''
+        this.ruleForm.factorId = ''
+        // this.ruleForm.pointName.push(this.pointData[0].children[0].id)
+        this.queryDept(this.ruleForm.pointName.toString())
+        this.ruleForm.analyze = this.analyzeList[0].analysisMethodUid
+        this.ruleForm.factorId = this.factorList[0].factorCode
+        console.log(this.ruleForm.pointName, this.ruleForm.analyze, this.ruleForm.factorId);
 
-        /*  this.addForm.id = ''
-         this.addForm.name = ''
-         this.addForm.paramUpperLimit = ''
-         this.addForm.paramLowerLimit = ''
-         this.addForm.unit = '' */
 
       },
       handleClose1() {
         console.log(1);
         this.saveDialog = false
-        /*  this.saveForm.rangeId = ''
-         this.saveForm.keyParams = []
-         this.saveForm.low = ''
-         this.saveForm.upper = '' */
         this.saveForm.unit = ''
         this.$refs.saveForm.resetFields(); //对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
         this.$refs.saveForm.clearValidate();//这个是移除表单项的校验结果
@@ -876,10 +877,8 @@
           console.log(res);
           if (ids == 'uid') {
             this.getPage()
-
           } else {
             this.queryRangeByFactor()
-
           }
           this.$message({
             type: 'success',
@@ -916,23 +915,27 @@
       exportTable() {
         //  console.log(this.exportName.toString());
         var dates = this.getDates()
-        //  console.log(dates);
-        var newForm = []
+        // var newForm = []
         console.log(this.ruleForm);
-        let userId = getLocalstorage('UserGuid') || '066a6cf9-4518-4cca-b924-1bb172b8aea4'
-        newForm.push({
+        // let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
+      /*   newForm.push({
           rangeParamList: this.addForm,
           rangeUid: this.ruleForm.rangeId,
           userUid: userId
-        })
-        console.log(JSON.stringify(newForm));
+        }) */
+        var obj={
+          factorCodeList: this.form.selectValue,
+          pageNo: this.currentPage,
+          pageSize: this.pageSize,
+          pointIdList: this.form.pointOption
+        }
         this.$axios({
           url: `${this.base}/paramRecord/exportParamRecordData`,
           method: 'post',
           headers: {
             'content-type': 'application/json;charset=UTF-8',//添加请求头
           },
-          data: JSON.stringify(newForm[0]),
+          data: JSON.stringify(obj),
           responseType: 'blob'
         }).then(res => {
           console.log(res);
@@ -1024,5 +1027,9 @@
   .keyparams_style .el-input {
     width: 110px;
     margin: 0 20px;
+  }
+
+  .el-tag__close {
+    display: none !important;
   }
 </style>

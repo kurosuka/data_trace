@@ -23,7 +23,7 @@ export function queryParamMatch(data = {}) {
   return $axios.request({
     method: 'post',
     headers: {'Content-Type': 'application/json;charset=UTF-8'},
-    url: '/instrumentParamsData/queryParamMatch',
+    url: '/instrumentParamsData/queryCheckParamMatch',
     data,
   })
 }

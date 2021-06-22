@@ -81,12 +81,12 @@
       </el-main>
     </el-container>
     <!--关键参数兴详情-->
-    <el-dialog title="关键参数详情" :visible.sync="keyVisible" v-draggable :close-on-click-modal="false" v-if="keyVisible">
+    <el-dialog title="关键参数详情" :visible.sync="keyVisible" v-draggable :close-on-click-modal="false" v-if="keyVisible" height="400px">
       <key-table :keyTable="keyData"></key-table>
     </el-dialog>
     <!--仪器日志-->
-    <el-dialog :title="yqTitle" :visible.sync="yqVisible" v-draggable :close-on-click-modal="false" v-if="yqVisible">
-      <el-table :data="logData" v-loading="yqLoading">
+    <el-dialog :title="yqTitle" :visible.sync="yqVisible" v-draggable :close-on-click-modal="false" v-if="yqVisible" height="400px">
+      <el-table :data="logData" v-loading="yqLoading" max-height="500px">
         <el-table-column label="监测时间" prop="time"></el-table-column>
         <el-table-column label="日志" :prop="yqTitle == '仪器日志' ? 'i11001' : 'i21001'"></el-table-column>
       </el-table>
