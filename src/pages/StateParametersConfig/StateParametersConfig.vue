@@ -87,19 +87,6 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="计量单位" style="width:49%" prop="measureUnitName">
-          <el-select v-model="indexMsg.measureUnitName" placeholder="请选择">
-            <el-option
-              v-for="item in measurementList"
-              :key="item.itemValue"
-              :label="item.itemText"
-              :value="item.itemValue">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="默认小数位" style="width:49%" prop="decimalNumber">
-          <el-input type="number" min="0" oninput="if(value.length>5)value=value.slice(0,5)" v-model="indexMsg.decimalNumber" onkeyup="value=value.replace(/^(0+)|[^\d]+/g,'')"></el-input>
-        </el-form-item>
         <el-form-item label="是否使用" style="width:49%" prop="flagEnable">
           <el-tooltip :content="indexMsg.flagEnable" placement="top">
             <el-switch
@@ -153,8 +140,6 @@ export default {
         paramCode: '',
         paramName: '',
         typeName: '',
-        measureUnitName: '',
-        decimalNumber: '',
         flagEnable: '否',
         sortNumber: '',
         description: ''
@@ -175,9 +160,6 @@ export default {
         typeName: [
           { required: true, message: '请选择指标类型', trigger: 'change' },
         ],
-        measureUnitName: [
-          { required: true, message: '请选择计量单位', trigger: 'change' },
-        ],
         sortNumber: [
           { required: true, message: '请输入排序值', trigger: 'change' },
         ],
@@ -189,7 +171,6 @@ export default {
   },
   mounted: function(){
     this.getIndexList();
-    this.getMeasurementList();
   },
   methods: {
     indexMethod(index) {
@@ -218,12 +199,6 @@ export default {
         this.indexList = res;
         console.log(res)
         this.getTableList();
-      })
-    },
-    // 获取计量单位
-    getMeasurementList(){
-      this._publicFun('状态参数计量单位').then(res => {
-        this.measurementList = res;
       })
     },
     // 获取表格数据
@@ -257,9 +232,7 @@ export default {
             let _tableList = {
               paramCode: '状态参数编码',
               paramName: '状态参数名称',
-              typeName: '指标类别',
-              measureUnitName: '计量单位',
-              decimalNumber: '默认小数位',
+              typeName: '指标类型',
               flagEnable: '是否使用',
               sortNumber: '排序值'
             };
@@ -288,8 +261,6 @@ export default {
         paramCode: '',
         paramName: '',
         typeName: '',
-        measureUnitName: '',
-        decimalNumber: '',
         flagEnable: '否',
         sortNumber: '',
         description: ''
@@ -313,8 +284,6 @@ export default {
             this.indexMsg.paramCode = list.paramCode;
             this.indexMsg.paramName = list.paramName;
             this.indexMsg.typeName = list.typeCode;
-            this.indexMsg.measureUnitName = list.measureUnit;
-            this.indexMsg.decimalNumber = list.decimalNumber;
             if(list.flagEnable === 0){
               this.indexMsg.flagEnable = "否";
             }else if(list.flagEnable == 1){
@@ -385,8 +354,6 @@ export default {
               paramCode: this.indexMsg.paramCode,
               paramName: this.indexMsg.paramName,
               typeCode: this.indexMsg.typeName,
-              measureUnit: this.indexMsg.measureUnitName,
-              decimalNumber: this.indexMsg.decimalNumber,
               flagEnable: flag,
               sortNumber: this.indexMsg.sortNumber,
               description: this.indexMsg.description

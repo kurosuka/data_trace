@@ -10,8 +10,13 @@
 const pageUrl = 'http://183.166.140.243:8087/HS_water_WebUI/QualityControl';
 
 // API接口地址
+<<<<<<< HEAD
 // window.API = 'http://183.166.140.243:8088/api';
 window.API = 'http://192.168.90.55:9082/api';
+=======
+window.API = 'http://183.166.140.243:8088/api';
+// window.API = 'http://192.168.90.25:9082/api';
+>>>>>>> ba94fbca859c19ea18c364b52d083226947ba241
 
 window.pageList = [{
     title: '零点数据',

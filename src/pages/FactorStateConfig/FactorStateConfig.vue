@@ -63,7 +63,7 @@
     </div>
     <!-- 新增、编辑 -->
     <el-dialog
-      title="新增"
+      :title="addFlag?'新增':'编辑'"
       style="text-align:left !important"
       :visible.sync="dialogVisible"
       :before-close="handleClose"
@@ -72,7 +72,7 @@
     >
       <el-form ref="form" label-width="80px" size="mini" :model="factorMsg" :rules="rules" class="editForm">
         <el-form-item label="监测污染物" style="width:100%" prop="contaminants">
-          <el-select v-model="factorMsg.contaminants" placeholder="请选择" filterable>
+          <el-select v-model="factorMsg.contaminants" placeholder="请选择" filterable :disabled="isEdit">
             <el-option
               v-for="item in contaminantsList"
               :key="item.factorCode"
@@ -82,7 +82,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="状态参数" style="width:100%" prop="state">
-          <el-select v-model="factorMsg.state" placeholder="请选择" multiple collapse-tags>
+          <el-select v-model="factorMsg.state" placeholder="请选择" :disabled="isEdit">
             <el-option
               v-for="item in stateList"
               :key="item.paramCode"
@@ -91,40 +91,23 @@
             </el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="计量单位" style="width:100%" prop="measureUnitName">
+          <el-select v-model="factorMsg.measureUnitName" placeholder="请选择">
+            <el-option
+              v-for="item in measurementList"
+              :key="item.itemValue"
+              :label="item.itemText"
+              :value="item.itemValue">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="默认小数位" style="width:100%" prop="decimalNumber">
+          <el-input type="number" min="0" oninput="if(value.length>1)value=value.slice(0,1)" v-model="factorMsg.decimalNumber" onkeyup="value=value.replace(/\D+/g,'')"></el-input>
+        </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button type="success" @click="saveNew('form')">提交</el-button>
         <el-button type="primary" @click="reset('form')" >取消</el-button>
-      </span>
-    </el-dialog> 
-    <el-dialog
-      title="编辑"
-      style="text-align:left !important"
-      :visible.sync="dialogVisible1"
-      :before-close="handleClose1"
-      :close-on-click-modal="false"
-      width="400px"
-    >
-      <el-form ref="form" label-width="80px" size="mini" :model="limitDataMsg" :rules="rules1" class="editForm">
-        <el-form-item label="监测污染物" style="width:100%" prop="factorName">
-          <el-input v-model="limitDataMsg.factorName" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="因子编码" style="width:100%" prop="paramCode">
-          <el-input v-model="limitDataMsg.paramCode" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="因子名称" style="width:100%" prop="paramName">
-          <el-input v-model="limitDataMsg.paramName" disabled></el-input>
-        </el-form-item>
-        <el-form-item label="参考默认上限" style="width:100%" prop="upperValue">
-          <el-input type="number" min="0" v-model="limitDataMsg.upperValue"></el-input>
-        </el-form-item>
-        <el-form-item label="参考默认下限" style="width:100%" prop="lowerValue">
-          <el-input type="number" min="0" v-model="limitDataMsg.lowerValue"></el-input>
-        </el-form-item>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="success" @click="saveLimit('form')">提交</el-button>
-        <el-button type="primary" @click="reset1('form')" >取消</el-button>
       </span>
     </el-dialog> 
     <!-- 分页 -->
@@ -146,56 +129,41 @@
 <script>
 export default {
   data: function(){
-    const check = (rule, value, callback)=>{
-      if(value.length === 0){
-        return callback(new Error('请选择状态参数'));
-      }else {
-        callback();
-      }
-    }
     return {
       contaminantsList: [],
       contaminantsValue: '',
       factorValue: '',
       stateList: [],
+      measurementList: [],
       label: [],
       tableList: [],
       total: 0,
       page: 0,
       size: 15,
+      addFlag: true,
       dialogVisible: false,
-      dialogVisible1: false,
       multipleSelection: '',
       factorMsg: {
         contaminants: '',
-        state: []
+        state: '',
+        measureUnitName: '',
+        decimalNumber: ''
       },
       rules: {
         contaminants: [
-          { required: true, message: '请选择监测污染物', trigger: 'change' },
+          { required: true, message: '请选择监测污染物', trigger: ['change', 'blur'] },
         ],
         state: [
-          { required: true, validator: check, trigger: 'blur'},
+          { required: true, message: '请选择状态参数', trigger: ['change', 'blur']},
+        ],
+        measureUnitName: [
+          { required: true, message: '请选择计量单位', trigger: ['change', 'blur']},
+        ],
+        decimalNumber: [
+          { required: true, message: '请输入默认小数位', trigger: ['change', 'blur']},
         ],
       },
-      limitDataMsg: {
-        factorName: '',
-        paramCode: '',
-        paramName: '',
-        upperValue: '',
-        lowerValue: '',
-      },
-      rules1: {
-        upperValue: [
-          { required: true, message: '请输入参考默认上限', trigger: 'blur' },
-          { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
-        ],
-        lowerValue: [
-          { required: true, message: '请输入参考默认下限', trigger: 'blur' },
-          { max: 50, message: '长度需小于50个字符', trigger: 'blur' }
-        ],
-      },
-      title: [],
+      isEdit: false,
       updateId: '',
       delId: '',
       baseUrl: window.API
@@ -203,6 +171,7 @@ export default {
   },
   mounted: function(){
     this.getIndexList();
+    this.getStateList();
     this.getMeasurementList();
   },
   methods: {
@@ -226,11 +195,6 @@ export default {
       this.$refs["form"].resetFields();
       done();
     },
-    handleClose1(done) {
-      this.$refs["form"].resetFields();
-      done();
-    },
-    
     // 获取监测污染物
     getIndexList(){
       let url = this.baseUrl + '/factor/stateParam/factorList';
@@ -244,7 +208,7 @@ export default {
       })
     },
     // 获取状态参数
-    getMeasurementList(){
+    getStateList(){
       let url = this.baseUrl + '/stateParam/getList';
       this.$axios.get(url).then(res => {
         if(res.status == 200){
@@ -252,6 +216,12 @@ export default {
             this.stateList = res.data.data;
           }
         }
+      })
+    },
+    // 获取计量单位
+    getMeasurementList(){
+      this._publicFun('计量单位').then(res => {
+        this.measurementList = res;
       })
     },
     // 获取表格数据
@@ -287,11 +257,9 @@ export default {
               factorName: '监测污染物',
               paramCode: '因子编码',
               paramName: '因子名称',
-              typeName: '指标类别',
+              typeName: '指标类型',
               measureUnitName: '计量单位',
               decimalNumber: '默认小数位',
-              upperValue: '参考默认上限',
-              lowerValue: '参考默认下限',
             };
             let labelList=Object.entries(_tableList);
             this.label=labelList.map(function(item){
@@ -311,35 +279,27 @@ export default {
     },
     // 新增
     add(){
+      this.addFlag = true;
       this.dialogVisible = true;
+      this.isEdit= false;
       let obj = {
         contaminants: '',
-        state: ''
+        state: '',
+        measureUnitName: '',
+        decimalNumber: ''
       };
       this.factorMsg = obj;
     },
     // 编辑
     edit(row){
-      let url = this.baseUrl + '/factor/stateParam/getById';
-      this.dialogVisible1 = true;
-      this.$axios.get(url,{
-        params: {
-          id: row.id
-        }
-      }).then(res => {
-        console.log(res)
-        if(res.status == 200){
-          if(res.data.code == 200){
-            let list = res.data.data
-            this.limitDataMsg.factorName = list.factorName;
-            this.limitDataMsg.paramCode = list.paramCode;
-            this.limitDataMsg.paramName = list.paramName;
-            this.limitDataMsg.upperValue = list.upperValue;
-            this.limitDataMsg.lowerValue = list.lowerValue;
-            this.updateId = list.id;
-          }
-        }
-      })
+      this.addFlag = false;
+      this.dialogVisible = true;
+      this.isEdit= true;
+      this.factorMsg.contaminants = row.factorCode;
+      this.factorMsg.state = row.paramCode;
+      this.factorMsg.measureUnitName = row.measureUnit;
+      this.factorMsg.decimalNumber = row.decimalNumber;
+      this.updateId = row.id;
     },
     // 删除
     del(){
@@ -379,39 +339,23 @@ export default {
         console.log(e)
       }
     },
-    // 获取状态参数文字
-    getTitle(){
-      this.title = [];
-      this.factorMsg.state.map(item => {
-        let val;
-        val = this.stateList.filter(list => {
-          return list.paramCode == item;
-        })
-        this.title.push(val[0].paramName)
-      })
-    },
     // 新增保存
     saveNew(formName){
       this.$refs[formName].validate((valid) => {
         if(valid){
           this.$confirm('确认提交？').then(()=>{
-            this.getTitle();
-            console.log(this.title)
             let url = this.baseUrl + '/factor/stateParam/save';
-            // let url = this.baseUrl + '';
-            let newFormData = new FormData();
-            newFormData.append('factorCode',this.factorMsg.contaminants);
-            newFormData.append('userGuid','test');
-            newFormData.append('paramCodes',this.factorMsg.state);
-            newFormData.append('paramNames',this.title);
-            console.log(this.factorMsg.state)
-            // var obj = {
-            //   factorCode: this.factorMsg.contaminants,
-            //   userGuid: 'test',
-            //   paramCodes: this.factorMsg.state,
-            //   paramNames: 'test'
-            // };
-            this.$axios.post(url,newFormData).then(res => {
+            var obj = {
+              id: this.updateId,
+              userGuid: 'test',
+              modifier: 'test',
+              factorCode: this.factorMsg.contaminants,
+              paramCode: this.factorMsg.state,
+              measureUnit: this.factorMsg.measureUnitName,
+              decimalNumber: this.factorMsg.decimalNumber,
+            };
+            console.log(obj)
+            this.$axios.post(url,obj).then(res => {
               console.log(res)
               if(res.data.code==200){
                 this.$message({
@@ -429,46 +373,29 @@ export default {
         }
       });
     },
-    // 新增上下限值
-    saveLimit(formName){
-      let url = this.baseUrl + '/factor/stateParam/updateValue';
-      this.$refs[formName].validate((valid) => {
-        if(valid){
-          this.$confirm('确认提交？').then(()=>{
-            var obj = {
-              id: this.updateId,
-              modifier: 'test',
-              upperValue: this.limitDataMsg.upperValue,
-              lowerValue: this.limitDataMsg.lowerValue,
-            };
-            this.$axios.post(url,obj).then(res => {
-              console.log(res)
-              if(res.data.code==200){
-                this.$message({
-                  message: res.data.msg,
-                  type: 'success'
-                });
-                this.getTableList();
-                this.dialogVisible1 = false;
-                this.updateId = '';
-                this.$refs[formName].resetFields();
-              }else if(res.data.code == 500){
-                this.$message.error(res.data.msg);
-              }
-            });
-          });
-        }
-      });
-    },
     // 取消
     reset(formName){
       this.dialogVisible = false;
       this.$refs[formName].resetFields();
     },
-    reset1(formName){
-      this.dialogVisible1 = false;
-      this.$refs[formName].resetFields();
-    },
+    // 通用接口调用
+    async _publicFun(val){
+      let url = this.baseUrl + '/land/common/dictList';
+      try {
+        let res = await this.$axios.get(url,{
+          params:{
+            codeName: val
+          }
+        });
+        if(res.status == 200){
+          if(res.data.code == 200){
+            return res.data.data;
+          }
+        }
+      } catch(e) {
+        console.log(e)
+      }
+    }
   }
 }
 </script>

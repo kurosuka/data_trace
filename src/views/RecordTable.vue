@@ -33,7 +33,7 @@
         <div style="display: flex;">
           <!-- left -->
           <div style="flex: 1;padding-right: 5px;">
-            <el-table :data="tableData" size="middle" height="80vh" @row-click="handleRowClick" border ref="leftTable"
+            <el-table :data="tableData" size="middle" height="80vh" @row-click="handleRowClick" border
               @selection-change="handleSelectionChange" highlight-current-row @current-change="handleCurrentChange2">
               <el-table-column type="selection">
               </el-table-column>
@@ -181,10 +181,10 @@
         </div>
         <div>
           <el-form-item label="下限:" prop="low" class="form_style">
-            <el-input v-model.number="saveForm.low" type="number"></el-input>
+            <el-input v-model.number="saveForm.low" type="number" @change="lowerRangeBlur"></el-input>
           </el-form-item>
           <el-form-item label="上限:" prop="upper" class="form_style">
-            <el-input v-model.number="saveForm.upper" type="number"></el-input>
+            <el-input v-model.number="saveForm.upper" type="number" @change="upperRangeBlur"></el-input>
           </el-form-item>
         </div>
       </el-form>
@@ -385,8 +385,6 @@
           this.total = res.data.data.total
           // 默认传表格第一条的量程id，来调用右侧表格数据(不需要了)
           // this.ruleForm.rangeId = res.data.data.records[0].id
-          this.$refs.leftTable.setCurrentRow(this.tableData[0]);
-          this.handleRowClick(this.tableData[0]);
         }).catch(err => {
           console.log(err);
           this.loading = false
@@ -405,9 +403,6 @@
       handleRowClick(row) {
         console.log(row);
         this.ruleForm.rangeId = row.id
-        // row.factorName
-        this.ruleForm.factorId=  this.factorList.filter(item=>item.factorName==row.factorName).map(item=>item.factorCode).toString()
-        // this.ruleForm.factorId
         this.queryParams()
       },
       // tab切换
@@ -723,7 +718,7 @@
       queryParams(data, id) {
         console.log(id);
         console.log(data);
-        console.log(this.ruleForm);
+        console.log(this.ruleForm.rangeId);
         // factorCode:关键参数中的因子id
         this.$axios({
           url: `${this.base}/paramRecord/queryParamByRangeUid`,
@@ -793,7 +788,7 @@
           this.addFormError = false
         }
       },
-      /* upperRangeBlur(val) {
+      upperRangeBlur(val) {
         if (val > 50) {
           this.$message({ type: 'warning', message: '量程范围为0-50' })
           this.saveForm.upper = ''
@@ -804,7 +799,7 @@
           this.$message({ type: 'warning', message: '量程范围为0-50' })
           this.saveForm.low = ''
         }
-      }, */
+      },
       // 分页
       handleSizeChange(val) {
         this.pageSize = val
