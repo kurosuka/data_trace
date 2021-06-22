@@ -357,7 +357,7 @@
           pageSize: this.pageSize,
           pointIdList: this.form.pointOption
         }
-        console.log(obj);
+        // console.log(obj);
         this.$axios({
           url: `${this.base}/paramRecord/queryParamRecordList`,
           method: 'post',
@@ -367,7 +367,7 @@
           data: JSON.stringify(obj)
         }).then(res => {
           this.loading = false
-          console.log(res.data.data);
+          // console.log(res.data.data);
           this.tableData = res.data.data.records.map(item => {
             return {
               id: item.id,
@@ -384,7 +384,11 @@
           console.log(this.tableData);
           this.total = res.data.data.total
           // 默认传表格第一条的量程id，来调用右侧表格数据(不需要了)
+<<<<<<< HEAD
           this.ruleForm.rangeId = res.data.data.records[0].id
+=======
+          // this.ruleForm.rangeId = res.data.data.records[0].id
+>>>>>>> 35d0eff19da9fc07e4931e22370ec0264442c501
         }).catch(err => {
           console.log(err);
           this.loading = false
@@ -872,10 +876,8 @@
           console.log(res);
           if (ids == 'uid') {
             this.getPage()
-
           } else {
             this.queryRangeByFactor()
-
           }
           this.$message({
             type: 'success',
@@ -912,23 +914,32 @@
       exportTable() {
         //  console.log(this.exportName.toString());
         var dates = this.getDates()
-        //  console.log(dates);
-        var newForm = []
+        // var newForm = []
         console.log(this.ruleForm);
+<<<<<<< HEAD
         let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
         newForm.push({
+=======
+        // let userId = getLocalstorage('UserId') || getUrlParams(window.location.href).UserGuid||'066a6cf9-4518-4cca-b924-1bb172b8aea4'
+      /*   newForm.push({
+>>>>>>> 35d0eff19da9fc07e4931e22370ec0264442c501
           rangeParamList: this.addForm,
           rangeUid: this.ruleForm.rangeId,
           userUid: userId
-        })
-        console.log(JSON.stringify(newForm));
+        }) */
+        var obj={
+          factorCodeList: this.form.selectValue,
+          pageNo: this.currentPage,
+          pageSize: this.pageSize,
+          pointIdList: this.form.pointOption
+        }
         this.$axios({
           url: `${this.base}/paramRecord/exportParamRecordData`,
           method: 'post',
           headers: {
             'content-type': 'application/json;charset=UTF-8',//添加请求头
           },
-          data: JSON.stringify(newForm[0]),
+          data: JSON.stringify(obj),
           responseType: 'blob'
         }).then(res => {
           console.log(res);

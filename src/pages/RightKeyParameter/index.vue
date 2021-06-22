@@ -41,7 +41,8 @@ export default {
           return 
         }
         const opt = {
-          tstamp: this._decodeURIComponent(`${this.options.time}:00:00`),
+          fromTime: `${this._decodeURIComponent(`${this.options.time}`).slice(0, 10)} 00:00:00`,
+          toTime: this._decodeURIComponent(`${this.options.time}:00:00`),
           factorCode: this._decodeURIComponent(this.options.pollutantCode),
           fields: [...this.keyData.map((item)=> {
             return {

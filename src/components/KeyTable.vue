@@ -13,7 +13,7 @@
       <el-table-column label="名称" prop="paramName"></el-table-column>
       <el-table-column label="参数值">
         <template slot-scope="scope">
-          {{scope.row.v != '' ? scope.row.v : '--'}}
+          {{ !_isEmpty(scope.row.v) ? scope.row.v : '--'}}
         </template>
       </el-table-column>
       <el-table-column label="备案范围">
@@ -67,6 +67,9 @@ export default {
         return '--'
       }
       return val;
+    },
+    _isEmpty(input) {
+      return input === null || input === undefined || input === '' ? true : false;
     }
   },
 }
