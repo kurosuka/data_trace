@@ -9,10 +9,10 @@
 <template>
   <div class="main">
     <el-table :data="tableData" :default-expand-all="true" :show-header="false">
-      <el-table-column label="监测时间" prop="name" ></el-table-column>
+      <el-table-column label="监测时间" prop="name"></el-table-column>
       <el-table-column  type="expand" prop="id">
-        <template slot-scope="scope">
-          <el-table :data="list" :show-header="scope.row.id == 'i11001'" stripe width="100%" border>
+        <template slot-scope="scope" v-if="scope.row.id">
+          <el-table :data="filterList(list, scope.row.id)" :show-header="scope.row.id == 'i11001'" stripe width="100%" border>
             <el-table-column label="监测时间" prop="time"></el-table-column>
             <el-table-column label="日志" :prop="scope.row.id" align="center"></el-table-column>
           </el-table>
@@ -51,7 +51,7 @@ export default {
     async getQueryParamByPointFactor() {
       let start = this._decodeURIComponent(`${this.options.time}:00:00`);
       let end = moment(start).add(3, 'hours').format('YYYY-MM-DD HH:59:59');
-      await queryParamProcessLog({
+      const result1 = await queryParamProcessLog({
         fromTime: start,
         toTime: end,
         factorCode: this._decodeURIComponent(this.options.pollutantCode),
@@ -63,19 +63,37 @@ export default {
         fields: [
           {
             "field":"i11001"
+        }
+        ]
+      });
+      console.log(result1);
+      const result2 = await queryParamProcessLog({
+        fromTime: start,
+        toTime: end,
+        factorCode: this._decodeURIComponent(this.options.pollutantCode),
+        snCriteria: {
+          orderNum: 9999,
+          sn: /* 1 */this._decodeURIComponent(this.options.pointId),
+          snName: this._decodeURIComponent(this.options.pointName)
         },
-        {
+        fields: [
+          {
             "field":"i21001"
         }
         ]
-      }).then(res=> {
-        this.list = res.data.data;
-      })
+      });
+      console.log(result2);
+      this.list = [...result1.data.data, ...result2.data.data];
     },
     // 处理中文乱码问题
     _decodeURIComponent(str) {
       return decodeURIComponent(str)
     },
+    filterList(list, tag) {
+      console.log(list, tag);
+      console.log(list.filter(item => item[tag]));
+      return list.filter(item => item[tag])
+    }
   }
 }
 </script>

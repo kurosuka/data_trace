@@ -91,7 +91,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="计量单位" style="width:100%" prop="measureUnitName">
+        <el-form-item label="计量单位" style="width:100%">
           <el-select v-model="factorMsg.measureUnitName" placeholder="请选择">
             <el-option
               v-for="item in measurementList"
@@ -155,9 +155,6 @@ export default {
         ],
         state: [
           { required: true, message: '请选择状态参数', trigger: ['change', 'blur']},
-        ],
-        measureUnitName: [
-          { required: true, message: '请选择计量单位', trigger: ['change', 'blur']},
         ],
         decimalNumber: [
           { required: true, message: '请输入默认小数位', trigger: ['change', 'blur']},

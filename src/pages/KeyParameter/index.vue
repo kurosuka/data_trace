@@ -86,7 +86,7 @@
     </el-dialog>
     <!--仪器日志-->
     <el-dialog :title="yqTitle" :visible.sync="yqVisible" v-draggable :close-on-click-modal="false" v-if="yqVisible" height="400px">
-      <el-table :data="logData" v-loading="yqLoading" max-height="500px">
+      <el-table :data="logData" v-loading="yqLoading" max-height="400px">
         <el-table-column label="监测时间" prop="time"></el-table-column>
         <el-table-column label="日志" :prop="yqTitle == '仪器日志' ? 'i11001' : 'i21001'"></el-table-column>
       </el-table>
@@ -300,9 +300,10 @@ export default {
       this.yqTitle = title;
       this.yqVisible = true;
       console.log(row);
-      this.getParamProcessLog(row);
+      let params = title === '仪器日志' ? 'i11001' : 'i21001';
+      this.getParamProcessLog(row, params);
     },
-    getParamProcessLog(row) {
+    getParamProcessLog(row, params) {
       queryParamProcessLog(
         {
         fromTime: row.time,
@@ -315,11 +316,8 @@ export default {
         },
         fields: [
           {
-            "field":"i11001"
+            "field": params,
         },
-        {
-            "field":"i21001"
-        }
         ]
       }
       ).then(res => {
