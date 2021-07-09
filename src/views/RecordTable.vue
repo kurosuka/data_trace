@@ -75,7 +75,7 @@
     <!--tab页切换-->
     <!-- 备案弹出框 -->
     <el-dialog title="备案" :visible.sync="recordDialog" width="1000px" :before-close="handleClose"
-      :close-on-click-modal="false">
+      :close-on-click-modal="false" v-if="recordDialog">
       <el-form :model="ruleForm" ref="ruleForm" :rules="rules" label-width="100px" class="demo-ruleForm">
         <div>
           <el-form-item label="水站名称:" prop="newPointId" class="form_style">
@@ -278,7 +278,7 @@
             { required: true, message: '请选择名称', trigger: 'change' },
           ],
           unit: [
-            { required: true, message: '请选择单位', trigger: 'change' },
+            { required: true, message: '请选择单位', trigger: 'change', },
           ],
           keyParams: [
             { required: true, message: '请选择关键参数', trigger: 'change' },
@@ -334,9 +334,14 @@
             this.addForm[i].id = item.id
             this.addForm[i].paramUpperLimit = item.paramUpperLimit
             this.addForm[i].paramLowerLimit = item.paramLowerLimit
-          })
+          });
         }
       },
+      /* recordDialog(newVal) {
+        if(!newVal) {
+          this.ruleForm.newPointId = null;
+        }
+      } */
     },
     mounted() {
       this.getPoints()
