@@ -108,10 +108,10 @@
             </el-button>
             <div class="ruleForm_span">
               <el-alert
-    title="名称：量程一，量程二，...；值：如量程为0-50，下限填写0，上限填写50"
-    type="warning"
-    show-icon :closable="false">
-  </el-alert>
+                title="名称：量程一，量程二，...；值：如量程为0-50，下限填写0，上限填写50"
+                type="warning"
+                show-icon :closable="false">
+              </el-alert>
             </div>
             <el-table border ref="multipleTable" :data="ruleFormTableData" tooltip-effect="dark" style="width: 100%">
               <el-table-column label="删除">
@@ -138,17 +138,19 @@
               </el-select>
             </div>
             <el-alert
-    title="请填写上限，下限；只允许录入数字"
-    type="warning"
-    show-icon :closable="false">
-  </el-alert>
+              title="请填写上限，下限；只允许录入数字"
+              type="warning"
+              show-icon :closable="false">
+            </el-alert>
             <el-form class="keyParams_form" :model="keyParamsForm" ref="keyParamsForm" label-width="100px">
               <el-form-item v-for="(item,index) in ParamsList" :label="item.paramName" :key="item.id"
                 class="keyparams_style">
                 <span>上限:</span>
-                <el-input v-model.number="addForm[index].paramUpperLimit" type="number"></el-input>
+                <el-input
+                 v-model="addForm[index].paramUpperLimit"
+                 @change="paramLimitChangeUpper(index)"></el-input>
                 <span>下限:</span>
-                <el-input v-model.number="addForm[index].paramLowerLimit" type="number"
+                <el-input v-model="addForm[index].paramLowerLimit" 
                   @change="paramLimitChange(index)"
                   :disabled="addForm[index].paramUpperLimit==''?true:addForm[index].paramUpperLimit==''"></el-input>
                 <span>{{item.measureUnitName}}</span>
@@ -182,7 +184,7 @@
           <el-form-item label="关键参数:" prop="keyParams" class="form_style">
             <el-select v-model="saveForm.keyParams" :multiple="true" placeholder="请选择" :collapse-tags="true">
               <el-option v-for="item in keyParamsList" :key="item.paramCode" :label="item.paramName"
-                :value="item.paramCode" :disabled="item.disabled"></el-option>
+                :value="item.paramCode"></el-option>
             </el-select>
           </el-form-item>
         </div>
@@ -213,6 +215,7 @@
   import '../scss/globel.scss'
   import MutiSelect from '../components/MutiSelect.vue'
   import MultiCheckBox from '../components/MultiCheckBox.vue'
+
   export default {
     components: {
       MutiSelect,
@@ -334,14 +337,9 @@
             this.addForm[i].id = item.id
             this.addForm[i].paramUpperLimit = item.paramUpperLimit
             this.addForm[i].paramLowerLimit = item.paramLowerLimit
-          });
+          })
         }
       },
-      /* recordDialog(newVal) {
-        if(!newVal) {
-          this.ruleForm.newPointId = null;
-        }
-      } */
     },
     mounted() {
       this.getPoints()
@@ -413,10 +411,11 @@
       handleClick(tab) {
         console.log(tab);
         if (this.activeName == 'keyParams') {//关键参数登记
-          console.log(this.ruleForm.rangeId);
+          // console.log(this.ruleForm.rangeId);
           this.ruleForm.rangeId = ''
-          this.getParamsList()
-          this.queryParams(this.ruleForm.rangeId)
+          this.ParamsList=[]
+          /* this.getParamsList()
+          this.queryParams(this.ruleForm.rangeId) */
         }
       },
       // 量程范围登记
@@ -776,12 +775,24 @@ console.log(useOrNot);
         }
 
       },
+      // 上限
+      paramLimitChangeUpper(index) {
+        if (this._checkNumber(this.addForm[index].paramUpperLimit) === false) {
+          this.$message({ type: 'warning', message: '请输入一个数字'});
+        }
+      },
+      // 下限
       paramLimitChange(index) {
+        if(this._checkNumber(this.addForm[index].paramLowerLimit) === false) {
+          this.$message({ type: 'warning', message: '请输入一个数字'});
+        } else {
+          // console.log(true);
+        }
         if (this.addForm[index].paramUpperLimit - this.addForm[index].paramLowerLimit < 0) {
           this.$message({ type: 'warning', message: '下限不能超过上限' })
-          this.addFormError = true
+          this.addFormError = true;
         } else {
-          this.addFormError = false
+          this.addFormError = false;
         }
       },
       // 分页
